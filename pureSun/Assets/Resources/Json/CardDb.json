@@ -1,0 +1,24 @@
+{
+  "TEST1": {
+    "code": "TEST1",
+    "name": "TEST_Minion",
+    "type": "Minion",
+    "atk": "2",
+    "def": "2",
+    "cost": "2"
+  },
+  "TEST2": {
+    "code": "TEST2",
+    "name": "TEST_Resource",
+    "type": "Resource",
+    "cost": "0",
+    "effectName": "chooseOneAddManaDrawCardOrAddTechDrawCard"
+  },
+  "TEST3": {
+    "code": "TEST3",
+    "name": "TEST_Tactics",
+    "type": "Tactics",
+    "cost": "1",
+    "effectName": "testEffect"
+  }
+}

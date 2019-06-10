@@ -1,0 +1,43 @@
+{
+  "testEffect": {
+    "name": "testEffect",
+    "description": "目标生物+1/+1",
+    "type": "ONE_MINION",
+    "targetClaims": [],
+    "impactType": "MOMENT",
+    "impactTargets": [ "ATK", "DEF" ],
+    "impactContents": [ "1", "1" ]
+  },
+  "chooseOneAddManaDrawCardOrAddTechDrawCard": {
+    "name": "chooseOneAddManaDrawCardOrAddTechDrawCard",
+    "description": "选择一项",
+    "type": "CHOOSE_ONE",
+    "chooseEffectList": [ "addManaDrawCard", "addManaDrawCard" ],
+    "impactType": "MOMENT"
+  },
+  "addManaDrawCard": {
+    "name": "addManaDrawCard",
+    "description": "addManaDrawCard",
+    "type": "COMPLEX_EFFECT",
+    "complexEffectList": [ "addMana", "drawCard" ],
+    "impactType": "MOMENT"
+  },
+  "addMana": {
+    "name": "addMana",
+    "description": "addMana",
+    "type": "MANA",
+    "targetClaims": [],
+    "impactType": "MOMENT",
+    "impactTargets": [ "LIMIT" ],
+    "impactContents": [ "1" ]
+  },
+  "drawCard": {
+    "name": "drawCard",
+    "description": "drawCard",
+    "type": "HAND",
+    "targetClaims": [],
+    "impactType": "MOMENT",
+    "impactTargets": [ "HAND" ],
+    "impactContents": [ "1" ]
+  }
+}
