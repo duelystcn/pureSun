@@ -7,10 +7,7 @@
 
 using Assets.Scripts.OrderSystem.Controller;
 using Assets.Scripts.OrderSystem.Event;
-using PureMVC.Interfaces;
 using PureMVC.Patterns.Facade;
-using System;
-using UnityEngine;
 
 namespace OrderSystem
 {
@@ -51,6 +48,7 @@ namespace OrderSystem
             RegisterCommand(OperateSystemEvent.OPERATE_SYS, () => new OperateSystemCommand());
             RegisterCommand(HexSystemEvent.HEX_VIEW_SYS, () => new HexViewCommand());
             RegisterCommand(MinionSystemEvent.MINION_SYS, () => new MinionSysCommand());
+            RegisterCommand(UIViewSystemEvent.UI_VIEW, () => new UIViewSysCommand());
         }
 
         protected override void InitializeModel()

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 namespace Assets.Scripts.OrderSystem.View.OperateSystem.TrailView
 {
     public class TrailDrawLineMouseFollow : TrailDrawLine

@@ -1,6 +1,5 @@
 ﻿using Assets.Scripts.OrderSystem.Model.Hand;
 using Assets.Scripts.OrderSystem.Model.Player;
-using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.Model.OperateSystem
 {

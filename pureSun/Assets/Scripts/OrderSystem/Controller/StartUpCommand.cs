@@ -23,9 +23,10 @@ using Assets.Scripts.OrderSystem.View.OperateSystem;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Command;
 using UnityEngine;
+using Assets.Scripts.OrderSystem.View.UIView;
 /**
- * 程序启动，初始化 
- */
+* 程序启动，初始化 
+*/
 namespace OrderSystem
 {
     internal class StartUpCommand : SimpleCommand
@@ -49,6 +50,11 @@ namespace OrderSystem
             Facade.RegisterProxy(cardDbProxy);
             EffectInfoProxy effectInfoProxy = new EffectInfoProxy();
             Facade.RegisterProxy(effectInfoProxy);
+
+            //UI层代理
+            UIControllerListMediator uIControllerListMediator = new UIControllerListMediator(mainUI.UIControllerListView);
+            Facade.RegisterMediator(uIControllerListMediator);
+
 
             //地图代理(需要放在操作层之前)
             HexGridProxy hexGridProxy = new HexGridProxy(modelInfo);

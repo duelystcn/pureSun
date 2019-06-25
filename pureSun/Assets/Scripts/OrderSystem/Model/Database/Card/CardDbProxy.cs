@@ -1,11 +1,10 @@
 ﻿
 
-using Assets.Scripts.OrderSystem.Model.Database.Effect;
+using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Newtonsoft.Json;
 using PureMVC.Patterns.Proxy;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.Model.Database.Card
 {
@@ -35,7 +34,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
         public CardInfo GetCardInfoByCode(string cardCode) {
             CardInfo cardInfo = cardDbItem.cardInfoMap[cardCode];
             if (cardInfo == null) {
-                Debug.LogError("the card [" + cardCode + "]is null");
+                UtilityLog.LogError("the card [" + cardCode + "]is null");
             }
             return cardInfo;
         }

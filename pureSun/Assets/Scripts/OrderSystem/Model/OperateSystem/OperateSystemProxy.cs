@@ -4,7 +4,6 @@ using Assets.Scripts.OrderSystem.Model.Hand;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.Player;
 using PureMVC.Patterns.Proxy;
-using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.Model.OperateSystem
 {

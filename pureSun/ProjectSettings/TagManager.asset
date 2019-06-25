@@ -45,3 +45,18 @@ TagManager:
   - name: Image
     uniqueID: 1647392199
     locked: 0
+  - name: UI_Background
+    uniqueID: 1482361783
+    locked: 0
+  - name: UI_Base
+    uniqueID: 633508449
+    locked: 0
+  - name: UI_Popup
+    uniqueID: 393264123
+    locked: 0
+  - name: UI_Top
+    uniqueID: 1382927935
+    locked: 0
+  - name: UI_Debug
+    uniqueID: 3553021867
+    locked: 0

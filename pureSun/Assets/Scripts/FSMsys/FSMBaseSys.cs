@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.FSMsys
 {
@@ -17,7 +17,7 @@ namespace Assets.Scripts.FSMsys
         {
             if (state == null)
             {
-                Debug.LogWarning("状态为空");
+                UtilityLog.LogError("状态为空");
                 return;
             }
             if (nowState == null)
@@ -28,7 +28,7 @@ namespace Assets.Scripts.FSMsys
             }
             if (stateDictionary.ContainsKey(state.name))
             {
-                Debug.LogWarning("状态在状态机中已存在");
+                UtilityLog.LogError("状态在状态机中已存在");
                 return;
             }
             stateDictionary.Add(state.name, state);
@@ -38,12 +38,12 @@ namespace Assets.Scripts.FSMsys
         {
             if (state == null)
             {
-                Debug.LogWarning("状态为空");
+                UtilityLog.LogError("状态为空");
                 return;
             }
             if (!stateDictionary.ContainsKey(state.name))
             {
-                Debug.LogWarning("状态在状态机中不存在");
+                UtilityLog.LogError("状态在状态机中不存在");
                 return;
             }
             stateDictionary.Remove(state.name);
@@ -63,17 +63,17 @@ namespace Assets.Scripts.FSMsys
         public void AddFSMEvent(FSMEvent fSMEvent) {
             if (fSMEvent == null)
             {
-                Debug.LogWarning("事件为空");
+                UtilityLog.LogError("事件为空");
                 return;
             }
             //检测状态是否存在
             if (!CheckFSMState(fSMEvent.from) || !CheckFSMState(fSMEvent.to))
             {
-                Debug.LogWarning("事件状态在状态机中不存在");
+                UtilityLog.LogError("事件状态在状态机中不存在");
                 return;
             }
             if (eventDictionary.ContainsKey(fSMEvent.code)) {
-                Debug.LogWarning("事件在状态机中已存在");
+                UtilityLog.LogError("事件在状态机中已存在");
                 return;
             }
             eventDictionary.Add(fSMEvent.code,fSMEvent);

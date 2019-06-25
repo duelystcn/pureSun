@@ -1,10 +1,6 @@
-﻿
-
-using Assets.Scripts.OrderSystem.Model.Database.Card;
-using Assets.Scripts.OrderSystem.Model.Player;
+﻿using Assets.Scripts.OrderSystem.Model.Player;
 using PureMVC.Patterns.Proxy;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.Model.Circuit
 {

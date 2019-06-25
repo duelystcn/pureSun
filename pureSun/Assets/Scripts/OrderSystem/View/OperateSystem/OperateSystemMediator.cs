@@ -42,7 +42,7 @@ namespace Assets.Scripts.OrderSystem.View.OperateSystem
                 //选择了献祭区域
                 bool isCircuit = GeometricUtil.CheckPointInSomeRectangle(10,10,startPosition, operateSystemView.trailDrawLine.last);
                 if (isCircuit) {
-                    SendNotification(OperateSystemEvent.OPERATE_SYS, hexCellView.hexCellItem, OperateSystemEvent.OPERATE_SYS_DRAW_END_CIRCUIT);
+                    SendNotification(OperateSystemEvent.OPERATE_SYS, null, OperateSystemEvent.OPERATE_SYS_DRAW_END_CIRCUIT);
                     return;
                 }
                 //还可能选择了其他目标

@@ -1,7 +1,4 @@
-﻿
-
-using Assets.Scripts.OrderSystem.Model.Database.Card;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Assets.Scripts.OrderSystem.Model.Player
 {

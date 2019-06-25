@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.OrderSystem.Model.Circuit;
+﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Model.Circuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Hand;
 using Assets.Scripts.OrderSystem.Model.Player;
@@ -31,7 +32,6 @@ namespace Assets.Scripts.OrderSystem.Controller
                     CardEntry cardEntry = new CardEntry();
                     if (i % 3 == 0)
                     {
-                        
                         //生物
                         cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode("TEST1"));   
                     }
@@ -63,7 +63,7 @@ namespace Assets.Scripts.OrderSystem.Controller
             playerGroupProxy.playerGroup.playerItems["TEST1"].hexCoordinates = new HexCoordinates(0,-1);
             playerGroupProxy.playerGroup.playerItems["TEST2"].hexCoordinates = new HexCoordinates(0, 4);
 
-            Debug.Log("进程初始化完毕");
+            UtilityLog.Log("进程初始化完毕");
             //手牌区渲染为当前回合玩家
             HandGridProxy handGridProxy = Facade.RetrieveProxy(HandGridProxy.NAME) as HandGridProxy;
             PlayerItem playerItemNow = playerGroupProxy.getPlayerByPlayerCode(circuitProxy.GetNowPlayerCode());

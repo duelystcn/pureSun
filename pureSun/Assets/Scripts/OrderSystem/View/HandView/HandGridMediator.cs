@@ -1,11 +1,8 @@
 ﻿using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Hand;
-using Assets.Scripts.OrderSystem.Model.OperateSystem;
-using OrderSystem;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Mediator;
 using System;
-using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.View.HandView
 {

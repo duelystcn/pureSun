@@ -1,8 +1,7 @@
 ﻿
 
-using Assets.Scripts.OrderSystem.Model.Hex;
+using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using PureMVC.Patterns.Proxy;
-using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.Model.Player
 {
@@ -30,7 +29,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         public PlayerItem getPlayerByPlayerCode(string playerCode) {
             PlayerItem returnItem = playerGroup.playerItems[playerCode];
             if (returnItem == null) {
-                Debug.LogWarning("玩家信息为空");
+                UtilityLog.LogError("玩家信息为空");
             }
             return returnItem;
         }

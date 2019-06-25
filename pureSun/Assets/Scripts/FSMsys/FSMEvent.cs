@@ -1,5 +1,6 @@
 ﻿
 
+using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using UnityEngine;
 
 namespace Assets.Scripts.FSMsys
@@ -27,11 +28,11 @@ namespace Assets.Scripts.FSMsys
         public void Action(FSMBaseSys fSMBaseSys) {
             //检测状态是否存在
             if (!fSMBaseSys.CheckFSMState(from)||!fSMBaseSys.CheckFSMState(to)) {
-                Debug.LogWarning("状态在状态机中不存在");
+                UtilityLog.LogError("状态在状态机中不存在");
                 return;
             }
             if (fSMBaseSys.nowState.name != from.name) {
-                Debug.LogWarning("开始状态错误");
+                UtilityLog.LogError("开始状态错误");
                 return;
             }
             fSMBaseSys.nowState.EndState();

@@ -108,11 +108,8 @@ namespace Assets.Scripts.OrderSystem.Controller
                                         MinionCellItem minionCellItem = minionGridProxy.GetMinionCellItemByIndex(index);
                                         if (minionCellItem!=null) {
                                             //检查是否满足效果释放条件
-
-                                            Debug.Log(minionCellItem.cardEntry.atk);
                                             //释放
                                             effectInfo.TargetMinionOne(minionCellItem);
-                                            Debug.Log(minionCellItem.cardEntry.atk);
 
                                         }
                                     }

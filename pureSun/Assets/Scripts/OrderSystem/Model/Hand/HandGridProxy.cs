@@ -1,7 +1,6 @@
-﻿using Assets.Scripts.OrderSystem.Event;
-using OrderSystem;
+﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Event;
 using PureMVC.Patterns.Proxy;
-using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.Model.Hand
 {
@@ -32,7 +31,7 @@ namespace Assets.Scripts.OrderSystem.Model.Hand
             }
             if (index < 0)
             {
-                Debug.LogError("This handCellItem index" + handCellItem.X + "is not exist");
+                UtilityLog.LogError("This handCellItem index" + handCellItem.X + "is not exist");
             }
             else {
                 handGridItem.handCells.RemoveAt(index);

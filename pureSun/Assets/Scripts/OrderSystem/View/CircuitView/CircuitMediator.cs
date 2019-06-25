@@ -1,7 +1,6 @@
 ﻿using Assets.Scripts.OrderSystem.Model.Circuit;
 using PureMVC.Patterns.Mediator;
 using System;
-using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.View.CircuitView
 {

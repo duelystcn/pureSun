@@ -8,7 +8,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 {
     public class EffectInfoProxy : Proxy
     {
-        public new const string NAME = "CardDbProxy";
+        public new const string NAME = "EffectInfoProxy";
         public EffectSysItem effectSysItem
         {
             get { return (EffectSysItem)base.Data; }

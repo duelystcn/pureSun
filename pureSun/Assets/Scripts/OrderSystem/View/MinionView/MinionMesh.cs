@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.OrderSystem.Metrics;
 using System.Collections.Generic;
-using Assets.Scripts.OrderSystem.Metrics;
+using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.View.MinionView
 {

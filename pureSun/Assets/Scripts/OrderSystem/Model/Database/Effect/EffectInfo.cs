@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine.Events;
-using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetChoose;
+﻿using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetChoose;
 using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetMinion;
 
 namespace Assets.Scripts.OrderSystem.Model.Database.Effect
