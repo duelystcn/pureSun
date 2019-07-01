@@ -38,5 +38,15 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
             }
             return cardInfo;
         }
+        //根据Type获取信息
+        public List<CardInfo> GetCardInfoByType(string cardType) {
+            List<CardInfo> cardInfos = new List<CardInfo>();
+            foreach (CardInfo cardInfo in cardDbItem.cardInfoMap.Values) {
+                if (cardInfo.type.Equals(cardType)) {
+                    cardInfos.Add(cardInfo);
+                }
+            }
+            return cardInfos;
+        }
     }
 }

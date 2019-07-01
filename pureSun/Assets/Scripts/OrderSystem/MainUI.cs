@@ -1,5 +1,6 @@
 ﻿
-using Assets.Scripts.OrderSystem.View.CircuitView;
+
+using Assets.Scripts.OrderSystem.View.CircuitView.QuestStageCircuit;
 using Assets.Scripts.OrderSystem.View.HandView;
 using Assets.Scripts.OrderSystem.View.HexView;
 using Assets.Scripts.OrderSystem.View.MinionView;
@@ -14,7 +15,7 @@ public class MainUI : MonoBehaviour {
     public HexGridView HexGridView = null;
     public HandGridView HandGridView = null;
     public MinionGridView minionGridView = null;
-    public CircuitButton circuitButton = null;
+    public QuestStageCircuitButton circuitButton = null;
     public OperateSystemView operateSystemView = null;
     public ChooseGridView chooseGridView = null;
     public UIControllerListView UIControllerListView = null;

@@ -4,6 +4,12 @@
     {
         //战场视图相关
         public const string HEX_VIEW_SYS = "hexViewSys";
+
+        //战场视图开始渲染
+        public const string HEX_VIEW_SYS_SHOW_START = "hexViewSysShowStart";
+
+        public const string HEX_VIEW_SYS_SHOW = "hexViewSysShow";
+
         //战场视图发生了变化
         public const string HEX_VIEW_SYS_CHANGE = "hexViewSysChange";
         //取消战场高亮提示

@@ -49,6 +49,7 @@ namespace OrderSystem
             RegisterCommand(HexSystemEvent.HEX_VIEW_SYS, () => new HexViewCommand());
             RegisterCommand(MinionSystemEvent.MINION_SYS, () => new MinionSysCommand());
             RegisterCommand(UIViewSystemEvent.UI_VIEW, () => new UIViewSysCommand());
+            RegisterCommand(UIViewSystemEvent.UI_CHOOSE_STAGE, () => new ChooseStageCommand());
         }
 
         protected override void InitializeModel()

@@ -21,6 +21,11 @@ namespace Assets.Scripts.OrderSystem.Controller
                       Facade.RetrieveProxy(HexGridProxy.NAME) as HexGridProxy;
             switch (notification.Type)
             {
+                case HexSystemEvent.HEX_VIEW_SYS_SHOW_START:
+                    SendNotification(HexSystemEvent.HEX_VIEW_SYS, hexGridProxy.HexGrid, HexSystemEvent.HEX_VIEW_SYS_SHOW);
+
+                    break;
+
                 //这一段代码写的比较糟糕，只用作效果展示
                 //需要区分模式
                 case HexSystemEvent.HEX_VIEW_SYS_CHANGE:

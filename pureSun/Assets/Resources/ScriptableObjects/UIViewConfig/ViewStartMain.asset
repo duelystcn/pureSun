@@ -12,5 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7aea2e6642688249af6c2f8827f42bc, type: 3}
   m_Name: ViewStartMain
   m_EditorClassIdentifier: 
+  unique: 1
   viewLayer: 1
   viewName: 1
+  cacheScheme: 0
+  assetName: ViewStartMain

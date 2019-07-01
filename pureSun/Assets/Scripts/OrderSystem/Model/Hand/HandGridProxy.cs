@@ -27,6 +27,7 @@ namespace Assets.Scripts.OrderSystem.Model.Hand
             for (int i = 0; i < handGridItem.handCells.Count; i++) {
                 if (handGridItem.handCells[i].X == handCellItem.X) {
                     index = i;
+                    break;
                 }
             }
             if (index < 0)

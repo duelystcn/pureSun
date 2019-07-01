@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.OrderSystem.Model.Hex;
+﻿using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Hex;
 using OrderSystem;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Mediator;
@@ -10,7 +11,6 @@ namespace Assets.Scripts.OrderSystem.View.HexView
     class HexGridMediator : Mediator
     {
         public new const string NAME = "HexGridMediator";
-        private HexGridProxy hexGridProxy = null;
         public HexGridView hexGridView
         {
             get { return (HexGridView)base.ViewComponent; }
@@ -23,25 +23,12 @@ namespace Assets.Scripts.OrderSystem.View.HexView
         public override void OnRegister()
         {
             base.OnRegister();
-            hexGridProxy = Facade.RetrieveProxy(HexGridProxy.NAME) as HexGridProxy;
-            if (null == hexGridProxy)
-                throw new Exception(HexGridProxy.NAME + "is null.");
-            //初始化地图区域
-            hexGridView.AchieveHexGrid(hexGridProxy.HexGrid);
-            //给每一个单元格绑定上单击事件
-            foreach (HexCellView hexCellView in hexGridView.cellViews) {
-                hexCellView.OnClick += () => 
-                {
-                    SendNotification(OrderSystemEvent.ONCLICK,hexCellView.hexCellItem,"CLICK");
-                  
-                };
-            }
         }
 
         public override string[] ListNotificationInterests()
         {
             string[] notifications = new string[2];
-            notifications[0] = OrderSystemEvent.ONCLICK;
+            notifications[0] = HexSystemEvent.HEX_VIEW_SYS;
             notifications[1] = OrderSystemEvent.CHANGE_OVER;
             return notifications;
         }
@@ -50,9 +37,23 @@ namespace Assets.Scripts.OrderSystem.View.HexView
         {
             switch (notification.Name)
             {
-                case OrderSystemEvent.ONCLICK:
-                    HexCellItem hexCellItem = notification.Body as HexCellItem;
-                    //hexGridProxy.UpdateCellItem(hexCellItem);
+                case HexSystemEvent.HEX_VIEW_SYS:
+                    switch (notification.Type) {
+                        case HexSystemEvent.HEX_VIEW_SYS_SHOW:
+                            HexGridItem hexGrid = notification.Body as HexGridItem;
+                            //初始化地图区域
+                            hexGridView.AchieveHexGrid(hexGrid);
+                            //给每一个单元格绑定上单击事件
+                            foreach (HexCellView hexCellView in hexGridView.cellViews)
+                            {
+                                hexCellView.OnClick += () =>
+                                {
+                                    SendNotification(OrderSystemEvent.ONCLICK, hexCellView.hexCellItem, "CLICK");
+
+                                };
+                            }
+                            break;
+                    }
                     break;
                 case OrderSystemEvent.CHANGE_OVER:
                     HexGridItem hexGridItem = notification.Body as HexGridItem;

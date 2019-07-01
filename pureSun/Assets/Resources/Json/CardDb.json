@@ -20,5 +20,29 @@
     "type": "Tactics",
     "cost": "1",
     "effectName": "testEffect"
+  },
+  "Serenity": {
+    "code": "Serenity",
+    "name": "Äþ¾²ºÅ",
+    "type": "Ship",
+    "cost": "0",
+    "trait": [ "innovation", "supremcy" ],
+    "effectName": "testEffect"
+  },
+  "StarSector": {
+    "code": "StarSector",
+    "name": "Ô¶ÐÇºÅ",
+    "type": "Ship",
+    "cost": "0",
+    "trait": [ "innovation" ],
+    "effectName": "testEffect"
+  },
+  "YoungEagle": {
+    "code": "YoungEagle",
+    "name": "³ûÓ¥ºÅ",
+    "type": "Ship",
+    "cost": "0",
+    "trait": [ "supremcy" ],
+    "effectName": "testEffect"
   }
 }

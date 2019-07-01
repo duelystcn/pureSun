@@ -6,7 +6,6 @@
 ==========================================*/
 
 using System;
-using Assets.Scripts.OrderSystem.Model.Circuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
 using Assets.Scripts.OrderSystem.Model.Hand;
@@ -15,15 +14,15 @@ using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.OperateSystem;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.View.SpecialOperateView.ChooseView;
-using Assets.Scripts.OrderSystem.View.CircuitView;
 using Assets.Scripts.OrderSystem.View.HandView;
 using Assets.Scripts.OrderSystem.View.HexView;
 using Assets.Scripts.OrderSystem.View.MinionView;
 using Assets.Scripts.OrderSystem.View.OperateSystem;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Command;
-using UnityEngine;
 using Assets.Scripts.OrderSystem.View.UIView;
+using Assets.Scripts.OrderSystem.View.CircuitView.QuestStageCircuit;
+using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
 /**
 * 程序启动，初始化 
 */
@@ -75,9 +74,9 @@ namespace OrderSystem
             Facade.RegisterProxy(playerGroupProxy);
 
             //进程代理
-            CircuitProxy circuitProxy = new CircuitProxy();
+            QuestStageCircuitProxy circuitProxy = new QuestStageCircuitProxy();
             Facade.RegisterProxy(circuitProxy);
-            CircuitMediator circuitMediator = new CircuitMediator(mainUI.circuitButton);
+            QuestStageCircuitMediator circuitMediator = new QuestStageCircuitMediator(mainUI.circuitButton);
             Facade.RegisterMediator(circuitMediator);
 
             //操作系统代理
@@ -96,7 +95,7 @@ namespace OrderSystem
             HandGridMediator handGridMediator = new HandGridMediator(mainUI.HandGridView);
             Facade.RegisterMediator(handGridMediator);
 
-            SendNotification(OrderSystemEvent.START_CIRCUIT, mainUI,"");
+            SendNotification(OrderSystemEvent.START_CIRCUIT, mainUI, OrderSystemEvent.START_CIRCUIT_MAIN);
 
 
         }

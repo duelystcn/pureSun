@@ -13,5 +13,8 @@
         public int atk { get; set; }
         public int def { get; set; }
 
+        //船只属性
+        public string[] trait { get; set; }
+
     }
 }

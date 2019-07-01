@@ -18,7 +18,14 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             base.Data = minionGridItem;
         }
         public MinionCellItem GetMinionCellItemByIndex(int index) {
-            return minionGridItem.minionCells[index];
+            if (minionGridItem.minionCells.ContainsKey(index))
+            {
+                return minionGridItem.minionCells[index];
+            }
+            else {
+                return null;
+            }
+           
 
         }
     }

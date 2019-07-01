@@ -56,6 +56,7 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
                 foreach (MinionCellItem minCellItem in mList) {
                     if (minCellView.minionCellItem.uuid == minCellItem.uuid) {
                         RenderOneMinionCellByMinionCellItem(minCellView, minCellItem);
+                        break;
                     }
                 }
             }

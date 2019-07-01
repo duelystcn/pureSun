@@ -3,7 +3,7 @@
     public class CardEntry
     {
         //类型
-        public enum CardType { MinionCard, ResourceCard, TacticsCard };    
+        public enum CardType { MinionCard, ResourceCard, TacticsCard, ShipCard };    
         public CardType WhichCard;
         public CardInfo cardInfo;
         //生物属性
@@ -33,6 +33,9 @@
                     break;
                 case "Tactics":
                     this.WhichCard = CardType.TacticsCard;
+                    break;
+                case "Ship":
+                    this.WhichCard = CardType.ShipCard;
                     break;
             }
         }

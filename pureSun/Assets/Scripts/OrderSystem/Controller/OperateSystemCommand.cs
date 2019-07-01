@@ -1,5 +1,6 @@
-﻿using Assets.Scripts.OrderSystem.Event;
-using Assets.Scripts.OrderSystem.Model.Circuit;
+﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
 using Assets.Scripts.OrderSystem.Model.Hand;
@@ -21,8 +22,8 @@ namespace Assets.Scripts.OrderSystem.Controller
         {
             OperateSystemProxy operateSystemProxy =
                 Facade.RetrieveProxy(OperateSystemProxy.NAME) as OperateSystemProxy;
-            CircuitProxy circuitProxy =
-                Facade.RetrieveProxy(CircuitProxy.NAME) as CircuitProxy;
+            QuestStageCircuitProxy circuitProxy =
+                Facade.RetrieveProxy(QuestStageCircuitProxy.NAME) as QuestStageCircuitProxy;
             PlayerGroupProxy playerGroupProxy =
                 Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
             CardDbProxy cardDbProxy =
@@ -104,6 +105,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                                     EffectInfo effectInfo = effectInfoProxy.effectSysItem.effectInfoMap[chooseHand.cardEntry.cardInfo.effectName];
                                     if (effectInfo.type == "ONE_MINION")
                                     {
+                                        UtilityLog.Log("index:"+index);
                                         //判断格子上是否有生物
                                         MinionCellItem minionCellItem = minionGridProxy.GetMinionCellItemByIndex(index);
                                         if (minionCellItem!=null) {

@@ -2,18 +2,18 @@
 using PureMVC.Patterns.Proxy;
 using System.Collections.Generic;
 
-namespace Assets.Scripts.OrderSystem.Model.Circuit
+namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
 {
-    public class CircuitProxy : Proxy
+    public class QuestStageCircuitProxy : Proxy
     {
-        public new const string NAME = "CircuitProxy";
+        public new const string NAME = "QuestStageCircuitProxy";
 
-        public CircuitItem circuitItem
+        public QuestStageCircuitItem circuitItem
         {
-            get { return (CircuitItem)base.Data; }
+            get { return (QuestStageCircuitItem)base.Data; }
         }
-        public CircuitProxy() : base(NAME) {
-            CircuitItem circuitItem = new CircuitItem();
+        public QuestStageCircuitProxy() : base(NAME) {
+            QuestStageCircuitItem circuitItem = new QuestStageCircuitItem();
             base.Data = circuitItem;
         }
         //流程开始

@@ -1,4 +1,5 @@
-﻿using PureMVC.Interfaces;
+﻿using Assets.Scripts.OrderSystem.Event;
+using PureMVC.Interfaces;
 using PureMVC.Patterns.Command;
 
 namespace Assets.Scripts.OrderSystem.Controller
@@ -9,7 +10,8 @@ namespace Assets.Scripts.OrderSystem.Controller
         {
             switch (notification.Type)
             {
-                
+                case UIViewSystemEvent.UI_CHOOSE_STAGE_START:
+                    break;
             }
         }
 

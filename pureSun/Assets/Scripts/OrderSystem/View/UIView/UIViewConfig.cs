@@ -14,12 +14,27 @@ namespace Assets.Scripts.OrderSystem.View.UIView
         Top,
         Debug,
     }
-    //添加后需要在初始化时注册
+    //UIView层级
+    public class EnumUIViewLayerComparer
+        : IEqualityComparer<UIViewLayer>
+    {
+        public bool Equals(UIViewLayer x, UIViewLayer y)
+        {
+            return x == y;
+        }
+
+        public int GetHashCode(UIViewLayer obj)
+        {
+            return (int)obj;
+        }
+    }
     public enum UIViewName
     {
         None,
         //开始选单
-        StartMain,                       
+        StartMain,  
+        //选择准备阶段
+        ChooseStage
     }
     //UIView名字的比较器
     public class EnumUIViewNameComparer
@@ -38,19 +53,23 @@ namespace Assets.Scripts.OrderSystem.View.UIView
     public enum UIViewCacheScheme
     {
         AutoRemove,         //自动移除
-        TempCache,           //关闭后进入临时缓冲池
+        TempCache,          //关闭后进入临时缓冲池
         Cache,              //关闭后常驻内存
     }
 
     [CreateAssetMenu(menuName = "Resources/ScriptableObject/UIViewConfig")]
     public class UIViewConfig : ScriptableObject
     {
+        //是否唯一
+        public bool unique = true;
         //所在层
         public UIViewLayer viewLayer;
         //界面名称
         public UIViewName viewName;
         //缓存策略  
-        public UIViewCacheScheme cacheScheme;       
+        public UIViewCacheScheme cacheScheme;
+        //资源的名称
+        public string assetName;                    
 
 
 

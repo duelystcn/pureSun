@@ -57,6 +57,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
             {
                 if (handCellView.handCellItem.uuid == handCellItem.uuid) {
                     handCellPool.Push(handCellView);
+                    break;
                 } 
             }
         }

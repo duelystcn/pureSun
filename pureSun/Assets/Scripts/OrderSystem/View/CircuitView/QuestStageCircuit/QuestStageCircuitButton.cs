@@ -4,9 +4,9 @@ using Assets.Scripts.OrderSystem.Util;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Assets.Scripts.OrderSystem.View.CircuitView
+namespace Assets.Scripts.OrderSystem.View.CircuitView.QuestStageCircuit
 {
-    public class CircuitButton : MonoBehaviour
+    public class QuestStageCircuitButton : MonoBehaviour
     {
         public UnityAction OnClick = null;
         void Update()

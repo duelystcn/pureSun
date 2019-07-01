@@ -18,6 +18,12 @@ namespace OrderSystem
         /// </summary>
         public const string START_CIRCUIT = "StartCircuit";
 
+        public const string START_CIRCUIT_MAIN = "StartCircuitMain";
+
+        public const string START_CIRCUIT_START = "StartCircuitStart";
+
+
+
 
 
 
