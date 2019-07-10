@@ -1,4 +1,7 @@
-﻿namespace Assets.Scripts.OrderSystem.Model.Database.Card
+﻿using Assets.Scripts.OrderSystem.Metrics;
+using System.Collections.Generic;
+
+namespace Assets.Scripts.OrderSystem.Model.Database.Card
 {
     public class CardEntry
     {
@@ -14,6 +17,9 @@
         //生物属性
         public int atk { get; set; }
         public int def { get; set; }
+
+        //卡牌背景
+        public string bgImageName { get; set; }
 
 
         public void InitializeByCardInfo(CardInfo cardInfo) {
@@ -37,6 +43,26 @@
                 case "Ship":
                     this.WhichCard = CardType.ShipCard;
                     break;
+            };
+            int traitSum = 0;
+            foreach (string trait in cardInfo.trait) {
+                if (CardMetrics.CARD_TRAIT_I.Equals(trait)) {
+                    traitSum += CardMetrics.CARD_TRAIT_I_NUM;
+                } else if (CardMetrics.CARD_TRAIT_S.Equals(trait)) {
+                    traitSum += CardMetrics.CARD_TRAIT_S_NUM;
+                }
+            }
+            if (traitSum == CardMetrics.CARD_TRAIT_I_NUM)
+            {
+                this.bgImageName = CardMetrics.BGI_I;
+            }
+            else if (traitSum == CardMetrics.CARD_TRAIT_S_NUM)
+            {
+                this.bgImageName = CardMetrics.BGI_S;
+            }
+            else if (traitSum == CardMetrics.CARD_TRAIT_I_S_NUM)
+            {
+                this.bgImageName = CardMetrics.BGI_IS;
             }
         }
     }

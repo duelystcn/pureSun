@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Player;
 using OrderSystem;
@@ -62,7 +63,8 @@ namespace Assets.Scripts.OrderSystem.Controller
             //    playerItem.handGridItem.CreateCell(playerItem.cardDeck.GetFirstCard());
             //    playerItem.handGridItem.CreateCell(playerItem.cardDeck.GetFirstCard());
             //}
-
+            ChooseStageCircuitProxy chooseStageCircuitProxy = Facade.RetrieveProxy(ChooseStageCircuitProxy.NAME) as ChooseStageCircuitProxy;
+            chooseStageCircuitProxy.CircuitStart(playerGroupProxy.playerGroup.playerItems);
 
 
 

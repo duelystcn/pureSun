@@ -23,6 +23,7 @@ using PureMVC.Patterns.Command;
 using Assets.Scripts.OrderSystem.View.UIView;
 using Assets.Scripts.OrderSystem.View.CircuitView.QuestStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
+using Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit;
 /**
 * 程序启动，初始化 
 */
@@ -72,6 +73,11 @@ namespace OrderSystem
             //玩家组代理
             PlayerGroupProxy playerGroupProxy = new PlayerGroupProxy();
             Facade.RegisterProxy(playerGroupProxy);
+
+
+            //选择阶段进程代理
+            ChooseStageCircuitProxy chooseStageCircuitProxy = new ChooseStageCircuitProxy();
+            Facade.RegisterProxy(chooseStageCircuitProxy);
 
             //进程代理
             QuestStageCircuitProxy circuitProxy = new QuestStageCircuitProxy();

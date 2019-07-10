@@ -12,6 +12,9 @@ namespace Assets.Scripts.OrderSystem.Model.Player {
         }
         //手牌
         public HandGridItem handGridItem;
+
+        //船
+        public CardEntry shipCard;
         //牌组
         public CardDeck cardDeck;
         //起始点，虚拟坐标，用于确认召唤范围？

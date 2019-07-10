@@ -27,22 +27,55 @@
     "type": "Ship",
     "cost": "0",
     "trait": [ "innovation", "supremcy" ],
-    "effectName": "testEffect"
+    "effectName": "testEffect",
+    "description": "瞬间，支付①，你获得一点多态等级"
   },
   "StarSector": {
     "code": "StarSector",
-    "name": "远星号",
+    "name": "远星",
     "type": "Ship",
     "cost": "0",
     "trait": [ "innovation" ],
-    "effectName": "testEffect"
+    "effectName": "testEffect",
+    "description": "瞬间，支付①，移动目标单位一格"
   },
   "YoungEagle": {
     "code": "YoungEagle",
-    "name": "雏鹰号",
+    "name": "雏鹰",
     "type": "Ship",
     "cost": "0",
     "trait": [ "supremcy" ],
-    "effectName": "testEffect"
+    "effectName": "testEffect",
+    "description": "支付②，在你的防线放置一个1/1的帝国新兵"
+  },
+  "Rocinante": {
+    "code": "Rocinante",
+    "name": "驽骍",
+    "type": "Ship",
+    "cost": "0",
+    "trait": [ "innovation", "supremcy" ],
+    "effectName": "testEffect",
+    "description": "瞬间，支付①，你使用的下一个生物或机甲获得空降"
+  },
+  "FindWay": {
+    "code": "FindWay",
+    "name": "寻路客",
+    "type": "Ship",
+    "cost": "0",
+    "trait": [ "innovation" ],
+    "effectName": "testEffect",
+    "description": "每当你抽一张牌时，获得1分"
+  },
+  "Taxation": {
+    "code": "Taxation",
+    "name": "税吏N1985",
+    "type": "Ship",
+    "cost": "0",
+    "trait": [ "supremcy" ],
+    "effectName": "testEffect",
+    "description": "每当对手在他的防守回合使用手牌时，你获得1分"
   }
+
 }
+
+

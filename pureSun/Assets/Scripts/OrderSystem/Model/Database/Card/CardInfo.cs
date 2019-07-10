@@ -8,6 +8,7 @@
         public string type { get; set; }
         public int cost { get; set; }
         public string effectName { get; set; }
+        public string description { get; set; }
 
         //生物属性
         public int atk { get; set; }

@@ -20,6 +20,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView
 
 
         public Dictionary<UIViewLayer, UIControllerView> UIControllerViews = new Dictionary<UIViewLayer, UIControllerView>(LiteSingleton<EnumUIViewLayerComparer>.Instance);
+
         public UIControllerView controllerViewPrefab;
         //常驻内存的界面
         private List<ViewBaseView> screenUICache = new List<ViewBaseView>();

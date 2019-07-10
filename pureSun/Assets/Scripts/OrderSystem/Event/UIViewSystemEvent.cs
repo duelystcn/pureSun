@@ -31,9 +31,29 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string UI_CHOOSE_STAGE = "UIChooseStage";
         /// <summary>
-        /// 选择阶段相关
+        /// 选择阶段开始
         /// </summary>
         public const string UI_CHOOSE_STAGE_START = "UIChooseStageStart";
+        /// <summary>
+        /// 选择界面打开
+        /// </summary>
+        public const string UI_CHOOSE_STAGE_OPEN = "UIChooseStageOpen";
+        /// <summary>
+        /// 选择界面读取卡牌列表
+        /// </summary>
+        public const string UI_CHOOSE_STAGE_LOAD_CARD = "UIChooseStageLoadCard";
+
+        /// <summary>
+        /// 选择了某一张卡
+        /// </summary>
+        public const string UI_CHOOSE_STAGE_ONE_CARD = "UIChooseStageOneCard";
+        /// <summary>
+        /// 下一个用户选择
+        /// </summary>
+        public const string UI_CHOOSE_STAGE_NEXT_ONE_SHIP = "UIChooseStageNextOneShip";
+
+
+
 
     }
 }
