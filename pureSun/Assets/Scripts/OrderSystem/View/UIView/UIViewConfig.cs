@@ -33,8 +33,10 @@ namespace Assets.Scripts.OrderSystem.View.UIView
         None,
         //开始选单
         StartMain,  
-        //选择准备阶段
-        ChooseStage
+        //选择卡牌窗口
+        ChooseStage,
+        //卡组列表
+        CardDeckList
     }
     //UIView名字的比较器
     public class EnumUIViewNameComparer

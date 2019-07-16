@@ -77,6 +77,11 @@ namespace Assets.Scripts.OrderSystem.Controller
             UtilityLog.Log("进程初始化完毕");
             SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, null, UIViewSystemEvent.UI_CHOOSE_STAGE_START);
 
+            foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
+            {
+                SendNotification(UIViewSystemEvent.UI_CARD_DECK_LIST, playerItem, UIViewSystemEvent.UI_CARD_DECK_LIST_OPEN);
+            }
+
             //手牌区渲染为当前回合玩家
             //HandGridProxy handGridProxy = Facade.RetrieveProxy(HandGridProxy.NAME) as HandGridProxy;
             //PlayerItem playerItemNow = playerGroupProxy.getPlayerByPlayerCode(circuitProxy.GetNowPlayerCode());

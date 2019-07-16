@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &627747043276796298
+--- !u!1 &526091816420244125
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,73 +8,73 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2070204731024008894}
-  - component: {fileID: 2723450503549756665}
-  - component: {fileID: 2056470332345908271}
-  m_Layer: 5
-  m_Name: ViewChooseStage
+  - component: {fileID: 6251639363567270734}
+  - component: {fileID: 526091816420244126}
+  - component: {fileID: 6469407360887346008}
+  m_Layer: 0
+  m_Name: CardDeckList
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &2070204731024008894
+--- !u!224 &6251639363567270734
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 627747043276796298}
+  m_GameObject: {fileID: 526091816420244125}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 19.999989}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 50, y: 9.999985}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2723450503549756665
+--- !u!114 &526091816420244126
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 627747043276796298}
+  m_GameObject: {fileID: 526091816420244125}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b822275e510b9145a1af883dda8cdbb, type: 3}
+  m_Script: {fileID: 11500000, guid: cd5bf6d769a65294abcde6be2d4c1243, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  config: {fileID: 11400000, guid: 2e3bc99edbe0dcd4bb2ae7f8b20b6df5, type: 2}
+  config: {fileID: 11400000, guid: 77f1f57bde51b7048bb09c08c95bdf52, type: 2}
   layerController: {fileID: 0}
-  cardIntactViewPrefab: {fileID: 6876585934118765231, guid: c4106403574935840a036972c1ea021d,
+  cardHeadPrefab: {fileID: 8535921109629381383, guid: a0f78a3c529a31f44b667f62fd5c5d84,
     type: 3}
-  cardIntactViews: []
---- !u!114 &2056470332345908271
+  cardHeadViews: []
+--- !u!114 &6469407360887346008
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 627747043276796298}
+  m_GameObject: {fileID: 526091816420244125}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: -350
+    m_Left: 0
     m_Right: 0
-    m_Top: 0
+    m_Top: -250
     m_Bottom: 0
-  m_ChildAlignment: 4
-  m_Spacing: 80
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0

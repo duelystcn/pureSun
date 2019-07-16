@@ -7,6 +7,10 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit
 {
     public class ChooseStageCircuitItem
     {
+        public enum ChooseStage { ShipStage,CardStage  };
+
+        public ChooseStage WhichStage = ChooseStage.ShipStage;
+
         public string nowPlayerCode { get; set; }
         public List<string> playerOrder { get; set; }
 

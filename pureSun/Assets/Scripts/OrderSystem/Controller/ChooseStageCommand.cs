@@ -41,21 +41,40 @@ namespace Assets.Scripts.OrderSystem.Controller
                     }
                     string playerCodeNow = chooseStageCircuitProxy.GetNowPlayerCode();
                     SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, null, UIViewSystemEvent.UI_CHOOSE_STAGE_OPEN);
-                    SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, chooseStageCircuitProxy.chooseStageCircuitItem.playerShipCardMap[playerCodeNow], UIViewSystemEvent.UI_CHOOSE_STAGE_LOAD_CARD);
+                    SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, chooseStageCircuitProxy.chooseStageCircuitItem.playerShipCardMap[playerCodeNow], UIViewSystemEvent.UI_CHOOSE_STAGE_LOAD_CARD_INFO);
                     break;
                 case UIViewSystemEvent.UI_CHOOSE_STAGE_ONE_CARD:
                     CardEntry card = notification.Body as CardEntry;
+                    string playerCodeChoose = chooseStageCircuitProxy.GetNowPlayerCode();
                     if (card.WhichCard == CardType.ShipCard)
                     {
-                        string playerCode = chooseStageCircuitProxy.GetNowPlayerCode();
-                        PlayerItem playerItemNow = playerGroupProxy.getPlayerByPlayerCode(playerCode);
+                        PlayerItem playerItemNow = playerGroupProxy.getPlayerByPlayerCode(playerCodeChoose);
                         playerItemNow.shipCard = card;
                         chooseStageCircuitProxy.IntoNextTurn();
-                        playerCode = chooseStageCircuitProxy.GetNowPlayerCode();
+                        playerCodeChoose = chooseStageCircuitProxy.GetNowPlayerCode();
+                        //查看是否所有玩家都选择了船
+                        if (playerGroupProxy.checkAllPlayerHasShip())
+                        {
+                            //渲染卡池
+                            List<CardEntry> cardEntries = cardDbProxy.GetSameCardEntry(3);
+                            SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, cardEntries, UIViewSystemEvent.UI_CHOOSE_STAGE_LOAD_CARD_ENTRY);
+                        }
+                        else {
+                            //渲染下一位玩家的船只选择
+                            SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, chooseStageCircuitProxy.chooseStageCircuitItem.playerShipCardMap[playerCodeChoose], UIViewSystemEvent.UI_CHOOSE_STAGE_LOAD_CARD_INFO);
 
+                        }
                     }
                     else {
-
+                        //添加到卡组
+                        PlayerItem playerItemNow = playerGroupProxy.getPlayerByPlayerCode(playerCodeChoose);
+                        playerItemNow.cardDeck.PutOneCard(card);
+                        cardDbProxy.RemoveOneCardEntry(card);
+                        SendNotification(UIViewSystemEvent.UI_CARD_DECK_LIST, playerItemNow, UIViewSystemEvent.UI_CARD_DECK_LIST_LOAD);
+                        //下一回合
+                        chooseStageCircuitProxy.IntoNextTurn();
+                        List<CardEntry> cardEntries = cardDbProxy.GetSameCardEntry(3);
+                        SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, cardEntries, UIViewSystemEvent.UI_CHOOSE_STAGE_LOAD_CARD_ENTRY);
                     }
                     
                     break;

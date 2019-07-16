@@ -4,7 +4,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
 {
     public class CardDeck
     {
-        public List<CardEntry> cardEntryList;
+        public List<CardEntry> cardEntryList = new List<CardEntry>();
         //测试初始化，随机添加一些牌
         public void TestInitializeRandom(Dictionary<string, CardInfo> cardInfoMap) {
            
@@ -16,5 +16,11 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
             cardEntryList.RemoveAt(0);
             return cardEntry;
         }
+        //放置一张卡牌进卡组
+        public void PutOneCard(CardEntry card) {
+            cardEntryList.Add(card);
+
+        }
+
     }
 }

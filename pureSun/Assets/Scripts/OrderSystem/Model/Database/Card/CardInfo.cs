@@ -17,5 +17,8 @@
         //船只属性
         public string[] trait { get; set; }
 
+        //限制数量
+        public int quantity { get; set; }
+
     }
 }

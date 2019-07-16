@@ -78,6 +78,22 @@ namespace Assets.Scripts.OrderSystem.View.UIView
             return null;
         }
 
+        //获取名字相同的所有界面
+        public List<T> GetViewListByName<T>(UIViewName viewName)
+            where T : ViewBaseView
+        {
+            List<T> list = new List<T>();
+            for (int i = 0; i < viewList.Count; ++i)
+            {
+                if (viewList[i].config.viewName == viewName)
+                {
+                    list.Add(viewList[i] as T);
+                }
+            }
+            return list;
+        }
+
+
         //展示界面
         public void ShowView(UIViewName viewName, params object[] args)
         {
@@ -113,6 +129,10 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                 {
                    ShowViewFromCacheOrCreateNew(config, args);
                 }
+            }
+            else
+            {
+                ShowViewFromCacheOrCreateNew(config, args);
             }
         }
         //先尝试从缓存中打开，如果失败则打开一个新的

@@ -41,7 +41,11 @@ namespace Assets.Scripts.OrderSystem.Event
         /// <summary>
         /// 选择界面读取卡牌列表
         /// </summary>
-        public const string UI_CHOOSE_STAGE_LOAD_CARD = "UIChooseStageLoadCard";
+        public const string UI_CHOOSE_STAGE_LOAD_CARD_INFO = "UIChooseStageLoadCardInfo";
+        /// <summary>
+        /// 选择界面读取卡牌列表
+        /// </summary>
+        public const string UI_CHOOSE_STAGE_LOAD_CARD_ENTRY = "UIChooseStageLoadCardEntry";
 
         /// <summary>
         /// 选择了某一张卡
@@ -51,6 +55,20 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 下一个用户选择
         /// </summary>
         public const string UI_CHOOSE_STAGE_NEXT_ONE_SHIP = "UIChooseStageNextOneShip";
+
+
+        /// <summary>
+        /// 卡组列表相关
+        /// </summary>
+        public const string UI_CARD_DECK_LIST = "UICardDeckList";
+        /// <summary>
+        /// 卡组列表打开
+        /// </summary>
+        public const string UI_CARD_DECK_LIST_OPEN = "UICardDeckListOpen";
+        /// <summary>
+        /// 卡组列表读取
+        /// </summary>
+        public const string UI_CARD_DECK_LIST_LOAD = "UICardDeckListLoad";
 
 
 

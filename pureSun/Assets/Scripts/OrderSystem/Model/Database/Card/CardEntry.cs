@@ -1,5 +1,4 @@
 ﻿using Assets.Scripts.OrderSystem.Metrics;
-using System.Collections.Generic;
 
 namespace Assets.Scripts.OrderSystem.Model.Database.Card
 {
@@ -21,12 +20,15 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
         //卡牌背景
         public string bgImageName { get; set; }
 
+        public string uuid { get; set; }
+
 
         public void InitializeByCardInfo(CardInfo cardInfo) {
             this.cardInfo = cardInfo;
             this.name = cardInfo.name;
             this.type = cardInfo.type;
             this.cost = cardInfo.cost;
+            this.uuid = System.Guid.NewGuid().ToString("N");
             switch (cardInfo.type)
             {
                 case "Minion":
@@ -48,8 +50,13 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
             foreach (string trait in cardInfo.trait) {
                 if (CardMetrics.CARD_TRAIT_I.Equals(trait)) {
                     traitSum += CardMetrics.CARD_TRAIT_I_NUM;
-                } else if (CardMetrics.CARD_TRAIT_S.Equals(trait)) {
+                }
+                else if (CardMetrics.CARD_TRAIT_S.Equals(trait)) {
                     traitSum += CardMetrics.CARD_TRAIT_S_NUM;
+                }
+                else if (CardMetrics.CARD_TRAIT_N.Equals(trait))
+                {
+                    traitSum += CardMetrics.CARD_TRAIT_N_NUM;
                 }
             }
             if (traitSum == CardMetrics.CARD_TRAIT_I_NUM)
@@ -63,6 +70,10 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
             else if (traitSum == CardMetrics.CARD_TRAIT_I_S_NUM)
             {
                 this.bgImageName = CardMetrics.BGI_IS;
+            }
+            else if(traitSum == CardMetrics.CARD_TRAIT_N_NUM)
+            {
+                this.bgImageName = CardMetrics.BGI_N;
             }
         }
     }

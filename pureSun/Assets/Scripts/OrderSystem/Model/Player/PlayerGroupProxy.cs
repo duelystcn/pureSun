@@ -33,6 +33,16 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             }
             return returnItem;
         }
+        //查看是否所有玩家都选择了船
+        public bool checkAllPlayerHasShip() {
+            bool allHas = true;
+            foreach (PlayerItem playerItem in playerGroup.playerItems.Values) {
+                if (playerItem.shipCard == null) {
+                    allHas = false;
+                }
+            }
+            return allHas;
+        }
         
 
     }

@@ -1,25 +1,95 @@
 {
-  "TEST1": {
-    "code": "TEST1",
-    "name": "TEST_Minion",
+  "ImperialRecruit": {
+    "code": "ImperialRecruit",
+    "name": "帝国新兵",
     "type": "Minion",
-    "atk": "2",
-    "def": "2",
-    "cost": "2"
+    "atk": "1",
+    "def": "3",
+    "cost": "1",
+    "trait": [ "supremcy" ],
+    "quantity": "4"
   },
-  "TEST2": {
-    "code": "TEST2",
-    "name": "TEST_Resource",
+  "BaseSentry": {
+    "code": "BaseSentry",
+    "name": "基地哨兵",
+    "type": "Minion",
+    "atk": "1",
+    "def": "3",
+    "cost": "1",
+    "trait": [ "innovation" ],
+    "quantity": "4"
+  },
+  "GroceryStoreOwner": {
+    "code": "GroceryStoreOwner",
+    "name": "杂货铺老板",
+    "type": "Minion",
+    "atk": "1",
+    "def": "4",
+    "cost": "2",
+    "description": "显现：支付①，然后抽一张牌",
+    "trait": [ "neutral" ],
+    "quantity": "4"
+  },
+  "TaxCar": {
+    "code": "TaxCar",
+    "name": "税车",
     "type": "Resource",
     "cost": "0",
-    "effectName": "chooseOneAddManaDrawCardOrAddTechDrawCard"
+    "effectName": "chooseOneAddManaDrawCardOrAddTechDrawCard",
+    "description": "获得①,选择一项：\n●获得一点资源上限；\n●抽一张牌；\n●增加一点至高等级",
+    "trait": [ "supremcy" ],
+    "quantity": "4"
   },
-  "TEST3": {
-    "code": "TEST3",
-    "name": "TEST_Tactics",
+  "ResonantCrystal": {
+    "code": "ResonantCrystal",
+    "name": "共振晶体",
+    "type": "Resource",
+    "cost": "0",
+    "effectName": "chooseOneAddManaDrawCardOrAddTechDrawCard",
+    "description": "你的墓地每存在一张共振晶体，你获得一点创造等级直到回合结束,选择一项：\n●获得一点资源上限；\n●抽一张牌；",
+    "trait": [ "supremcy" ],
+    "quantity": "4"
+  },
+  "CompositeMetal": {
+    "code": "CompositeMetal",
+    "name": "复合金属材料",
+    "type": "Resource",
+    "cost": "0",
+    "effectName": "chooseOneAddManaDrawCardOrAddTechDrawCard",
+    "description": "获得①,选择一项：\n●获得一张有衍生的都护所；\n●你增加一点资源上限；\n●获得一点至高等级",
+    "trait": [ "supremcy" ],
+    "quantity": "3"
+  },
+  "GuerrillaStrategy": {
+    "code": "GuerrillaStrategy",
+    "name": "游击策略",
     "type": "Tactics",
-    "cost": "1",
-    "effectName": "testEffect"
+    "cost": "3",
+    "effectName": "moveAlterAddShield",
+    "description": "持续:你的生物移动后获得一点护盾",
+    "trait": [ "innovation" ],
+    "quantity": "3"
+  },
+  "TradeAgreement": {
+    "code": "TradeAgreement",
+    "name": "贸易协议",
+    "type": "Tactics",
+    "cost": "3",
+    "effectName": "moveAlterAddShield",
+    "description": "无法被献祭，抽两张牌，然后将此牌放入对手手牌栏。",
+    "trait": [ "innovation", "supremcy" ],
+    "quantity": "3"
+  },
+
+  "StimulatingGrowth": {
+    "code": "StimulatingGrowth",
+    "name": "刺激性增长",
+    "type": "Tactics",
+    "cost": "3",
+    "effectName": "addFractionOnTurnStart",
+    "description": "持续:在你的回合开始时，获得一分，如果你的分数比对手少，再获得一分",
+    "trait": [ "innovation", "supremcy" ],
+    "quantity": "3"
   },
   "Serenity": {
     "code": "Serenity",
@@ -62,7 +132,7 @@
     "name": "寻路客",
     "type": "Ship",
     "cost": "0",
-    "trait": [ "innovation" ],
+    "trait": [ "neutral" ],
     "effectName": "testEffect",
     "description": "每当你抽一张牌时，获得1分"
   },

@@ -16,16 +16,17 @@ namespace Assets.Scripts.OrderSystem.Model.Player {
         //船
         public CardEntry shipCard;
         //牌组
-        public CardDeck cardDeck;
+        public CardDeck cardDeck ;
         //起始点，虚拟坐标，用于确认召唤范围？
         public HexCoordinates hexCoordinates;
 
 
         public PlayerItem(string playCode)
         {
-            this.playerCode = playerCode;
+            this.playerCode = playCode;
             handGridItem = new HandGridItem();
             handGridItem.Create();
+            cardDeck = new CardDeck();
         }
 
     }

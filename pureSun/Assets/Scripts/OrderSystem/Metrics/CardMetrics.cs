@@ -21,11 +21,15 @@ namespace Assets.Scripts.OrderSystem.Metrics
         public const string CARD_TRAIT_S = "supremcy";
         public const int CARD_TRAIT_S_NUM = 83;
 
+        public const string CARD_TRAIT_N = "neutral";
+        public const int CARD_TRAIT_N_NUM = 78;
+
         public const int CARD_TRAIT_I_S_NUM = 156;
 
         public const string BGI_I = "innovation";
         public const string BGI_IS = "innovation_supremcy";
         public const string BGI_S = "supremcy";
+        public const string BGI_N = "neutral";
 
 
 
