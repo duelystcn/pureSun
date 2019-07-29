@@ -35,8 +35,12 @@ namespace Assets.Scripts.OrderSystem.View.UIView
         StartMain,  
         //选择卡牌窗口
         ChooseStage,
+        //复合式选择卡牌窗口
+        ViewChooseMakeStage,
         //卡组列表
-        CardDeckList
+        CardDeckList,
+        //完整的卡牌信息框
+        OneCardAllInfo
     }
     //UIView名字的比较器
     public class EnumUIViewNameComparer
@@ -71,7 +75,11 @@ namespace Assets.Scripts.OrderSystem.View.UIView
         //缓存策略  
         public UIViewCacheScheme cacheScheme;
         //资源的名称
-        public string assetName;                    
+        public string assetName;
+        //被遮挡后是否需要更新
+        public bool alwaysUpdate;
+        //是否遮挡了整个屏幕
+        public bool coverScreen;                    
 
 
 

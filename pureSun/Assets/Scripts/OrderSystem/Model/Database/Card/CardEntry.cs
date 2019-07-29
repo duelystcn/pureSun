@@ -1,4 +1,6 @@
 ﻿using Assets.Scripts.OrderSystem.Metrics;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView;
+using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.Model.Database.Card
 {
@@ -22,13 +24,34 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
 
         public string uuid { get; set; }
 
+        public string[] traitdemand { get; set; }
+        //是否瞬间
+        public string isMoment { get; set; }
+
+        //效果
+        public string[] effectName { get; set; }
+
+
+        //功能属性
+        //复合式选择框所属层级
+        public VCSLayerSort layerSort;
+        //是否已被购买
+        public bool isBuyed = false;
+
+
+        //界面相关,卡牌所在组件位置
+        public Vector3 cardPosition;
+
 
         public void InitializeByCardInfo(CardInfo cardInfo) {
             this.cardInfo = cardInfo;
             this.name = cardInfo.name;
             this.type = cardInfo.type;
             this.cost = cardInfo.cost;
+            this.traitdemand = cardInfo.traitdemand;
             this.uuid = System.Guid.NewGuid().ToString("N");
+            this.isMoment = cardInfo.isMoment;
+            this.effectName = cardInfo.effectName;
             switch (cardInfo.type)
             {
                 case "Minion":

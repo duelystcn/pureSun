@@ -1,16 +1,14 @@
-﻿using Assets.Scripts.OrderSystem.Event;
-using Assets.Scripts.OrderSystem.Model.Hand;
+﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using PureMVC.Interfaces;
-using PureMVC.Patterns.Mediator;
-using System;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.OrderSystem.View.HandView
 {
-    class HandGridMediator : Mediator
+    class HandGridMediator : MediatorExpand
     {
         public new const string NAME = "HandGridMediator";
-        //手牌区代理
-        private HandGridProxy handGridProxy = null;
 
         public HandGridView handGridView
         {
@@ -25,22 +23,24 @@ namespace Assets.Scripts.OrderSystem.View.HandView
         public override void OnRegister()
         {
             base.OnRegister();
-            handGridProxy = Facade.RetrieveProxy(HandGridProxy.NAME) as HandGridProxy;
-            if (null == handGridProxy)
-                throw new Exception(HandGridProxy.NAME + "is null.");
+          
             //初始化手牌区域
-            handGridView.AchieveHandGrid(handGridProxy.handGridItem);
+            //handGridView.AchieveHandGrid(handGridProxy.handGridItem);
         }
         //监听列表
         public override string[] ListNotificationInterests()
         {
-            string[] notifications = new string[1];
-            notifications[0] = HandSystemEvent.HAND_CHANGE;
-            return notifications;
+            List<string> notificationList = new List<string>();
+            notificationList.Add(HandSystemEvent.HAND_CHANGE);
+            AddCommonNotificationInterests(notificationList);
+            return notificationList.ToArray();
         }
         //监听
         public override void HandleNotification(INotification notification)
         {
+            //处理公共请求
+            HandleNotificationCommon(notification);
+
             switch (notification.Name)
             {
                 case HandSystemEvent.HAND_CHANGE:
@@ -48,18 +48,32 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                     {
                         case HandSystemEvent.HAND_CHANGE_AFFLUX:
                             HandGridItem handGridItem = notification.Body as HandGridItem;
-                            handGridView.AchieveHandGrid(handGridItem);
-                            SendNotification(HandSystemEvent.HAND_CHANGE, handGridView, HandSystemEvent.HAND_CHANGE_OVER);
+                            if (playerCode.Equals(playerCodeNotification)) {
+                                handGridView.AchieveHandGrid(handGridItem);
+                                SendNotification(HandSystemEvent.HAND_CHANGE, handGridView, HandSystemEvent.HAND_CHANGE_OVER);
+                            }
                             break;
                         case HandSystemEvent.HAND_CHANGE_OVER:
                             foreach (HandCellView handCellView in handGridView.handCellViews) {
-                                handCellView.OnChoose += () =>
+                                handCellView.OnPointerDown = () =>
                                 {
+
                                     //消息通知-进入选中手牌操作模式
                                     SendNotification(OperateSystemEvent.OPERATE_SYS, handCellView.handCellItem, OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE);
                                     //消息通知-划线组件激活
                                     SendNotification(OperateSystemEvent.OPERATE_TRAIL_DRAW, handCellView.handCellItem, OperateSystemEvent.OPERATE_TRAIL_DRAW_START);
                                 };
+                                //发出鼠标移入消息
+                                handCellView.OnPointerEnter = () =>
+                                {
+                                    //SendNotification(HandSystemEvent.HAND_CHANGE, handCellView.handCellItem, HandSystemEvent.HAND_CHANGE_POINTER_ENTER);
+                                };
+                                //发出鼠标移出消息
+                                handCellView.OnPointerExit = () =>
+                                {
+                                    //SendNotification(HandSystemEvent.HAND_CHANGE, handCellView.handCellItem, HandSystemEvent.HAND_CHANGE_POINTER_EXIT);
+                                };
+
                             }
                             break;
                         case HandSystemEvent.HAND_CHANGE_USE_OVER:
@@ -67,6 +81,17 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                             //移除这张牌
                             handGridView.RemoveOneHandCellViewByHandCellItem(chooseHand);
                             break;
+                        //发出鼠标移入消息
+                        case HandSystemEvent.HAND_CHANGE_POINTER_ENTER:
+                            HandCellItem enterHand = notification.Body as HandCellItem;
+                            //handGridView.OneCardMousenPointerEnter(enterHand);
+                            break;
+                        //发出鼠标移出消息
+                        case HandSystemEvent.HAND_CHANGE_POINTER_EXIT:
+                            HandCellItem exitHand = notification.Body as HandCellItem;
+                            //handGridView.OneCardMousenPointerExit(exitHand);
+                            break;
+
                     }
                     break;
             }

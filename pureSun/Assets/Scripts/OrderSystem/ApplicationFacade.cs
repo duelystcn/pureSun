@@ -50,6 +50,9 @@ namespace OrderSystem
             RegisterCommand(MinionSystemEvent.MINION_SYS, () => new MinionSysCommand());
             RegisterCommand(UIViewSystemEvent.UI_VIEW, () => new UIViewSysCommand());
             RegisterCommand(UIViewSystemEvent.UI_CHOOSE_STAGE, () => new ChooseStageCommand());
+            RegisterCommand(UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE, () => new ChooseMakeStageCommand());
+            RegisterCommand(UIViewSystemEvent.UI_QUEST_STAGE, () => new QuestStageCommand());
+            RegisterCommand(LogicalSysEvent.LOGICAL_SYS, () => new LogicalProcessorCommand());
         }
 
         protected override void InitializeModel()

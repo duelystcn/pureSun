@@ -46,6 +46,7 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit
         //进入下一个玩家的回合
         public void IntoNextTurn()
         {
+            chooseStageCircuitItem.chooseIndex++;
             int idx = chooseStageCircuitItem.playerOrder.IndexOf(chooseStageCircuitItem.nowPlayerCode);
             if (idx == chooseStageCircuitItem.playerOrder.Count - 1)
             {

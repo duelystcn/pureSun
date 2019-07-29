@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Card
+  - HexCell
   layers:
   - Default
   - TransparentFX
@@ -15,8 +16,8 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - 
-  - 
+  - HexGrid
+  - HandGrid
   - 
   - 
   - 
@@ -59,4 +60,10 @@ TagManager:
     locked: 0
   - name: UI_Debug
     uniqueID: 3553021867
+    locked: 0
+  - name: HandGrid
+    uniqueID: 2316341873
+    locked: 0
+  - name: HexGrid
+    uniqueID: 121974513
     locked: 0

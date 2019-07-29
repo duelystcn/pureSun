@@ -1,9 +1,10 @@
-﻿
-
-using Assets.Scripts.OrderSystem.Model.Hand;
+﻿using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Database.Effect;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.Player;
+using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using PureMVC.Patterns.Proxy;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.OrderSystem.Model.OperateSystem
 {
@@ -27,14 +28,21 @@ namespace Assets.Scripts.OrderSystem.Model.OperateSystem
             operateSystemItem.onChooseHandCellItem = handCellItem;
             operateSystemItem.playerItem = playerItem;
         }
-        //进入初始模式
+        //关闭模式？
         public void IntoModeClose() {
             operateSystemItem.operateModeType = OperateSystemItem.OperateType.Close;
             operateSystemItem.onChooseHandCellItem = null;
             operateSystemItem.playerItem = null;
         }
+        //cardEntry这个参数貌似不是必须的？
+        //进入卡牌结算模式
+        public void IntoModeCardSettle(CardEntry cardEntry, List<EffectInfo> effectInfos) {
+            operateSystemItem.effectInfos = effectInfos;
+            operateSystemItem.cardEntry = cardEntry;
+        }
 
-       
+
+
 
     }
 }

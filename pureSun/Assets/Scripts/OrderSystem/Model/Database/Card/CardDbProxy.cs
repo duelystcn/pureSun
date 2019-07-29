@@ -71,10 +71,35 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
                     cardDbItem.cardEntryPool.Add(card);
                 }
             }
+            //创建牌池组
+            CreateCardEntryListPool();
         }
+        public void CreateCardEntryListPool() {
+            cardDbItem.cardEntryListPool = new List<List<CardEntry>>();
+            List<CardEntry> cardEntries = GetSameCardEntry(40);
+            //5个一组
+            int size = 5;
+            int lnum = cardEntries.Count / size;
+            for (int m = 0; m < lnum; m++) {
+                List<CardEntry> oneList = new List<CardEntry>();
+                cardDbItem.cardEntryListPool.Add(oneList);
+            }
+
+            for (int n = 0; n < cardEntries.Count; n++) {
+                cardDbItem.cardEntryListPool[n % lnum].Add(cardEntries[n]);
+            }
+
+        }
+
+
+
         //获取N张随机牌池的牌
         public List<CardEntry> GetSameCardEntry(int num) {
-            List<int> randomList = RandomUtil.GetRandom(0, cardDbItem.cardEntryPool.Count-1, 3, false);
+            if (num > cardDbItem.cardEntryPool.Count) {
+                UtilityLog.LogError("need card number too much");
+                return null;
+            }
+            List<int> randomList = RandomUtil.GetRandom(0, cardDbItem.cardEntryPool.Count-1, num, false);
             List<CardEntry> cardEntries = new List<CardEntry>();
             foreach (int i in randomList) {
                 cardEntries.Add(cardDbItem.cardEntryPool[i]);
@@ -84,6 +109,13 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
         //玩家选择完成后从卡牌池移除此牌
         public void RemoveOneCardEntry(CardEntry cardEntry) {
             cardDbItem.cardEntryPool.Remove(cardEntry);
+        }
+
+        //获取一组牌
+        public List<CardEntry> GetOneCardListForPool() {
+            List<CardEntry> cardEntries = cardDbItem.cardEntryListPool[cardDbItem.ListPoolIndex];
+            cardDbItem.ListPoolIndex++;
+            return cardEntries;
         }
     }
 }

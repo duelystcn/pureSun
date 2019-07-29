@@ -5,25 +5,24 @@
 * Description:$safeprojectname$
 ==========================================*/
 
-using System;
+using Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit;
+using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
-using Assets.Scripts.OrderSystem.Model.Hand;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.OperateSystem;
 using Assets.Scripts.OrderSystem.Model.Player;
-using Assets.Scripts.OrderSystem.View.SpecialOperateView.ChooseView;
+using Assets.Scripts.OrderSystem.View.CircuitView.QuestStageCircuit;
 using Assets.Scripts.OrderSystem.View.HandView;
 using Assets.Scripts.OrderSystem.View.HexView;
 using Assets.Scripts.OrderSystem.View.MinionView;
 using Assets.Scripts.OrderSystem.View.OperateSystem;
+using Assets.Scripts.OrderSystem.View.SpecialOperateView.ChooseView;
+using Assets.Scripts.OrderSystem.View.UIView;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Command;
-using Assets.Scripts.OrderSystem.View.UIView;
-using Assets.Scripts.OrderSystem.View.CircuitView.QuestStageCircuit;
-using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
-using Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit;
+using System;
 /**
 * 程序启动，初始化 
 */
@@ -96,8 +95,6 @@ namespace OrderSystem
             Facade.RegisterMediator(chooseGridMediator);
 
             //手牌区代理（需要放在操作系统后）
-            HandGridProxy handGridProxy = new HandGridProxy();
-            Facade.RegisterProxy(handGridProxy);
             HandGridMediator handGridMediator = new HandGridMediator(mainUI.HandGridView);
             Facade.RegisterMediator(handGridMediator);
 

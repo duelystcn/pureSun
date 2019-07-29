@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6251639363567270734}
   - component: {fileID: 526091816420244126}
   - component: {fileID: 6469407360887346008}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CardDeckList
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,6 +52,8 @@ MonoBehaviour:
   config: {fileID: 11400000, guid: 77f1f57bde51b7048bb09c08c95bdf52, type: 2}
   layerController: {fileID: 0}
   cardHeadPrefab: {fileID: 8535921109629381383, guid: a0f78a3c529a31f44b667f62fd5c5d84,
+    type: 3}
+  shipCardHeadViewPrefab: {fileID: 6113503608777994709, guid: 27031638c439a1847a0c9675bd97b37f,
     type: 3}
   cardHeadViews: []
 --- !u!114 &6469407360887346008

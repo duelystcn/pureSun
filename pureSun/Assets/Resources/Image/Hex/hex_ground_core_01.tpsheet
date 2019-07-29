@@ -1,0 +1,17 @@
+#
+# Sprite sheet data for Unity.
+#
+# To import these sprites into your Unity project, download "TexturePackerImporter":
+# https://www.codeandweb.com/texturepacker/unity
+#
+# $TexturePacker:SmartUpdate:cffec169665f8c7e68465b392614f869:6489a3e1e739f0aa8679c3e758cb2d50:4aeed75df820554b9df634c4146027a4$
+#
+:format=40300
+:texture=hex_ground_core_01.png
+:size=256x512
+:pivotpoints=enabled
+:borders=disabled
+:alphahandling=ClearTransparentPixels
+
+spritesheet_optimized-2;1;375;216;136; 0.5;0.43014705882352944; 0;0;0;0; 9;216;74;216;61;168;1;50;0;0;70;3;78;49;134;61;136;175;136; 7;2;7;8;5;7;3;5;6;7;3;4;5;2;3;7;0;1;2;0;2;8
+spritesheet_optimized-3;1;218;185;155; 0.5837837837837838;0.5; 0;0;0;0; 10;109;153;185;122;185;35;100;0;91;1;0;38;0;121;76;152;94;155;100;155; 8;0;8;9;0;7;8;5;6;7;4;5;7;0;3;4;0;2;3;0;1;2;0;4;7

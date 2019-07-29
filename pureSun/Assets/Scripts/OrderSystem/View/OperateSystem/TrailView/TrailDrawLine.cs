@@ -7,6 +7,10 @@ namespace Assets.Scripts.OrderSystem.View.OperateSystem.TrailView
 {
     public abstract class TrailDrawLine : MonoBehaviour
     {
+        public Camera UICamera;
+
+        public Camera BTCamera;
+
         //控制是否划线的开关
         public bool inUse = false;
 
@@ -42,12 +46,17 @@ namespace Assets.Scripts.OrderSystem.View.OperateSystem.TrailView
         public UnityAction OnMouseButtonUp = null;
 
         //鼠标点击不再由划线脚本监听了，改为触发
-        public void TrailDrawStart() {
+        public void TrailDrawStart()
+        {
             inUse = true;
             firstMouseDown = true;
             mouseDown = true;
             firstMouseUp = false;
+            lineRenderer.SetWidth(0.1f, 0.1f);
 
         }
+        
+        // 代表上一帧鼠标的位置
+        public Vector3 overVec;
     }
 }

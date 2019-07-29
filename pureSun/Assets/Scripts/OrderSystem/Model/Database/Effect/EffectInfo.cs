@@ -1,8 +1,22 @@
-﻿using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetChoose;
+﻿using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Minion;
+using Assets.Scripts.OrderSystem.Model.Player;
+using System.Collections.Generic;
+using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetChoose;
 using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetMinion;
 
 namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 {
+    public enum EffectInfoStage
+    {
+        //未开始
+        UnStart,
+        //选择目标中
+        Confirming,
+        //已选择目标
+        ConfirmedTarget,
+    }
+
     public class EffectInfo
     {
         //名称
@@ -11,8 +25,8 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public string description { get; set; }
         //类型
         //单体生物 ONE_MINION 
-        //选择一项 CHOOSE_ONE
-        public string type { get; set; }
+        //单个玩家 ONE_PLAYER
+        public string target { get; set; }
 
         //选择效果列表
         public string[] chooseEffectList { get; set; }
@@ -21,8 +35,14 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 
 
         //目标要求
-        //
+        //所有者
+        //Owner
+        //--Myself
+        //--Enemy
         public string[] targetClaims { get; set; }
+
+        public string[] targetClaimsContents { get; set; }
+
         //影响类别
         //瞬间MOMENT，持续CONTINUE
         public string impactType { get; set; }
@@ -40,6 +60,20 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public EATargetChooseGrid TargetChooseGrid = null;
 
 
-        
+        //游戏运行中所需要进行的判断？
+        //效果执行状态
+        public EffectInfoStage effectInfoStage = EffectInfoStage.UnStart;
+        //效果所有者
+        public PlayerItem player;
+
+        //执行对象
+        //目前可能存在的目标？卡（墓地，牌组，手牌）,生物，玩家，效果（选择性发动的效果）
+        public List<CardEntry> TargetCardEntries;
+        public List<MinionCellItem> TargetMinionCellItems;
+        public List<PlayerItem> TargetPlayerItems;
+        public List<EffectInfo> TargetEffectInfos;
+
+
+
     }
 }

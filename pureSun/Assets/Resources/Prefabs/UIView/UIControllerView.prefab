@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7681068646108833647}
   - component: {fileID: 7681068646108833640}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: UIControllerView
   m_TagString: Untagged
   m_Icon: {fileID: 0}

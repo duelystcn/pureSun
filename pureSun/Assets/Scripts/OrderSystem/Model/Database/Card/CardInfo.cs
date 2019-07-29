@@ -7,15 +7,22 @@
         public string name { get; set; }
         public string type { get; set; }
         public int cost { get; set; }
-        public string effectName { get; set; }
+
+
+        public string isMoment { get; set; }
+        public string[] effectName { get; set; }
         public string description { get; set; }
 
         //生物属性
         public int atk { get; set; }
         public int def { get; set; }
 
-        //船只属性
+        //卡面属性
         public string[] trait { get; set; }
+
+
+        //等级属性
+        public string[] traitdemand { get; set; }
 
         //限制数量
         public int quantity { get; set; }

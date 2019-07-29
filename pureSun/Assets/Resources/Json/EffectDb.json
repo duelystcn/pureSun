@@ -2,42 +2,63 @@
   "testEffect": {
     "name": "testEffect",
     "description": "目标生物+1/+1",
-    "type": "ONE_MINION",
+    "target": "ONE_MINION",
     "targetClaims": [],
     "impactType": "MOMENT",
     "impactTargets": [ "ATK", "DEF" ],
     "impactContents": [ "1", "1" ]
   },
-  "chooseOneAddManaDrawCardOrAddTechDrawCard": {
-    "name": "chooseOneAddManaDrawCardOrAddTechDrawCard",
-    "description": "选择一项",
-    "type": "CHOOSE_ONE",
-    "chooseEffectList": [ "addManaDrawCard", "addManaDrawCard" ],
-    "impactType": "MOMENT"
+  "ChooseOneAddManaUpOneORDrawCardOrAddSupremcyTraitOneToMyself": {
+    "name": "ChooseOneAddManaUpOneORDrawCardOrAddSupremcyTraitOneToMyself",
+    "description": "选择一项：\n●获得一点资源上限；\n●抽一张牌；\n●增加一点至高等级",
+    "chooseEffectList": [ "AddManaUpOneToMyself", "DrawCardToMyself", "AddSupremcyTraitOneToMyself" ],
+    "impactType": "MOMENT",
+    "target": "ChooseEffect",
+    "targetClaims": [ "Owner" ],
+    "targetClaimsContents": [ "Myself" ]
   },
   "addManaDrawCard": {
     "name": "addManaDrawCard",
-    "description": "addManaDrawCard",
-    "type": "COMPLEX_EFFECT",
+    "description": "抽一张牌",
+    "target": "COMPLEX_EFFECT",
     "complexEffectList": [ "addMana", "drawCard" ],
     "impactType": "MOMENT"
   },
-  "addMana": {
-    "name": "addMana",
-    "description": "addMana",
-    "type": "MANA",
+  "AddManaUpOneToMyself": {
+    "name": "AddManaUpOneToMyself",
+    "description": "增加一点费用上限",
+    "target": "MANA",
     "targetClaims": [],
-    "impactType": "MOMENT",
-    "impactTargets": [ "LIMIT" ],
+    "impactType": "MANA_UPP",
+    "impactTargets": [ "MANA_UPP" ],
     "impactContents": [ "1" ]
   },
-  "drawCard": {
-    "name": "drawCard",
-    "description": "drawCard",
-    "type": "HAND",
+  "GetManaOneToMyself": {
+    "name": "GetManaOneToMyself",
+    "description": "获得①",
+    "target": "MANA",
+    "impactType": "MANA",
+    "impactTargets": [ "MANA" ],
+    "impactContents": [ "1" ],
+    "targetClaims": [ "Owner" ],
+    "targetClaimsContents": [ "Myself" ]
+  },
+  "DrawCardToMyself": {
+    "name": "DrawCardToMyself",
+    "description": "抽一张牌",
+    "target": "HAND",
     "targetClaims": [],
-    "impactType": "MOMENT",
+    "impactType": "HAND",
     "impactTargets": [ "HAND" ],
+    "impactContents": [ "1" ]
+  },
+  "AddSupremcyTraitOneToMyself": {
+    "name": "AddSupremcyTraitOneToMyself",
+    "description": "增加一点至高等级",
+    "target": "TRAIT",
+    "targetClaims": [],
+    "impactType": "TRAIT",
+    "impactTargets": [ "Supremcy" ],
     "impactContents": [ "1" ]
   }
 }

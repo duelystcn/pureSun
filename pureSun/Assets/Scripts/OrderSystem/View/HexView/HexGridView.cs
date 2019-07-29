@@ -1,6 +1,8 @@
 ﻿
+using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Util;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -41,12 +43,13 @@ namespace Assets.Scripts.OrderSystem.View.HexView
                 cell.transform.SetParent(transform, false);
                 cell.transform.localPosition = position;
                 cell.hexCellItem = hexCellItem;
-
-                Text label = Instantiate<Text>(cellLabelPrefab);
-                label.rectTransform.SetParent(gridCanvas.transform, false);
-                label.rectTransform.anchoredPosition =
-                    new Vector2(position.x, position.z);
-                label.text = hexCellItem.coordinates.ToStringOnSeparateLines();
+                TextMeshProUGUI HexCellLabel = UtilityHelper.FindChild<TextMeshProUGUI>(cell.transform, "HexCellLabel");
+                HexCellLabel.text = hexCellItem.coordinates.ToStringOnSeparateLines();
+                //Text label = Instantiate<Text>(cellLabelPrefab);
+                //label.rectTransform.SetParent(gridCanvas.transform, false);
+                //label.rectTransform.anchoredPosition =
+                //    new Vector2(position.x, position.y);
+                //label.text = hexCellItem.coordinates.ToStringOnSeparateLines();
             }
             //渲染需要放在格子生成完毕后
             hexMesh.Triangulate(cellViews, this.modelInfo.arrayMode);

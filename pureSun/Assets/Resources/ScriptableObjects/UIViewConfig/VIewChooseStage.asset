@@ -17,3 +17,5 @@ MonoBehaviour:
   viewName: 2
   cacheScheme: 0
   assetName: ViewChooseStage
+  alwaysUpdate: 0
+  coverScreen: 0

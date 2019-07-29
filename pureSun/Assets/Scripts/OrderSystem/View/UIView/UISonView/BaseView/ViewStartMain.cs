@@ -10,21 +10,31 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
     public class ViewStartMain:ViewBaseView
     {
         [SerializeField] private Button btnStart;
+        [SerializeField] private Button testMapStart;
+
+
         [SerializeField] private GameObject objNoticeBG;
-        public UnityAction unityAction;
+        public UnityAction StartCompleteGameUnityAction;
+        public UnityAction StartTestMapUnityAction;
+
         protected override void InitUIObjects()
         {
             base.InitUIObjects();
 
-            btnStart.onClick.AddListener(ClickStart);
+            btnStart.onClick.AddListener(StartCompleteGame);
+            testMapStart.onClick.AddListener(StartTestMap);
+
             //btnStart.gameObject.SetActive(false);
             //objNoticeBG.gameObject.SetActive(false);
         }
-        private void ClickStart()
+        private void StartCompleteGame()
         {
-            unityAction();
-            btnStart.gameObject.SetActive(false);
-            objNoticeBG.SetActive(false);
+            StartCompleteGameUnityAction();
+            this.gameObject.SetActive(false);
+        }
+        private void StartTestMap() {
+            StartTestMapUnityAction();
+            this.gameObject.SetActive(false);
         }
     }
 }

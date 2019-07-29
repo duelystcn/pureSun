@@ -20,6 +20,10 @@ namespace Assets.Scripts.OrderSystem.Event
         public const string OPERATE_SYS_DRAW_END_CIRCUIT = "OperateSysDrawEndCircuit";
         //划线结束，什么都没选
         public const string OPERATE_SYS_DRAW_END_NULL = "OperateSysDrawEndNull";
+        //开始寻找目标
+        public const string OPERATE_SYS_FIND_TARGET = "OperateSysFindTarget";
+        //开始执行效果
+        public const string OPERATE_SYS_EXEC_EFFECT= "OperateSysExecEffect";
 
 
 

@@ -1,16 +1,13 @@
-﻿
-
-using Assets.Scripts.OrderSystem.Event;
-using Assets.Scripts.OrderSystem.Model.OperateSystem;
+﻿using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Util;
 using Assets.Scripts.OrderSystem.View.HexView;
 using PureMVC.Interfaces;
-using PureMVC.Patterns.Mediator;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.View.OperateSystem
 {
-    public class OperateSystemMediator : Mediator
+    public class OperateSystemMediator : MediatorExpand
     {
         public new const string NAME = "OperateSystemMediator";
         private HexGridMediator hexGridMediator = null;
@@ -30,13 +27,16 @@ namespace Assets.Scripts.OrderSystem.View.OperateSystem
         //监听列表
         public override string[] ListNotificationInterests()
         {
-            string[] notifications = new string[1];
-            notifications[0] = OperateSystemEvent.OPERATE_TRAIL_DRAW;
-            return notifications;
+            List<string> notificationList = new List<string>();
+            notificationList.Add(OperateSystemEvent.OPERATE_TRAIL_DRAW);
+            AddCommonNotificationInterests(notificationList);
+            return notificationList.ToArray();
         }
         //监听
         public override void HandleNotification(INotification notification)
         {
+            //处理公共请求
+            HandleNotificationCommon(notification);
             switch (notification.Name)
             {
                 //划线相关
@@ -53,8 +53,12 @@ namespace Assets.Scripts.OrderSystem.View.OperateSystem
                             hexGridMediator = Facade.RetrieveMediator(HexGridMediator.NAME) as HexGridMediator;
                             operateSystemView.trailDrawLine.OnMouseButtonUp += () =>
                             {
+                                if (operateSystemView.trailDrawLine.overVec == null) {
+
+                                    return;
+                                }
                                 //判断选择了什么，放在视图层做
-                                HexCellView hexCellView = hexGridMediator.GetHexCellViewByPosition(operateSystemView.trailDrawLine.last);
+                                HexCellView hexCellView = hexGridMediator.GetHexCellViewByPosition(operateSystemView.trailDrawLine.overVec);
                                 if (hexCellView != null)
                                 {
                                     //战场上哪一个格子

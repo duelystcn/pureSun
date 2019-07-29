@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.OrderSystem.Model.Hand;
+﻿using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using OrderSystem;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,20 +35,20 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                 handGridItem.handCells[i].X = i;
                 HandCellItem handCellItem = handGridItem.handCells[i];
                 Vector3 position = new Vector3();
-                position = HandMetrics.erectPosition(position, handCellItem.X);
+                //position = HandMetrics.erectPosition(position, handCellItem.X);
                 //创建一个格子实例
                 //       HandCellView cell = Instantiate<HandCellView>(cellPrefab);
                 HandCellView cell = handCellPool.Pop();
                 //设置图片
-                cell.GetComponent<HandCellInstance>().SetImage();
+                //cell.GetComponent<HandCellInstance>().SetImage();
                 cell.transform.SetParent(transform, false);
                 cell.transform.localPosition = position;
-                cell.handCellItem = handCellItem;
+                cell.LoadHandCellItem(handCellItem);
                 handCellViews.Add(cell);
             }
-            //渲染需要放在格子生成完毕后
-            //不再渲染，改为用贴图
-            //handMesh.Triangulate(handCellViews);
+                //渲染需要放在格子生成完毕后
+                //不再渲染，改为用贴图
+                //handMesh.Triangulate(handCellViews);
         }
         //移除一张
         public void RemoveOneHandCellViewByHandCellItem(HandCellItem handCellItem) {
@@ -60,6 +60,29 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                     break;
                 } 
             }
+        }
+
+        //鼠标移入了某一张卡牌
+        public void OneCardMousenPointerEnter(HandCellItem handCellItem) {
+            foreach (HandCellView handCellView in handCellViews)
+            {
+                if (handCellView.handCellItem.X == handCellItem.X)
+                {
+                    
+                }
+            }
+        }
+        //鼠标移出了某一张卡牌
+        public void OneCardMousenPointerExit(HandCellItem handCellItem){
+            foreach (HandCellView handCellView in handCellViews)
+            {
+                if (handCellView.handCellItem.X == handCellItem.X)
+                {
+                   
+                }
+            }
+
+
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Assets.Scripts.OrderSystem.View.MinionView
 {
-    public class MinionGridMediator : Mediator
+    public class MinionGridMediator : MediatorExpand
     {
         public new const string NAME = "MinionGridMediator";
 
@@ -40,12 +40,15 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
         //监听
         public override string[] ListNotificationInterests()
         {
-            string[] notifications = new string[1];
-            notifications[0] = MinionSystemEvent.MINION_VIEW;
-            return notifications;
+            List<string> notificationList = new List<string>();
+            notificationList.Add(MinionSystemEvent.MINION_VIEW);
+            AddCommonNotificationInterests(notificationList);
+            return notificationList.ToArray();
         }
         public override void HandleNotification(INotification notification)
         {
+            //处理公共请求
+            HandleNotificationCommon(notification);
             switch (notification.Name)
             {
                 case MinionSystemEvent.MINION_VIEW:

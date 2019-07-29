@@ -22,6 +22,8 @@ namespace OrderSystem
 
         public const string START_CIRCUIT_START = "StartCircuitStart";
 
+        public const string START_CIRCUIT_TEST_MAP = "StartCircuitTestMap";
+
 
 
 
@@ -38,6 +40,16 @@ namespace OrderSystem
         /// 变更完毕
         /// </summary>
         public const string CHANGE_OVER = "changeOver";
+
+        /// <summary>
+        /// 客户端所属权
+        /// </summary>
+        public const string CLINET_SYS = "clientSys";
+        /// <summary>
+        /// 客户端所属权
+        /// </summary>
+        public const string CLINET_SYS_OWNER_CHANGE = "clientSysOwnerChange";
+
 
     }
 }

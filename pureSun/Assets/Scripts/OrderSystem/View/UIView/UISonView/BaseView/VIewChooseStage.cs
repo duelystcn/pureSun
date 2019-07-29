@@ -9,9 +9,20 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
 {
+    //复合界面用层级
+    public enum VCSLayerSort
+    {
+        First,
+        Second,
+        Three
+    }
+    //单个选择界面
     public class ViewChooseStage:ViewBaseView
     {
         public CardIntactView cardIntactViewPrefab;
+
+        //复合界面层级
+        public VCSLayerSort layerSort;
 
         public List<CardIntactView> cardIntactViews = new List<CardIntactView>();
         public void LoadCardInfoList(List<CardInfo> shipCardList) {
@@ -45,26 +56,23 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
                     cardIntactView.transform.localPosition = position;
 
                 }
+              
 
-                TextMeshProUGUI cardName = UtilityHelper.FindChild<TextMeshProUGUI>(cardIntactView.transform, "CardName");
-                cardName.text = card.cardInfo.name;
-                TextMeshProUGUI cardDescription = UtilityHelper.FindChild<TextMeshProUGUI>(cardIntactView.transform, "CardDescription");
-                cardDescription.text = card.cardInfo.description;
-
-                Image image = cardIntactView.transform.GetComponent<Image>();
-                //Assets\Resources\Image\CardBG
-                //image路径
-                string path = "Image/Card/CardBG/";
-                path = path + card.bgImageName;
-                Sprite sprite = Resources.Load(path, typeof(Sprite)) as Sprite;
-                image.sprite = sprite;
-
-                cardIntactView.card = card;
+                cardIntactView.LoadCard(card);
                 if (isAdd) {
                     cardIntactViews.Add(cardIntactView);
                 }
             }
-
+        }
+        //复合式选择框需要创建用
+        public void CreateCardEntryForMake() {
+            for (int n = 0; n < 5; n++) {
+                CardIntactView cardIntactView = Instantiate<CardIntactView>(cardIntactViewPrefab);
+                Vector3 position = new Vector3();
+                cardIntactView.transform.SetParent(transform, false);
+                cardIntactView.transform.localPosition = position;
+                cardIntactViews.Add(cardIntactView);
+            }
         }
     }
 }

@@ -2,13 +2,12 @@
 using Assets.Scripts.OrderSystem.Model.Hex;
 using OrderSystem;
 using PureMVC.Interfaces;
-using PureMVC.Patterns.Mediator;
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.View.HexView
 {
-    class HexGridMediator : Mediator
+    class HexGridMediator : MediatorExpand
     {
         public new const string NAME = "HexGridMediator";
         public HexGridView hexGridView
@@ -27,14 +26,19 @@ namespace Assets.Scripts.OrderSystem.View.HexView
 
         public override string[] ListNotificationInterests()
         {
-            string[] notifications = new string[2];
-            notifications[0] = HexSystemEvent.HEX_VIEW_SYS;
-            notifications[1] = OrderSystemEvent.CHANGE_OVER;
-            return notifications;
+            List<string> notificationList = new List<string>();
+            notificationList.Add(HexSystemEvent.HEX_VIEW_SYS);
+            notificationList.Add(OrderSystemEvent.CHANGE_OVER);
+            AddCommonNotificationInterests(notificationList);
+            return notificationList.ToArray();
+
+          
         }
 
         public override void HandleNotification(INotification notification)
         {
+            //处理公共请求
+            HandleNotificationCommon(notification);
             switch (notification.Name)
             {
                 case HexSystemEvent.HEX_VIEW_SYS:

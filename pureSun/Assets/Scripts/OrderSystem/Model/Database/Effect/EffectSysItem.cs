@@ -13,7 +13,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public Dictionary<string, EffectInfo> effectInfoMap;
 
         public void EffectActionReady(EffectInfo effect) {
-            if (effect.type == "ONE_MINION") {
+            if (effect.target == "ONE_MINION") {
                 effect.TargetMinionOne += (MinionCellItem minionCellItem) =>
                 {
                     for (int n = 0; n < effect.impactTargets.Length; n++) {
@@ -21,7 +21,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     }
                 };
             }
-            else if (effect.type == "CHOOSE_ONE") {
+            else if (effect.target == "CHOOSE_ONE") {
                 effect.TargetChooseGrid += (ChooseGridItem chooseGridItem) =>
                 {
                     CardEntry[] cardEntrys = new CardEntry[effect.chooseEffectList.Length];

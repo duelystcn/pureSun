@@ -1,11 +1,14 @@
-﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+﻿using Assets.Scripts.OrderSystem.Common;
+using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit;
-using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
+using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Player;
+using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using OrderSystem;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Command;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.OrderSystem.Controller
 {
@@ -14,79 +17,76 @@ namespace Assets.Scripts.OrderSystem.Controller
         //开始流程
         public override void Execute(INotification notification)
         {
+            PlayerGroupProxy playerGroupProxy = Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
             switch (notification.Type) {
                 case OrderSystemEvent.START_CIRCUIT_MAIN:
                     SendNotification(UIViewSystemEvent.UI_START_MAIN, null, UIViewSystemEvent.UI_START_MAIN_OPEN);
                     break;
                 case OrderSystemEvent.START_CIRCUIT_START:
-                    CircuitStart();
+                    //CardDbProxy cardDbProxy = Facade.RetrieveProxy(CardDbProxy.NAME) as CardDbProxy;
+                    //玩家信息初始化
+                    playerGroupProxy.playerGroup.AddHumanPlayer("TEST1");
+                    playerGroupProxy.playerGroup.AddAIPlayer("TEST2");
+                    
+                    //设定UI段显示为玩家TEST1
+                    SendNotification(OrderSystemEvent.CLINET_SYS, "TEST1", OrderSystemEvent.CLINET_SYS_OWNER_CHANGE);
+
+                    ChooseStageCircuitProxy chooseStageCircuitProxy = Facade.RetrieveProxy(ChooseStageCircuitProxy.NAME) as ChooseStageCircuitProxy;
+                    chooseStageCircuitProxy.CircuitStart(playerGroupProxy.playerGroup.playerItems);
+                    //开启选择阶段
+                    SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, null, UIViewSystemEvent.UI_CHOOSE_STAGE_START);
+                    //开启卡组列渲染
+                    foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
+                    {
+                        SendNotification(UIViewSystemEvent.UI_CARD_DECK_LIST, playerItem, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_CARD_DECK_LIST_OPEN, playerItem.playerCode));
+                    }
+                    break;
+                case OrderSystemEvent.START_CIRCUIT_TEST_MAP:
+                    CardDbProxy cardDbProxy = Facade.RetrieveProxy(CardDbProxy.NAME) as CardDbProxy;
+                    //玩家信息初始化
+                    playerGroupProxy.playerGroup.AddHumanPlayer("TEST1");
+                    playerGroupProxy.playerGroup.AddAIPlayer("TEST2");
+                    //设定UI段显示为玩家TEST1
+                    SendNotification(OrderSystemEvent.CLINET_SYS, "TEST1", OrderSystemEvent.CLINET_SYS_OWNER_CHANGE);
+                    //设置虚拟坐标
+                    playerGroupProxy.playerGroup.playerItems["TEST1"].hexCoordinates = new HexCoordinates(0, -1);
+                    playerGroupProxy.playerGroup.playerItems["TEST2"].hexCoordinates = new HexCoordinates(0, 4);
+                    foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
+                    {
+                        //创建牌库
+                        playerItem.cardDeck = new CardDeck();
+                        List<CardEntry> cardEntryList = new List<CardEntry>();
+                        for (int i = 0; i < 20; i++)
+                        {
+                            CardEntry cardEntry = new CardEntry();
+                            if (i % 3 == 0)
+                            {
+                                //生物
+                                cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode("ImperialRecruit"));
+                            }
+                            else if (i % 3 == 1)
+                            {
+                                //事件
+                                cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode("FortifiedAgent"));
+                            }
+                            else
+                            {
+                                //资源
+                                cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode("TaxCar"));
+                            }
+                            cardEntryList.Add(cardEntry);
+                        }
+                        playerItem.cardDeck.cardEntryList = cardEntryList;
+                    }
+
+
+                    SendNotification(UIViewSystemEvent.UI_QUEST_STAGE, null, UIViewSystemEvent.UI_QUEST_STAGE_START);
+                    SendNotification(OperateSystemEvent.OPERATE_TRAIL_DRAW, null, OperateSystemEvent.OPERATE_TRAIL_DRAW_CREATE);
                     break;
             }
             
         }
-        public void CircuitStart() {
-            //CardDbProxy cardDbProxy = Facade.RetrieveProxy(CardDbProxy.NAME) as CardDbProxy;
-            PlayerGroupProxy playerGroupProxy = Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
-            //通知渲染战场
-           // SendNotification(HexSystemEvent.HEX_VIEW_SYS, null, HexSystemEvent.HEX_VIEW_SYS_SHOW_START);
-            //玩家信息初始化
-            playerGroupProxy.playerGroup.AddPlayer("TEST1");
-            playerGroupProxy.playerGroup.AddPlayer("TEST2");
-            //foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
-            //{
-            //    //创建牌库
-            //    playerItem.cardDeck = new CardDeck();
-            //    List<CardEntry> cardEntryList = new List<CardEntry>();
-            //    for (int i = 0; i < 20; i++)
-            //    {
-            //        CardEntry cardEntry = new CardEntry();
-            //        if (i % 3 == 0)
-            //        {
-            //            //生物
-            //            cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode("TEST1"));
-            //        }
-            //        else if (i % 3 == 1)
-            //        {
-            //            //事件
-            //            cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode("TEST2"));
-            //        }
-            //        else
-            //        {
-            //            //资源
-            //            cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode("TEST3"));
-            //        }
-            //        cardEntryList.Add(cardEntry);
-            //    }
-            //    playerItem.cardDeck.cardEntryList = cardEntryList;
-            //    //增加手牌
-            //    playerItem.handGridItem.CreateCell(playerItem.cardDeck.GetFirstCard());
-            //    playerItem.handGridItem.CreateCell(playerItem.cardDeck.GetFirstCard());
-            //    playerItem.handGridItem.CreateCell(playerItem.cardDeck.GetFirstCard());
-            //}
-            ChooseStageCircuitProxy chooseStageCircuitProxy = Facade.RetrieveProxy(ChooseStageCircuitProxy.NAME) as ChooseStageCircuitProxy;
-            chooseStageCircuitProxy.CircuitStart(playerGroupProxy.playerGroup.playerItems);
 
 
-
-            QuestStageCircuitProxy circuitProxy = Facade.RetrieveProxy(QuestStageCircuitProxy.NAME) as QuestStageCircuitProxy;
-            circuitProxy.CircuitStart(playerGroupProxy.playerGroup.playerItems);
-            //设置虚拟坐标
-            playerGroupProxy.playerGroup.playerItems["TEST1"].hexCoordinates = new HexCoordinates(0, -1);
-            playerGroupProxy.playerGroup.playerItems["TEST2"].hexCoordinates = new HexCoordinates(0, 4);
-
-            UtilityLog.Log("进程初始化完毕");
-            SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, null, UIViewSystemEvent.UI_CHOOSE_STAGE_START);
-
-            foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
-            {
-                SendNotification(UIViewSystemEvent.UI_CARD_DECK_LIST, playerItem, UIViewSystemEvent.UI_CARD_DECK_LIST_OPEN);
-            }
-
-            //手牌区渲染为当前回合玩家
-            //HandGridProxy handGridProxy = Facade.RetrieveProxy(HandGridProxy.NAME) as HandGridProxy;
-            //PlayerItem playerItemNow = playerGroupProxy.getPlayerByPlayerCode(circuitProxy.GetNowPlayerCode());
-            //handGridProxy.NowPlayerHandAfflux(playerItemNow.handGridItem);
-
-        }
     }
 }

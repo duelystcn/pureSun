@@ -25,6 +25,10 @@ namespace Assets.Scripts.OrderSystem.View.UIView
         //常驻内存的界面
         private List<ViewBaseView> screenUICache = new List<ViewBaseView>();
         private List<ViewBaseView> screenUITempCache = new List<ViewBaseView>();
+
+        //临时缓冲区内的界面
+        public int screenUITempCacheDepth = 0;
+
         //初始化
         public void AchieveUIControllerListView()
         {
@@ -92,7 +96,109 @@ namespace Assets.Scripts.OrderSystem.View.UIView
             }
             return list;
         }
+        //只关闭第一个同名界面
+        public void HideView(UIViewName viewName)
+        {
+            for (int i = viewList.Count - 1; i >= 0; --i)
+            {
+                //关闭
+                if (viewList[i].config.viewName == viewName)
+                {
+                    HideView(viewList[i]);
+                    return;
+                }
+            }
+        }
+        //根据指定界面
+        public void HideView(ViewBaseView view)
+        {
+            if (view == null)
+                return;
 
+            //在窗口栈中的界面都可以关闭
+            if (view.layerController != null)
+            {
+                viewList.Remove(view);
+                view.layerController.Popup(view);
+                SchemeViewCache(view);
+                UpdateViewHideState();
+            }
+            else
+            {
+                UtilityLog.LogError(string.Format("Attamp to hide a error view {0}, not in controller.", view.config.viewName));
+            }
+        }
+
+        //根据缓存类型处理界面
+        private void SchemeViewCache(ViewBaseView view)
+        {
+            if (view != null)
+            {
+                //根据缓存类型处理
+                switch (view.config.cacheScheme)
+                {
+                    case UIViewCacheScheme.Cache:
+                        CacheView(view);
+                        break;
+                    case UIViewCacheScheme.TempCache:
+                        TempCacheView(view);
+                        break;
+                    case UIViewCacheScheme.AutoRemove:
+                        ReleaseView(view);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        //长期缓存
+        private void CacheView(ViewBaseView view)
+        {
+            if (!screenUICache.Contains(view))
+            {
+                screenUICache.Add(view);
+            }
+        }
+
+        //临时缓存
+        private void TempCacheView(ViewBaseView view)
+        {
+            //没有设置池深度，直接释放
+            if (screenUITempCacheDepth <= 0)
+                ReleaseView(view);
+
+            //放入临时池中
+            screenUITempCache.Add(view);
+
+            //整理临时缓存池
+            TidyTempCache();
+        }
+
+        //整理临时缓存池
+        private void TidyTempCache()
+        {
+            int removeCount = screenUITempCache.Count - screenUITempCacheDepth;
+            while (removeCount > 0)
+            {
+                --removeCount;
+                ReleaseView(screenUITempCache[0]);
+                screenUITempCache.RemoveAt(0);
+            }
+        }
+
+        //释放界面
+        private void ReleaseView(ViewBaseView view)
+        {
+            if (view != null)
+            {
+                view.OnExit();
+
+#if UNITY_EDITOR
+                Destroy(view.gameObject);
+#endif
+            }
+        }
 
         //展示界面
         public void ShowView(UIViewName viewName, params object[] args)
@@ -123,7 +229,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                     }
                     //设置参数，重新放入窗口层级控制器
                    // view.SetArguments(args);
-                    //view.layerController.Push(view);
+                    view.layerController.Push(view);
                 }
                 else
                 {
@@ -134,6 +240,9 @@ namespace Assets.Scripts.OrderSystem.View.UIView
             {
                 ShowViewFromCacheOrCreateNew(config, args);
             }
+            //刷新显示、隐藏状态
+            UpdateViewHideState();
+
         }
         //先尝试从缓存中打开，如果失败则打开一个新的
         private void ShowViewFromCacheOrCreateNew(UIViewConfig config, params object[] args)
@@ -248,6 +357,17 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                 return null;
             }
             return uiViewConfig[viewName];
+        }
+        //刷新界面的隐藏情况
+        private void UpdateViewHideState()
+        {
+            //从最上层开始刷新
+            bool covered = false;
+            covered = UIControllerViews[UIViewLayer.Debug].RefreshView(covered);
+            covered = UIControllerViews[UIViewLayer.Top].RefreshView(covered);
+            covered = UIControllerViews[UIViewLayer.Popup].RefreshView(covered);
+            covered = UIControllerViews[UIViewLayer.Base].RefreshView(covered);
+            covered = UIControllerViews[UIViewLayer.Background].RefreshView(covered);
         }
 
 

@@ -12,11 +12,19 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         public void Create() {
             playerItems = new Dictionary<string, PlayerItem>();
         }
-        public void AddPlayer(string playerCode) {
+        public void AddHumanPlayer(string playerCode) {
             PlayerItem playerItem = new PlayerItem(playerCode);
+            playerItem.playerType = PlayerType.HumanPlayer;
             playerItems.Add(playerCode,playerItem);
         }
-      
+
+        public void AddAIPlayer(string playerCode)
+        {
+            PlayerItem playerItem = new PlayerItem(playerCode);
+            playerItem.playerType = PlayerType.AIPlayer;
+            playerItems.Add(playerCode, playerItem);
+        }
+
 
 
     }

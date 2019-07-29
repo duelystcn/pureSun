@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using UnityEngine;
 namespace Assets.Scripts.OrderSystem.View.OperateSystem.TrailView
 {
     public class TrailDrawLineStartEnd : TrailDrawLine
@@ -24,7 +25,10 @@ namespace Assets.Scripts.OrderSystem.View.OperateSystem.TrailView
                 mouseDown = false;
                 firstMouseUp = true;
             }
-            onDrawLine();
+            if (inUse) {
+                onDrawLine();
+            }
+            
             firstMouseDown = false;
         }
         private void onDrawLine()
@@ -33,23 +37,40 @@ namespace Assets.Scripts.OrderSystem.View.OperateSystem.TrailView
             {
                 //先把计数器设为0
                 posCount = 0;
-
-                head = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+               // var ray = camera.ScreenPointToRay(Input.mousePosition).origin;
+                head = UICamera.ScreenToWorldPoint(Input.mousePosition);
                 last = head;
-                last.y = 20;
+                last.y = 10;
                 positions[0] = last;
 
             }
             if (mouseDown)
             {
-                last = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                last.y = 20;
+                last = UICamera.ScreenToWorldPoint(Input.mousePosition);
+                //Vector3 overVec = Input.mousePosition;
+                //overVec.y = 10;
+                //Debug.Log(TempC.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10.0f)));
+                //UtilityLog.Log(BTCamera.ScreenToWorldPoint(overVec));
+                last.y = 10;
                 positions[1] = last;
             }
             else
             {
+
                 if (firstMouseUp)
                 {
+                    inUse = false;
+                    Ray ray = BTCamera.ScreenPointToRay(Input.mousePosition);
+                    RaycastHit hit;
+                    if (Physics.Raycast(ray, out hit))
+                    {
+                        GameObject gameobj = hit.collider.gameObject;
+                        if (gameobj.tag == "HexCell")
+                        {
+                            overVec = hit.point;
+                        }
+                    }
+
                     firstMouseUp = false;
                     if (isAchieve)
                     {

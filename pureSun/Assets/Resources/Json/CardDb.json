@@ -7,6 +7,29 @@
     "def": "3",
     "cost": "1",
     "trait": [ "supremcy" ],
+    "traitdemand": [ "supremcy" ],
+    "quantity": "4"
+  },
+  "ImperialSoldier": {
+    "code": "ImperialSoldier",
+    "name": "帝国士兵",
+    "type": "Minion",
+    "atk": "3",
+    "def": "3",
+    "cost": "3",
+    "trait": [ "supremcy" ],
+    "traitdemand": [ "supremcy" ],
+    "quantity": "3"
+  },
+  "BaseSniper": {
+    "code": "BaseSniper",
+    "name": "基地狙击手",
+    "type": "Minion",
+    "atk": "2",
+    "def": "4",
+    "cost": "3",
+    "trait": [ "innovation" ],
+    "traitdemand": [ "innovation" ],
     "quantity": "4"
   },
   "BaseSentry": {
@@ -17,6 +40,7 @@
     "def": "3",
     "cost": "1",
     "trait": [ "innovation" ],
+    "traitdemand": [ "innovation" ],
     "quantity": "4"
   },
   "GroceryStoreOwner": {
@@ -28,6 +52,7 @@
     "cost": "2",
     "description": "显现：支付①，然后抽一张牌",
     "trait": [ "neutral" ],
+    "traitdemand": [ "neutral" ],
     "quantity": "4"
   },
   "TaxCar": {
@@ -35,9 +60,11 @@
     "name": "税车",
     "type": "Resource",
     "cost": "0",
-    "effectName": "chooseOneAddManaDrawCardOrAddTechDrawCard",
-    "description": "获得①,选择一项：\n●获得一点资源上限；\n●抽一张牌；\n●增加一点至高等级",
+    "isMoment": "Y",
+    "effectName": [  "ChooseOneAddManaUpOneORDrawCardOrAddSupremcyTraitOneToMyself" ],
+    "description": "瞬间,获得①,选择一项：\n●获得一点资源上限；\n●抽一张牌；\n●增加一点至高等级",
     "trait": [ "supremcy" ],
+    "traitdemand": [],
     "quantity": "4"
   },
   "ResonantCrystal": {
@@ -45,9 +72,10 @@
     "name": "共振晶体",
     "type": "Resource",
     "cost": "0",
-    "effectName": "chooseOneAddManaDrawCardOrAddTechDrawCard",
+    "effectName": [ "chooseOneAddManaDrawCardOrAddTechDrawCard" ],
     "description": "你的墓地每存在一张共振晶体，你获得一点创造等级直到回合结束,选择一项：\n●获得一点资源上限；\n●抽一张牌；",
     "trait": [ "supremcy" ],
+    "traitdemand": [],
     "quantity": "4"
   },
   "CompositeMetal": {
@@ -55,29 +83,54 @@
     "name": "复合金属材料",
     "type": "Resource",
     "cost": "0",
-    "effectName": "chooseOneAddManaDrawCardOrAddTechDrawCard",
+    "effectName": [ "chooseOneAddManaDrawCardOrAddTechDrawCard" ],
     "description": "获得①,选择一项：\n●获得一张有衍生的都护所；\n●你增加一点资源上限；\n●获得一点至高等级",
     "trait": [ "supremcy" ],
-    "quantity": "3"
+    "traitdemand": [ "supremcy" ],
+    "quantity": "4"
   },
   "GuerrillaStrategy": {
     "code": "GuerrillaStrategy",
     "name": "游击策略",
     "type": "Tactics",
-    "cost": "3",
-    "effectName": "moveAlterAddShield",
+    "cost": "2",
+    "effectName": [ "moveAlterAddShield" ],
     "description": "持续:你的生物移动后获得一点护盾",
     "trait": [ "innovation" ],
+    "traitdemand": [ "innovation", "innovation" ],
     "quantity": "3"
   },
   "TradeAgreement": {
     "code": "TradeAgreement",
     "name": "贸易协议",
     "type": "Tactics",
-    "cost": "3",
-    "effectName": "moveAlterAddShield",
-    "description": "无法被献祭，抽两张牌，然后将此牌放入对手手牌栏。",
+    "cost": "2",
+    "effectName": [ "moveAlterAddShield" ],
+    "description": "抽两张牌，然后将此牌放入对手手牌栏。",
     "trait": [ "innovation", "supremcy" ],
+    "traitdemand": [ "innovation", "supremcy" ],
+    "quantity": "3"
+  },
+  "FortifiedAgent": {
+    "code": "FortifiedAgent",
+    "name": "强化药剂",
+    "type": "Tactics",
+    "cost": "1",
+    "effectName": [ "moveAlterAddShield" ],
+    "description": "目标生物获得+1+1",
+    "trait": [ "innovation" ],
+    "traitdemand": [ "innovation"],
+    "quantity": "3"
+  },
+  "Climbingtechnology": {
+    "code": "Climbingtechnology",
+    "name": "科技爆发",
+    "type": "Tactics",
+    "cost": "2",
+    "effectName": [ "moveAlterAddShield" ],
+    "description": "你每有一点创造科技抽一张牌，然后你每有一点非创造科技丢弃一张牌",
+    "trait": [ "innovation", "supremcy" ],
+    "traitdemand": [ "innovation", "neutral" ],
     "quantity": "3"
   },
 
@@ -86,63 +139,70 @@
     "name": "刺激性增长",
     "type": "Tactics",
     "cost": "3",
-    "effectName": "addFractionOnTurnStart",
+    "effectName": [ "addFractionOnTurnStart" ],
     "description": "持续:在你的回合开始时，获得一分，如果你的分数比对手少，再获得一分",
-    "trait": [ "innovation", "supremcy" ],
+    "trait": [ "innovation" ],
+    "traitdemand": [ "innovation", "neutral" ],
     "quantity": "3"
   },
   "Serenity": {
     "code": "Serenity",
     "name": "宁静号",
     "type": "Ship",
-    "cost": "0",
+    "cost": "80",
     "trait": [ "innovation", "supremcy" ],
-    "effectName": "testEffect",
+    "effectName": [ "testEffect" ],
+    "traitdemand": [ "innovation" ],
     "description": "瞬间，支付①，你获得一点多态等级"
   },
   "StarSector": {
     "code": "StarSector",
     "name": "远星",
     "type": "Ship",
-    "cost": "0",
+    "cost": "80",
     "trait": [ "innovation" ],
-    "effectName": "testEffect",
+    "traitdemand": [ "innovation" ],
+    "effectName": [ "testEffect" ],
     "description": "瞬间，支付①，移动目标单位一格"
   },
   "YoungEagle": {
     "code": "YoungEagle",
     "name": "雏鹰",
     "type": "Ship",
-    "cost": "0",
+    "cost": "80",
     "trait": [ "supremcy" ],
-    "effectName": "testEffect",
-    "description": "支付②，在你的防线放置一个1/1的帝国新兵"
+    "traitdemand": [ "supremcy" ],
+    "effectName": [ "testEffect" ],
+    "description": "支付②，在你的防线放置一个1/1的帝国新兵，你只能在有操控其他人类生物的情况下启动此技能"
   },
   "Rocinante": {
     "code": "Rocinante",
-    "name": "驽骍",
+    "name": "驽马",
     "type": "Ship",
-    "cost": "0",
+    "cost": "80",
     "trait": [ "innovation", "supremcy" ],
-    "effectName": "testEffect",
+    "traitdemand": [ "innovation", "supremcy" ],
+    "effectName": [ "testEffect" ],
     "description": "瞬间，支付①，你使用的下一个生物或机甲获得空降"
   },
   "FindWay": {
     "code": "FindWay",
     "name": "寻路客",
     "type": "Ship",
-    "cost": "0",
+    "cost": "80",
     "trait": [ "neutral" ],
-    "effectName": "testEffect",
+    "traitdemand": [ "neutral" ],
+    "effectName": [ "testEffect" ],
     "description": "每当你抽一张牌时，获得1分"
   },
   "Taxation": {
     "code": "Taxation",
     "name": "税吏N1985",
     "type": "Ship",
-    "cost": "0",
+    "cost": "80",
     "trait": [ "supremcy" ],
-    "effectName": "testEffect",
+    "traitdemand": [ "supremcy" ],
+    "effectName": [ "testEffect" ],
     "description": "每当对手在他的防守回合使用手牌时，你获得1分"
   }
 

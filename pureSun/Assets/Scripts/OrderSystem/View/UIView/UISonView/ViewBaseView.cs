@@ -20,7 +20,9 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView
 
         protected Canvas canvas;
         //当前界面的状态
-        private UIViewState viewState;                  
+        private UIViewState viewState;
+        //是否需要刷新
+        private bool dirty = false;                    
         public UIViewState ViewState
         {
             get
@@ -117,6 +119,81 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView
                     break;
             }
         }
+        //改变贴图
+        public void changeImageSprite(MonoBehaviour monoBehaviour, string path)
+        {
+            Sprite sprite = Resources.Load(path, typeof(Sprite)) as Sprite;
+            Image image = monoBehaviour.transform.GetComponent<Image>();
+            image.sprite = sprite;
+        }
+        //被移出窗口栈
+        public virtual void OnPopup()
+        {
+            if (ViewState == UIViewState.Cache)
+                return;
+
+            //如果不是隐藏状态，需要先隐藏
+            if (ViewState == UIViewState.Visible)
+                OnHide();
+
+            //UtilityLog.Log(string.Format("View On Popup : {0}, {1}", config.viewName, this.GetInstanceID()));
+            ViewState = UIViewState.Cache;
+
+        }
+        //被隐藏
+        public virtual void OnHide()
+        {
+            if (ViewState == UIViewState.Visible)
+            {
+                //从相机的视域体内推出
+                Vector3 pos = transform.localPosition;
+                pos.z = -9999;
+                transform.localPosition = pos;
+
+                ViewState = UIViewState.Nonvisible;
+
+                //UtilityLog.Log(string.Format("View On Hide : {0}, {1}", config.viewName, this.GetInstanceID()));
+            }
+        }
+
+        //将被移除
+        public virtual void OnExit()
+        {
+            //如果不是缓存池状态，则需要先弹出
+            if (ViewState != UIViewState.Cache)
+                OnPopup();
+
+            //UtilityLog.Log(string.Format("View On Exit : {0}, {1}", config.viewName, this.GetInstanceID()));
+        }
+
+        //被显示时
+        public virtual void OnShow()
+        {
+            if (!gameObject.activeSelf)
+                gameObject.SetActive(true);
+
+            if (ViewState != UIViewState.Visible)
+            {
+                //将z坐标归0
+                Vector3 pos = transform.localPosition;
+                pos.z = 0;
+                transform.localPosition = pos;
+
+                ViewState = UIViewState.Visible;
+
+                //UtilityLog.Log(string.Format("View On Show : {0}, {1}", config.viewName, this.GetInstanceID()));
+            }
+
+            if (dirty)
+                UpdateView();
+        }
+        //更新
+        public virtual void UpdateView()
+        {
+            dirty = false;
+            UtilityLog.Log(string.Format("Update View -> {0}, {1}", config.viewName, this.GetInstanceID()));
+        }
+
 
     }
 }
