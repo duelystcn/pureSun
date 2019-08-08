@@ -40,7 +40,12 @@ namespace Assets.Scripts.OrderSystem.View.UIView
         //卡组列表
         CardDeckList,
         //完整的卡牌信息框
-        OneCardAllInfo
+        OneCardAllInfo,
+
+
+        //动画组件
+        //卡牌移动动画
+        CardMoveAnimation
     }
     //UIView名字的比较器
     public class EnumUIViewNameComparer

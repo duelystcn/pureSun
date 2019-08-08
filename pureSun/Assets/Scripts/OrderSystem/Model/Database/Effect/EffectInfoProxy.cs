@@ -1,8 +1,10 @@
 ﻿
+using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Newtonsoft.Json;
 using PureMVC.Patterns.Proxy;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 {
@@ -22,17 +24,18 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         //读取JSON文件配置
         public void LoadCardDbByJson()
         {
-            string jsonStr = File.ReadAllText("Assets/Resources/Json/EffectDb.json");
+            string jsonStr = File.ReadAllText("Assets/Resources/Json/EffectDb.json", Encoding.GetEncoding("gb2312"));
             effectSysItem.effectInfoMap =
                 JsonConvert.DeserializeObject<Dictionary<string, EffectInfo>>(jsonStr);
             //初始化效果
             foreach (EffectInfo effectInfo in effectSysItem.effectInfoMap.Values)
             {
                 effectSysItem.EffectActionReady(effectInfo);
-
             }
 
         }
+
+      
 
     }
 }

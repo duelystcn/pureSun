@@ -1,8 +1,10 @@
 ﻿using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using OrderSystem;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Assets.Scripts.OrderSystem.View.HandView
 {
@@ -32,7 +34,6 @@ namespace Assets.Scripts.OrderSystem.View.HandView
             //重新
             for (int i = 0; i < handGridItem.handCells.Count(); i++)
             {
-                handGridItem.handCells[i].X = i;
                 HandCellItem handCellItem = handGridItem.handCells[i];
                 Vector3 position = new Vector3();
                 //position = HandMetrics.erectPosition(position, handCellItem.X);
@@ -50,23 +51,13 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                 //不再渲染，改为用贴图
                 //handMesh.Triangulate(handCellViews);
         }
-        //移除一张
-        public void RemoveOneHandCellViewByHandCellItem(HandCellItem handCellItem) {
-            //清除
-            foreach (HandCellView handCellView in handCellViews)
-            {
-                if (handCellView.handCellItem.uuid == handCellItem.uuid) {
-                    handCellPool.Push(handCellView);
-                    break;
-                } 
-            }
-        }
+        
 
         //鼠标移入了某一张卡牌
         public void OneCardMousenPointerEnter(HandCellItem handCellItem) {
             foreach (HandCellView handCellView in handCellViews)
             {
-                if (handCellView.handCellItem.X == handCellItem.X)
+                if (handCellView.handCellItem.uuid == handCellItem.uuid)
                 {
                     
                 }
@@ -76,7 +67,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
         public void OneCardMousenPointerExit(HandCellItem handCellItem){
             foreach (HandCellView handCellView in handCellViews)
             {
-                if (handCellView.handCellItem.X == handCellItem.X)
+                if (handCellView.handCellItem.uuid == handCellItem.uuid)
                 {
                    
                 }
@@ -84,5 +75,44 @@ namespace Assets.Scripts.OrderSystem.View.HandView
 
 
         }
+
+        //添加一张牌
+        public void PlayerDrawOneCard(HandCellItem handCellItem, UnityAction callBack)
+        {
+            StartCoroutine(PlayerDrawOneCardEnumerator(handCellItem , callBack));
+        }
+        //添加一张牌的动画
+        public IEnumerator PlayerDrawOneCardEnumerator(HandCellItem handCellItem, UnityAction callBack)
+        {
+            Vector3 position = new Vector3();
+            //position = HandMetrics.erectPosition(position, handCellItem.X);
+            //创建一个格子实例
+            //       HandCellView cell = Instantiate<HandCellView>(cellPrefab);
+            HandCellView cell = handCellPool.Pop();
+            //设置图片
+            //cell.GetComponent<HandCellInstance>().SetImage();
+            cell.transform.SetParent(transform, false);
+            cell.transform.localPosition = position;
+            cell.LoadHandCellItem(handCellItem);
+            handCellViews.Add(cell);
+            yield return new WaitForSeconds(0.25f);
+            callBack();
+
+        }
+        //移除一张牌
+        public void PlayerRemoveOneCard(HandCellItem handCellItem, UnityAction callBack)
+        {
+            //清除
+            foreach (HandCellView handCellView in handCellViews)
+            {
+                if (handCellView.handCellItem.uuid == handCellItem.uuid)
+                {
+                    handCellPool.Push(handCellView);
+                    break;
+                }
+            }
+            callBack();
+        }
+
     }
 }

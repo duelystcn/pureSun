@@ -47,10 +47,7 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string UI_CHOOSE_STAGE_CLOSE = "UIChooseStageClose";
 
-        /// <summary>
-        /// 选择界面读取卡牌列表
-        /// </summary>
-        public const string UI_CHOOSE_STAGE_LOAD_CARD_INFO = "UIChooseStageLoadCardInfo";
+
         /// <summary>
         /// 选择界面读取卡牌列表
         /// </summary>
@@ -59,6 +56,15 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 选择了某一张卡
         /// </summary>
         public const string UI_CHOOSE_STAGE_ONE_CARD = "UIChooseStageOneCard";
+        /// <summary>
+        /// 船只选择完毕播放船只动画
+        /// </summary>
+        public const string UI_CHOOSE_STAGE_ONE_SHIP_CARD_ANIMATION = "UIChooseStageOneShipCardAnimation";
+
+        /// <summary>
+        /// 船只选择完毕播放船只动画完毕
+        /// </summary>
+        public const string UI_CHOOSE_STAGE_ONE_SHIP_CARD_ANIMATION_OVER = "UIChooseStageOneShipCardAnimationOver";
 
 
         /// <summary>
@@ -113,13 +119,23 @@ namespace Assets.Scripts.OrderSystem.Event
 
 
         /// <summary>
-        /// 小回合阶段相关
+        /// 小局阶段相关
         /// </summary>
         public const string UI_QUEST_STAGE = "UIQuestStage";
         /// <summary>
-        /// 小回合阶段相关
+        /// 小局阶段相关
         /// </summary>
         public const string UI_QUEST_STAGE_START = "UIQuestStageStart";
+
+        /// <summary>
+        /// 回合阶段相关
+        /// </summary>
+        public const string UI_QUEST_TURN_STAGE = "UIQuestStage";
+        /// <summary>
+        /// 回合阶段相关开始一个回合
+        /// </summary>
+        public const string UI_QUEST_TURN_STAGE_START_OF_TRUN = "UIQuestStageStartOfTrun";
+
 
         /// <summary>
         /// 卡牌详细信息窗口
@@ -144,8 +160,20 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string UI_USER_OPERAT_CHOOSE_EFFECT = "UIUserOperatChoooseEffect";
 
+        /// <summary>
+        /// 进行用户选择效果界面结束
+        /// </summary>
+        public const string UI_USER_OPERAT_CHOOSE_EFFECT_OVER = "UIUserOperatChoooseEffectOver";
 
 
+        /// <summary>
+        /// 动画播放相关
+        /// </summary>
+        public const string UI_ANIMATION_SYS= "UIAnimationtSys";
+        /// <summary>
+        /// 进行用户选择效果界面
+        /// </summary>
+        public const string UI_ANIMATION_SYS_START = "UIAnimationtSysStart";
 
 
     }

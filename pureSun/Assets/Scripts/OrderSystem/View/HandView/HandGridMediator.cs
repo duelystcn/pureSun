@@ -1,8 +1,11 @@
 ﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
+using OrderSystem;
 using PureMVC.Interfaces;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 namespace Assets.Scripts.OrderSystem.View.HandView
 {
@@ -35,11 +38,40 @@ namespace Assets.Scripts.OrderSystem.View.HandView
             AddCommonNotificationInterests(notificationList);
             return notificationList.ToArray();
         }
-        //监听
+
         public override void HandleNotification(INotification notification)
+        {
+            if (notification.Name == HandSystemEvent.HAND_CHANGE && notification.Type == HandSystemEvent.HAND_CHANGE_ANIMATION_START)
+            {
+                DoExceHandleNotification();
+            }
+            else if (notification.Name == OrderSystemEvent.CLINET_SYS)
+            {
+                //客户端监听发放，不做处理
+                HandleNotificationCommon(notification);
+            }
+            else
+            {
+                notificationQueue.Enqueue(notification);
+                DoExceHandleNotification();
+            }
+
+        }
+
+
+        //监听
+        public override void ExceHandleNotification(INotification notification)
         {
             //处理公共请求
             HandleNotificationCommon(notification);
+            //回调函数
+            UnityAction callBack = () =>
+            {
+                exceINotification = false;
+                SendNotification(HandSystemEvent.HAND_CHANGE, null, HandSystemEvent.HAND_CHANGE_ANIMATION_START);
+            };
+            bool callBackDelay = false;
+
 
             switch (notification.Name)
             {
@@ -76,11 +108,6 @@ namespace Assets.Scripts.OrderSystem.View.HandView
 
                             }
                             break;
-                        case HandSystemEvent.HAND_CHANGE_USE_OVER:
-                            HandCellItem chooseHand = notification.Body as HandCellItem;
-                            //移除这张牌
-                            handGridView.RemoveOneHandCellViewByHandCellItem(chooseHand);
-                            break;
                         //发出鼠标移入消息
                         case HandSystemEvent.HAND_CHANGE_POINTER_ENTER:
                             HandCellItem enterHand = notification.Body as HandCellItem;
@@ -91,11 +118,36 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                             HandCellItem exitHand = notification.Body as HandCellItem;
                             //handGridView.OneCardMousenPointerExit(exitHand);
                             break;
+                        //抽了一张牌
+                        case HandSystemEvent.HAND_CHANGE_DRAW_ONE_CARD:
+                            if (playerCode == playerCodeNotification)
+                            {
+                                //回调函数
+                                callBack = () =>
+                                {
+                                    exceINotification = false;
+                                    SendNotification(HandSystemEvent.HAND_CHANGE, handGridView, HandSystemEvent.HAND_CHANGE_OVER);
+                                    SendNotification(HandSystemEvent.HAND_CHANGE, null, HandSystemEvent.HAND_CHANGE_ANIMATION_START);
+                                };
+                                callBackDelay = true;
+                                HandCellItem handCellItemDraw = notification.Body as HandCellItem;
+                                handGridView.PlayerDrawOneCard(handCellItemDraw, callBack);
+                            }
+                            break;
+                        //移除一张牌
+                        case HandSystemEvent.HAND_CHANGE_REMOVE_ONE_CARD:
+                            HandCellItem handCellItemRemove = notification.Body as HandCellItem;
+                            callBackDelay = true;
+                            handGridView.PlayerRemoveOneCard(handCellItemRemove, callBack);
+                            break;
 
                     }
                     break;
             }
-                    
+            if (callBackDelay == false)
+            {
+                callBack();
+            }
         }
     }
 }

@@ -32,7 +32,7 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit
             chooseStageCircuitItem.playerOrder = new List<string>();
             foreach (string playerCode in dictionary.Keys)
             {
-                List<CardInfo> cardInfos = new List<CardInfo>();
+                List<CardEntry> cardInfos = new List<CardEntry>();
                 chooseStageCircuitItem.playerShipCardMap.Add(playerCode, cardInfos);
                 chooseStageCircuitItem.playerOrder.Add(playerCode);
             }

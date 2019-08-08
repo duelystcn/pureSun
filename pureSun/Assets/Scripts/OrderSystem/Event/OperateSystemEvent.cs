@@ -36,6 +36,8 @@ namespace Assets.Scripts.OrderSystem.Event
         //添加对战时划线组件
         public const string OPERATE_TRAIL_DRAW_CREATE = "OperateTrailDrawCreate";
 
+        //选择了一个效果
+        public const string OPERATE_SYS_CHOOSE_ONE_EFFECT = "OperateSysChooseOneEffect";
 
     }
 }

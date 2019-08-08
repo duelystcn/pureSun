@@ -30,6 +30,8 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
 
         //效果
         public string[] effectName { get; set; }
+        //描述
+        public string description { get; set; }
 
 
         //功能属性
@@ -48,6 +50,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
             this.name = cardInfo.name;
             this.type = cardInfo.type;
             this.cost = cardInfo.cost;
+            this.description = cardInfo.description;
             this.traitdemand = cardInfo.traitdemand;
             this.uuid = System.Guid.NewGuid().ToString("N");
             this.isMoment = cardInfo.isMoment;

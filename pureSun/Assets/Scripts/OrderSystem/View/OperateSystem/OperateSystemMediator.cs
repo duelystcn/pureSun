@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.OrderSystem.Event;
+﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Util;
 using Assets.Scripts.OrderSystem.View.HexView;
 using PureMVC.Interfaces;
@@ -53,8 +54,14 @@ namespace Assets.Scripts.OrderSystem.View.OperateSystem
                             hexGridMediator = Facade.RetrieveMediator(HexGridMediator.NAME) as HexGridMediator;
                             operateSystemView.trailDrawLine.OnMouseButtonUp += () =>
                             {
-                                if (operateSystemView.trailDrawLine.overVec == null) {
-
+                                if (operateSystemView.trailDrawLine.overVec == null ) {
+                                    return;
+                                }
+                                //如果没有移动只是点击也需要判断
+                                if (operateSystemView.trailDrawLine.overVec.x == 0 &&
+                                    operateSystemView.trailDrawLine.overVec.y == 0 &&
+                                    operateSystemView.trailDrawLine.overVec.z == 0)
+                                {
                                     return;
                                 }
                                 //判断选择了什么，放在视图层做

@@ -21,6 +21,22 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
 
         public PlayerItem playerItem;
 
+        protected override void InitUIObjects()
+        {
+            base.InitUIObjects();
+            if (shipCardHeadView == null)
+            {
+                shipCardHeadView = Instantiate<ShipCardHeadView>(shipCardHeadViewPrefab);
+                Vector3 position = new Vector3();
+                shipCardHeadView.transform.SetParent(transform, false);
+                shipCardHeadView.transform.localPosition = position;
+                shipCardHeadView.gameObject.SetActive(false);
+            }
+
+
+
+        }
+
         //读取玩家信息
         public void LoadPlayerInfo() {
             if (playerItem == null)
@@ -34,13 +50,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
             LoadCardList(playerItem.cardDeck);
         }
         public void LoadShipCard(CardEntry shipCard) {
-            if (shipCardHeadView == null)
-            {
-                shipCardHeadView = Instantiate<ShipCardHeadView>(shipCardHeadViewPrefab);
-                Vector3 position = new Vector3();
-                shipCardHeadView.transform.SetParent(transform, false);
-                shipCardHeadView.transform.localPosition = position;
-            }
+            shipCardHeadView.gameObject.SetActive(true);
             shipCardHeadView.LoadCard(shipCard);
 
         }
@@ -71,6 +81,12 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
                 
             }
         }
-      
+        //获取shipcard的位置
+        public Vector3 GetShipCardPosition() {
+            return shipCardHeadView.transform.position;
+
+        }
+
+
     }
 }

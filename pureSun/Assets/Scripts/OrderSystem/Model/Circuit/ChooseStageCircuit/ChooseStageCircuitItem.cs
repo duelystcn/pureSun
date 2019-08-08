@@ -14,7 +14,7 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit
         public string nowPlayerCode { get; set; }
         public List<string> playerOrder { get; set; }
 
-        public Dictionary<string, List<CardInfo>> playerShipCardMap = new Dictionary<string, List<CardInfo>>();
+        public Dictionary<string, List<CardEntry>> playerShipCardMap = new Dictionary<string, List<CardEntry>>();
 
         public int chooseIndex = 0;
 

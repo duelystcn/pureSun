@@ -28,14 +28,16 @@ namespace Assets.Scripts.OrderSystem.Controller
 
                     foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
                     {
-                        playerItem.handGridItem.CreateCell(playerItem.cardDeck.GetFirstCard());
-                        playerItem.handGridItem.CreateCell(playerItem.cardDeck.GetFirstCard());
-                        playerItem.handGridItem.CreateCell(playerItem.cardDeck.GetFirstCard());
-                        playerItem.handGridItem.CreateCell(playerItem.cardDeck.GetFirstCard());
-                        playerItem.handGridItem.CreateCell(playerItem.cardDeck.GetFirstCard());
+                        //分发手牌
+                        playerItem.DrawCard(4);
+                        //设置起始费用上限
+                        playerItem.manaItem.manaUpperLimit = 0;
+
+
                         //手牌渲染
-                        SendNotification(HandSystemEvent.HAND_CHANGE, playerItem.handGridItem, StringUtil.NotificationTypeAddPlayerCode(HandSystemEvent.HAND_CHANGE_AFFLUX, playerItem.playerCode));
-                    }                 
+                        //SendNotification(HandSystemEvent.HAND_CHANGE, playerItem.handGridItem, StringUtil.NotificationTypeAddPlayerCode(HandSystemEvent.HAND_CHANGE_AFFLUX, playerItem.playerCode));
+                    }  
+                    
                     break;
             }
         }

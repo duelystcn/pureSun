@@ -42,5 +42,38 @@ namespace Assets.Scripts.OrderSystem.View
                     break;
             }
         }
+
+        //消息序列
+        public Queue<INotification> notificationQueue = new Queue<INotification>();
+
+        //处理消息中
+        public bool exceINotification = false;
+
+        public override void HandleNotification(INotification notification)
+        {
+            
+
+        }
+        public void DoExceHandleNotification()
+        {
+            if (exceINotification == false)
+            {
+                //判断是否有消息需要处理
+                if (notificationQueue.Count > 0)
+                {
+                    exceINotification = true;
+                    INotification notification = notificationQueue.Dequeue();
+                    ExceHandleNotification(notification);
+                }
+            }
+
+        }
+
+        public virtual void ExceHandleNotification(INotification notification)
+        {
+
+
+        }
+
     }
 }

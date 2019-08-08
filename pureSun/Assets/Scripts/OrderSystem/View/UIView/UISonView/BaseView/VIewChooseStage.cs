@@ -1,10 +1,12 @@
 ﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
@@ -24,23 +26,18 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
         //复合界面层级
         public VCSLayerSort layerSort;
 
-        public List<CardIntactView> cardIntactViews = new List<CardIntactView>();
-        public void LoadCardInfoList(List<CardInfo> shipCardList) {
-            List<CardEntry> shipCardEntryList = new List<CardEntry>();
-            for (int i=0;i<shipCardList.Count;i++) {
-                CardEntry card = new CardEntry();
-                card.cardInfo = shipCardList[i];
-                card.InitializeByCardInfo(shipCardList[i]);
-                shipCardEntryList.Add(card);
-            }
-            LoadCardEntryList(shipCardEntryList);
+        
 
-        }
-        public void LoadCardEntryList(List<CardEntry> shipCardList)
+        public List<CardIntactView> cardIntactViews = new List<CardIntactView>();
+
+        
+
+     
+        public void LoadCardEntryList(List<CardEntry> cardList)
         {
-            for (int i = 0; i < shipCardList.Count; i++)
+            for (int i = 0; i < cardList.Count; i++)
             {
-                CardEntry card = shipCardList[i];
+                CardEntry card = cardList[i];
                 CardIntactView cardIntactView = null;
                 bool isAdd = true;
                 if (i < cardIntactViews.Count)
@@ -74,5 +71,9 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
                 cardIntactViews.Add(cardIntactView);
             }
         }
+
+
+
+
     }
 }

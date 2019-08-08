@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 using static Assets.Scripts.OrderSystem.Common.UnityExpand.UtilitySingleton;
 
 namespace Assets.Scripts.OrderSystem.View.UIView
@@ -28,6 +29,8 @@ namespace Assets.Scripts.OrderSystem.View.UIView
 
         //临时缓冲区内的界面
         public int screenUITempCacheDepth = 0;
+
+
 
         //初始化
         public void AchieveUIControllerListView()

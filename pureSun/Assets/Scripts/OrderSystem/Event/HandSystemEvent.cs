@@ -15,12 +15,17 @@
         public const string HAND_CHANGE_POINTER_ENTER = "handChangePointerEnter";
         //鼠标移动到某一手牌上
         public const string HAND_CHANGE_POINTER_EXIT = "handChangePointerExit";
+        //抽了一张牌
+        public const string HAND_CHANGE_DRAW_ONE_CARD = "handChangeDrawOneCard";
+        //失去一张牌
+        public const string HAND_CHANGE_REMOVE_ONE_CARD = "handChangeRemoveOneCard";
+        //手牌区动画开始
+        public const string HAND_CHANGE_ANIMATION_START = "handChangeRemoveOneCard";
+
 
         //手牌操作
         public const string HAND_OPERATE = "handOperate";
         //手牌选中
         public const string HAND_OPERATE_ONCHOOSE = "handOperateOnChoose";
-        //手牌使用完毕
-        public const string HAND_CHANGE_USE_OVER = "handChangeUseOver";
     }
 }

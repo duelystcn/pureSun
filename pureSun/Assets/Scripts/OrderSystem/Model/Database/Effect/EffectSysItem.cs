@@ -2,9 +2,14 @@
 
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Minion;
+using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.SpecialOperate.ChooseOperate;
 using System;
 using System.Collections.Generic;
+using UnityEngine.Events;
+using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetChoose;
+using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetMinion;
+using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetPlayer;
 
 namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 {
@@ -14,7 +19,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 
         public void EffectActionReady(EffectInfo effect) {
             if (effect.target == "ONE_MINION") {
-                effect.TargetMinionOne += (MinionCellItem minionCellItem) =>
+                effect.TargetMinionOne = (MinionCellItem minionCellItem) =>
                 {
                     for (int n = 0; n < effect.impactTargets.Length; n++) {
                         ChangeMinion(effect.impactTargets[n], effect.impactContents[n], minionCellItem);
@@ -22,7 +27,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                 };
             }
             else if (effect.target == "CHOOSE_ONE") {
-                effect.TargetChooseGrid += (ChooseGridItem chooseGridItem) =>
+                effect.TargetChooseGrid = (ChooseGridItem chooseGridItem) =>
                 {
                     CardEntry[] cardEntrys = new CardEntry[effect.chooseEffectList.Length];
                     for (int n = 0; n < effect.chooseEffectList.Length; n++) {
@@ -30,6 +35,17 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     }
                 };
 
+            }
+            else if (effect.target == "Player") {
+                effect.TargetPlayerList = (List<PlayerItem> playerItemList) =>
+                {
+                    for (int n = 0; n < effect.TargetPlayerItems.Count; n++)
+                    {
+                        for (int m = 0; m < effect.impactTargets.Length; m++) {
+                            ChangePlayer(effect.impactTargets[n], effect.impactContents[n], effect.TargetPlayerItems[n]);
+                        }
+                    }
+                };
             }
 
         }
@@ -45,6 +61,20 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     break;
 
             }
+        }
+        void ChangePlayer(string impactTarget, string impactContent, PlayerItem playerItem)
+        {
+            switch (impactTarget)
+            {
+                case "Hand":
+                    playerItem.DrawCard(Convert.ToInt32(impactContent));
+                    break;
+               
+
+            }
+
+           
+
         }
     }
 }

@@ -8,10 +8,15 @@ namespace Assets.Scripts.OrderSystem.Event
 {
     public class LogicalSysEvent
     {
-        //战场视图相关
+        //逻辑判断相关
         public const string LOGICAL_SYS = "LogicalSys";
 
-        //战场视图开始渲染
+        //选择船只卡牌
         public const string LOGICAL_SYS_CHOOSE_SHIP_CARD = "LogicalSysChooseShipCard";
+
+        //需要选择效果
+
+        public const string LOGICAL_SYS_CHOOSE_EFFECT = "LogicalSysChooseEffect";
+
     }
 }

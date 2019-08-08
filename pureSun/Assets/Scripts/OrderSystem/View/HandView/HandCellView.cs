@@ -13,8 +13,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
        
         // 是否处于选中状态
         private bool isDown = false;
-        //被选中时调用方法
-        public UnityAction OnPointerDown = null;
+       
 
         public HandCellInstance handCellInstance = null;
 
@@ -24,9 +23,10 @@ namespace Assets.Scripts.OrderSystem.View.HandView
 
 
 
-
-        public UnityAction OnPointerEnter;
-        public UnityAction OnPointerExit;
+        //被选中时调用方法
+        public UnityAction OnPointerDown = () => { };
+        public UnityAction OnPointerEnter = () => { };
+        public UnityAction OnPointerExit = () => { };
 
         public void LoadHandCellItem(HandCellItem handCellItem)
         {
@@ -77,7 +77,6 @@ namespace Assets.Scripts.OrderSystem.View.HandView
         public void PointerUp()
         {
             isDown = false;
-            PointerExit();
            
         }
     }

@@ -14,17 +14,26 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
             get; private set;
         }
         public Color defaultColor = Color.blue;
+
+        //index判断哪一张是最新加的？
+        private int cellIndex;
+
         //模拟创建
         public void Create()
         {
             handCells = new List<HandCellItem>();
+            cellIndex = 0;
         }
-        public void CreateCell(CardEntry cardEntry)
+      
+        public HandCellItem CreateCell(CardEntry cardEntry)
         {
             HandCellItem handCellItem = new HandCellItem(cardEntry);
             handCellItem.color = defaultColor;
             handCellItem.uuid = System.Guid.NewGuid().ToString("N");
+            handCellItem.index = cellIndex;
+            cellIndex++;
             handCells.Add(handCellItem);
+            return handCellItem;
         }
 
         //移除一张手牌的实例
@@ -33,7 +42,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
             int index = -1;
             for (int i = 0; i < this.handCells.Count; i++)
             {
-                if (this.handCells[i].X == handCellItem.X)
+                if (this.handCells[i].uuid == handCellItem.uuid)
                 {
                     index = i;
                     break;
@@ -41,7 +50,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
             }
             if (index < 0)
             {
-                UtilityLog.LogError("This handCellItem index" + handCellItem.X + "is not exist");
+                UtilityLog.LogError("This handCellItem index" + handCellItem.index + "is not exist");
             }
             else
             {

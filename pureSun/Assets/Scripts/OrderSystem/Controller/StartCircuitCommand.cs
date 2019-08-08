@@ -25,27 +25,28 @@ namespace Assets.Scripts.OrderSystem.Controller
                 case OrderSystemEvent.START_CIRCUIT_START:
                     //CardDbProxy cardDbProxy = Facade.RetrieveProxy(CardDbProxy.NAME) as CardDbProxy;
                     //玩家信息初始化
-                    playerGroupProxy.playerGroup.AddHumanPlayer("TEST1");
-                    playerGroupProxy.playerGroup.AddAIPlayer("TEST2");
-                    
+                    playerGroupProxy.AddPlayer("TEST1",PlayerType.HumanPlayer);
+                    playerGroupProxy.AddPlayer("TEST2", PlayerType.AIPlayer);
+
                     //设定UI段显示为玩家TEST1
                     SendNotification(OrderSystemEvent.CLINET_SYS, "TEST1", OrderSystemEvent.CLINET_SYS_OWNER_CHANGE);
 
                     ChooseStageCircuitProxy chooseStageCircuitProxy = Facade.RetrieveProxy(ChooseStageCircuitProxy.NAME) as ChooseStageCircuitProxy;
                     chooseStageCircuitProxy.CircuitStart(playerGroupProxy.playerGroup.playerItems);
-                    //开启选择阶段
-                    SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, null, UIViewSystemEvent.UI_CHOOSE_STAGE_START);
                     //开启卡组列渲染
                     foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
                     {
                         SendNotification(UIViewSystemEvent.UI_CARD_DECK_LIST, playerItem, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_CARD_DECK_LIST_OPEN, playerItem.playerCode));
                     }
+                    //开启选择阶段
+                    SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, null, UIViewSystemEvent.UI_CHOOSE_STAGE_START);
+                   
                     break;
                 case OrderSystemEvent.START_CIRCUIT_TEST_MAP:
                     CardDbProxy cardDbProxy = Facade.RetrieveProxy(CardDbProxy.NAME) as CardDbProxy;
                     //玩家信息初始化
-                    playerGroupProxy.playerGroup.AddHumanPlayer("TEST1");
-                    playerGroupProxy.playerGroup.AddAIPlayer("TEST2");
+                    playerGroupProxy.AddPlayer("TEST1", PlayerType.HumanPlayer);
+                    playerGroupProxy.AddPlayer("TEST2", PlayerType.AIPlayer);
                     //设定UI段显示为玩家TEST1
                     SendNotification(OrderSystemEvent.CLINET_SYS, "TEST1", OrderSystemEvent.CLINET_SYS_OWNER_CHANGE);
                     //设置虚拟坐标

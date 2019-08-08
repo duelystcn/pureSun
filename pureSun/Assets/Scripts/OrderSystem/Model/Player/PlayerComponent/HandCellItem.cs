@@ -8,7 +8,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
     public class HandCellItem
     {
         //顺序标识
-        public int X;
+        public int index;
         //卡的实例
         public CardEntry cardEntry { get; private set; }
         //颜色

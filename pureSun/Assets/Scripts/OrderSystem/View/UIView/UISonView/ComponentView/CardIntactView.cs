@@ -34,7 +34,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView
             TextMeshProUGUI cardCost = UtilityHelper.FindChild<TextMeshProUGUI>(transform, "CardCost");
             cardCost.text = card.cost.ToString();
             TextMeshProUGUI cardDescription = UtilityHelper.FindChild<TextMeshProUGUI>(transform, "CardDescription");
-            cardDescription.text = card.cardInfo.description;
+            cardDescription.text = card.description;
             //Assets\Resources\Image\CardBG
             //image路径
             string path = "Image/Card/CardBG/";
