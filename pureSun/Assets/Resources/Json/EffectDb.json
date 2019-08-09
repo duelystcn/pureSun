@@ -17,22 +17,14 @@
     "targetClaims": [ "Owner" ],
     "targetClaimsContents": [ "Myself" ]
   },
-  "addManaDrawCard": {
-    "name": "addManaDrawCard",
-    "description": "抽一张牌",
-    "target": "Player",
-    "targetClaims": [ "Owner" ],
-    "targetClaimsContents": [ "Myself" ],
-    "complexEffectList": [ "addMana", "drawCard" ],
-    "impactType": "Moment"
-  },
   "AddManaUpOneToMyself": {
     "name": "AddManaUpOneToMyself",
     "description": "增加一点费用上限",
-    "target": "MANA",
-    "targetClaims": [],
-    "impactType": "MANA_UPP",
-    "impactTargets": [ "MANA_UPP" ],
+    "target": "Player",
+    "targetClaims": [ "Owner" ],
+    "targetClaimsContents": [ "Myself" ],
+    "impactType": "Moment",
+    "impactTargets": [ "ManaUpperLimit" ],
     "impactContents": [ "1" ]
   },
   "GetManaOneToMyself": {

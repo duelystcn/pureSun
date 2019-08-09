@@ -16,5 +16,8 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
         {
             manaUsable += num;
         }
+        public void RestoreToTheUpperLimit() {
+            manaUsable = manaUpperLimit;
+        }
     }
 }

@@ -41,6 +41,8 @@ namespace Assets.Scripts.OrderSystem.View.UIView
         CardDeckList,
         //完整的卡牌信息框
         OneCardAllInfo,
+        //费用显示框
+        ManaInfoView,
 
 
         //动画组件

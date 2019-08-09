@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7aea2e6642688249af6c2f8827f42bc, type: 3}
-  m_Name: CardMoveAnimation
+  m_Name: ManaInfoView
   m_EditorClassIdentifier: 
   unique: 1
-  viewLayer: 3
-  viewName: 7
-  cacheScheme: 2
-  assetName: CardMoveAnimation
+  viewLayer: 2
+  viewName: 6
+  cacheScheme: 0
+  assetName: ManaInfoView
   alwaysUpdate: 0
   coverScreen: 0

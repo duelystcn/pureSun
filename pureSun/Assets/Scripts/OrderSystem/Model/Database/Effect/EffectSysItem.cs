@@ -69,6 +69,9 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                 case "Hand":
                     playerItem.DrawCard(Convert.ToInt32(impactContent));
                     break;
+                case "ManaUpperLimit":
+                    playerItem.ChangeManaUpperLimit(Convert.ToInt32(impactContent));
+                    break;
                
 
             }

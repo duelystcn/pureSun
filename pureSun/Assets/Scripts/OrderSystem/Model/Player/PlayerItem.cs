@@ -50,6 +50,12 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //移除一张牌
         public TTPlayerRemoveACard ttPlayerRemoveACard;
 
+        //费用上限发生了变化
+        public TTManaCostLimitChange ttManaCostLimitChange;
+        //可用费用发生了变化
+        public TTManaCostUsableChange ttManaCostUsableChange;
+
+
         //方法抽一张牌
         public void DrawCard(int num) {
             for (int n = 0; n < num; n++) {
@@ -76,6 +82,25 @@ namespace Assets.Scripts.OrderSystem.Model.Player
 
             }
            
+        }
+        //改变费用上限
+        public void ChangeManaUpperLimit(int num)
+        {
+            manaItem.changeManaUpperLimit(num);
+            ttManaCostLimitChange(num);
+        }
+        //改变可用费用
+        public void ChangeManaUsable(int num)
+        {
+            manaItem.changeManaUsable(num);
+            ttManaCostUsableChange(num);
+        }
+        //费用恢复至上限
+        public void RestoreToTheUpperLimit()
+        {
+            int changeNum = manaItem.manaUpperLimit - manaItem.manaUsable;
+            manaItem.RestoreToTheUpperLimit();
+            ttManaCostUsableChange(changeNum);
         }
     }
 

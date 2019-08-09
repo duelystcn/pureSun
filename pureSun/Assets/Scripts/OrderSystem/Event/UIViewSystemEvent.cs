@@ -130,7 +130,7 @@ namespace Assets.Scripts.OrderSystem.Event
         /// <summary>
         /// 回合阶段相关
         /// </summary>
-        public const string UI_QUEST_TURN_STAGE = "UIQuestStage";
+        public const string UI_QUEST_TURN_STAGE = "UIQuestTurnStage";
         /// <summary>
         /// 回合阶段相关开始一个回合
         /// </summary>
@@ -174,6 +174,31 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 进行用户选择效果界面
         /// </summary>
         public const string UI_ANIMATION_SYS_START = "UIAnimationtSysStart";
+
+        /// <summary>
+        /// 费用显示相关
+        /// </summary>
+        public const string UI_MANA_INFA_SYS = "UIManaInfoSys";
+        /// <summary>
+        /// 费用显示打开
+        /// </summary>
+        public const string UI_MANA_INFA_SYS_OPEN = "UIManaInfoSysOpen";
+        /// <summary>
+        /// 费用显示初始化
+        /// </summary>
+        public const string UI_MANA_INFA_SYS_INIT = "UIManaInfoSysInit";
+
+        /// <summary>
+        /// 费用上限发生变化
+        /// </summary>
+        public const string UI_MANA_INFA_SYS_LIMIT_CHANGE = "UIManaInfoSysLimitChange";
+        /// <summary>
+        /// 可使用费用发生变化
+        /// </summary>
+        public const string UI_MANA_INFA_SYS_USABLE_CHANGE = "UIManaInfoSysUsableChange";
+
+
+
 
 
     }

@@ -3,12 +3,14 @@ using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Player;
+using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.Animation;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView;
 using OrderSystem;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Mediator;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
@@ -51,6 +53,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView
             notificationList.Add(UIViewSystemEvent.UI_ONE_CARD_ALL_INFO);
             notificationList.Add(UIViewSystemEvent.UI_USER_OPERAT);
             notificationList.Add(UIViewSystemEvent.UI_ANIMATION_SYS);
+            notificationList.Add(UIViewSystemEvent.UI_MANA_INFA_SYS);
             AddCommonNotificationInterests(notificationList);
             return notificationList.ToArray();
         }
@@ -218,10 +221,10 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                                     {
                                         cardIntactView.OnClick = () =>
                                         {
-                                                //提示第三排为展示，不可购买
-                                                cardIntactView.OnClick = () =>
-                                            {
-                                            };
+                                            //提示第三排为展示，不可购买
+                                            cardIntactView.OnClick = () =>
+                                        {
+                                        };
 
                                         };
                                     }
@@ -379,6 +382,37 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                             break;
                         case UIViewSystemEvent.UI_USER_OPERAT_CHOOSE_EFFECT_OVER:
                             UIControllerLIst.HideView(UIViewName.ChooseStage);
+                            break;
+                    }
+                    break;
+                case UIViewSystemEvent.UI_MANA_INFA_SYS:
+                    int changeNum = 0;
+                    ManaInfoView manaInfoView = null;
+                    //是自己的费用还是对手的
+                    bool myself = false;
+                    if (playerCode == playerCodeNotification)
+                    {
+                        myself = true;
+                    }
+                    switch (notification.Type)
+                    {
+                        case UIViewSystemEvent.UI_MANA_INFA_SYS_OPEN:
+                            UIControllerLIst.ShowView(UIViewName.ManaInfoView);
+                            break;
+                        case UIViewSystemEvent.UI_MANA_INFA_SYS_INIT:
+                            ManaItem manaItem = notification.Body as ManaItem;
+                            manaInfoView = UIControllerLIst.GetViewByName<ManaInfoView>(UIViewName.ManaInfoView);
+                            manaInfoView.UIManaInfoSysInit(manaItem, myself);
+                            break;
+                        case UIViewSystemEvent.UI_MANA_INFA_SYS_USABLE_CHANGE:
+                            changeNum = Convert.ToInt32(notification.Body);
+                            manaInfoView = UIControllerLIst.GetViewByName<ManaInfoView>(UIViewName.ManaInfoView);
+                            manaInfoView.ChangeManaUsable(changeNum, myself);
+                            break;
+                        case UIViewSystemEvent.UI_MANA_INFA_SYS_LIMIT_CHANGE:
+                            changeNum = Convert.ToInt32(notification.Body);
+                            manaInfoView = UIControllerLIst.GetViewByName<ManaInfoView>(UIViewName.ManaInfoView);
+                            manaInfoView.ChangeManaUpperLimit(changeNum, myself);
                             break;
                     }
                     break;

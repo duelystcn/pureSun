@@ -56,7 +56,16 @@ namespace Assets.Scripts.OrderSystem.Model.Player
               
                 SendNotification(HandSystemEvent.HAND_CHANGE, handCellItem, StringUtil.NotificationTypeAddPlayerCode(HandSystemEvent.HAND_CHANGE_REMOVE_ONE_CARD, playerItem.playerCode));
             };
+            playerItem.ttManaCostLimitChange = (int changeNum ) =>
+            {
 
+                SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, changeNum, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_LIMIT_CHANGE, playerItem.playerCode));
+            };
+            playerItem.ttManaCostUsableChange = (int changeNum) =>
+            {
+
+                SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, changeNum, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_USABLE_CHANGE, playerItem.playerCode));
+            };
 
 
         }

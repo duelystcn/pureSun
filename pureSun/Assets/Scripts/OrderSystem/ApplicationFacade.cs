@@ -52,6 +52,7 @@ namespace OrderSystem
             RegisterCommand(UIViewSystemEvent.UI_CHOOSE_STAGE, () => new ChooseStageCommand());
             RegisterCommand(UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE, () => new ChooseMakeStageCommand());
             RegisterCommand(UIViewSystemEvent.UI_QUEST_STAGE, () => new QuestStageCommand());
+            RegisterCommand(UIViewSystemEvent.UI_QUEST_TURN_STAGE, () => new QuestStageOneTurnCommand());
             RegisterCommand(LogicalSysEvent.LOGICAL_SYS, () => new LogicalProcessorCommand());
         }
 
