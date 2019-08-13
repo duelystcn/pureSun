@@ -1,4 +1,5 @@
 ﻿
+using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Newtonsoft.Json;
 using PureMVC.Patterns.Proxy;
@@ -27,15 +28,17 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
             string jsonStr = File.ReadAllText("Assets/Resources/Json/EffectDb.json", Encoding.GetEncoding("gb2312"));
             effectSysItem.effectInfoMap =
                 JsonConvert.DeserializeObject<Dictionary<string, EffectInfo>>(jsonStr);
-            //初始化效果
-            foreach (EffectInfo effectInfo in effectSysItem.effectInfoMap.Values)
-            {
-                effectSysItem.EffectActionReady(effectInfo);
-            }
 
         }
 
-      
+        public EffectInfo GetDepthCloneEffectByName(string effectName) {
+            EffectInfo effectInfo = TransExpV2<EffectInfo, EffectInfo>.Trans(effectSysItem.effectInfoMap[effectName]);
+            //初始化效果
+            effectSysItem.EffectActionReady(effectInfo);
+            return effectInfo;
+        }
+
+
 
     }
 }

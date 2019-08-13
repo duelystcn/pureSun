@@ -61,7 +61,7 @@
     "type": "Resource",
     "cost": "0",
     "isMoment": "Y",
-    "effectName": [  "ChooseOneAddManaUpOneORDrawCardOrAddSupremcyTraitOneToMyself" ],
+    "effectName": [ "GetManaOneToMyself","ChooseOneAddManaUpOneORDrawCardOrAddSupremcyTraitOneToMyself" ],
     "description": "瞬间,获得①,选择一项：\n●获得一点资源上限；\n●抽一张牌；\n●增加一点至高等级",
     "trait": [ "supremcy" ],
     "traitdemand": [],

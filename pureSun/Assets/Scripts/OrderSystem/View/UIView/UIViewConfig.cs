@@ -43,11 +43,21 @@ namespace Assets.Scripts.OrderSystem.View.UIView
         OneCardAllInfo,
         //费用显示框
         ManaInfoView,
+        //科技等级显示框
+        TraitCombinationView,
+        //船只框
+        ShipComponentView,
+
 
 
         //动画组件
         //卡牌移动动画
-        CardMoveAnimation
+        CardMoveAnimation,
+
+
+        //
+
+
     }
     //UIView名字的比较器
     public class EnumUIViewNameComparer

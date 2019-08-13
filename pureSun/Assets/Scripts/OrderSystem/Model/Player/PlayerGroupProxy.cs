@@ -48,25 +48,30 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         {
             playerItem.ttPlayerDrawACard = (HandCellItem handCellItem) =>
             {
-                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, handCellItem, TimeTriggerEvent.TIME_TRIGGER_DRAW_A_CARD);
                 SendNotification(HandSystemEvent.HAND_CHANGE, handCellItem, StringUtil.NotificationTypeAddPlayerCode(HandSystemEvent.HAND_CHANGE_DRAW_ONE_CARD,playerItem.playerCode));
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, handCellItem, TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD);
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
             };
             playerItem.ttPlayerRemoveACard = (HandCellItem handCellItem) =>
             {
-              
                 SendNotification(HandSystemEvent.HAND_CHANGE, handCellItem, StringUtil.NotificationTypeAddPlayerCode(HandSystemEvent.HAND_CHANGE_REMOVE_ONE_CARD, playerItem.playerCode));
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
             };
             playerItem.ttManaCostLimitChange = (int changeNum ) =>
             {
-
                 SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, changeNum, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_LIMIT_CHANGE, playerItem.playerCode));
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
             };
             playerItem.ttManaCostUsableChange = (int changeNum) =>
             {
-
                 SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, changeNum, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_USABLE_CHANGE, playerItem.playerCode));
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
             };
-
+            playerItem.ttAddTraitType = (TraitType traitType) =>
+            {
+                SendNotification(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS, traitType, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS_ADD, playerItem.playerCode));
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
+            };
 
         }
 

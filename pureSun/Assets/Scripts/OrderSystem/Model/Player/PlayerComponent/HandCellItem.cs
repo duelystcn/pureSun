@@ -15,6 +15,8 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
         public Color color;
         //uuid做唯一标识
         public string uuid;
+        //判断是否可使用标识
+        public bool canUse = false;
 
 
 

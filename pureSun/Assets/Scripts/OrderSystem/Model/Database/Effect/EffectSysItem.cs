@@ -1,15 +1,12 @@
 ﻿
 
+using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.SpecialOperate.ChooseOperate;
 using System;
 using System.Collections.Generic;
-using UnityEngine.Events;
-using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetChoose;
-using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetMinion;
-using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetPlayer;
 
 namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 {
@@ -42,7 +39,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     for (int n = 0; n < effect.TargetPlayerItems.Count; n++)
                     {
                         for (int m = 0; m < effect.impactTargets.Length; m++) {
-                            ChangePlayer(effect.impactTargets[n], effect.impactContents[n], effect.TargetPlayerItems[n]);
+                            ChangePlayer(effect.impactTargets[m], effect.impactContents[m], effect.TargetPlayerItems[n]);
                         }
                     }
                 };
@@ -69,10 +66,18 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                 case "Hand":
                     playerItem.DrawCard(Convert.ToInt32(impactContent));
                     break;
+                //资源上限
                 case "ManaUpperLimit":
                     playerItem.ChangeManaUpperLimit(Convert.ToInt32(impactContent));
                     break;
-               
+                case "ManaUsable":
+                    playerItem.ChangeManaUsable(Convert.ToInt32(impactContent));
+                    break;
+                //科技相关
+                case "TraitAddOne":
+                    playerItem.AddTraitType(impactContent);
+                    break;
+
 
             }
 

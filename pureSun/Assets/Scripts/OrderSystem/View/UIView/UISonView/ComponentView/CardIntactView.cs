@@ -2,7 +2,7 @@
 
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
-using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.TraitSignComponent;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -18,7 +18,8 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView
         public TraitSignList traitSignListPrefab;
         private TraitSignList traitSignList;
 
-        public Material outLight;
+        public MonoBehaviour outLight;
+
 
         public void PointerClick() {
             if (OnClick != null) {
@@ -39,16 +40,10 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView
             //image路径
             string path = "Image/Card/CardBG/";
             path = path + card.bgImageName;
-            changeImageSprite(this, path);
-            Image imageComponent = this.GetComponent<Image>();
-            if (card.isBuyed == false)
-            {
-                imageComponent.material = null;
-            }
-            else
-            {
-                imageComponent.material = outLight;
-            }
+            MonoBehaviour cardBg = UtilityHelper.FindChild<MonoBehaviour>(transform, "CardBg");
+            changeImageSprite(cardBg, path);
+            outLight.gameObject.SetActive(false);
+
         }
 
         public void LoadTraitList(string[] traitdemand) {
@@ -60,6 +55,11 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView
                 traitSignList.transform.localPosition = position;
             }
             traitSignList.LoadTraitList(traitdemand);
+        }
+
+        public void SetOutLight(bool canUse)
+        {
+            outLight.gameObject.SetActive(canUse);
         }
 
     }

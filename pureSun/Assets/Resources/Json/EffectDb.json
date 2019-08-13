@@ -30,12 +30,12 @@
   "GetManaOneToMyself": {
     "name": "GetManaOneToMyself",
     "description": "获得①",
-    "target": "MANA",
-    "impactType": "MANA",
-    "impactTargets": [ "MANA" ],
-    "impactContents": [ "1" ],
+    "target": "Player",
     "targetClaims": [ "Owner" ],
-    "targetClaimsContents": [ "Myself" ]
+    "targetClaimsContents": [ "Myself" ],
+    "impactType": "Moment",
+    "impactTargets": [ "ManaUsable" ],
+    "impactContents": [ "1" ]
   },
   "DrawCardToMyself": {
     "name": "DrawCardToMyself",
@@ -50,10 +50,11 @@
   "AddSupremcyTraitOneToMyself": {
     "name": "AddSupremcyTraitOneToMyself",
     "description": "增加一点至高等级",
-    "target": "TRAIT",
-    "targetClaims": [],
-    "impactType": "TRAIT",
-    "impactTargets": [ "Supremcy" ],
-    "impactContents": [ "1" ]
+    "target": "Player",
+    "targetClaims": [ "Owner" ],
+    "targetClaimsContents": [ "Myself" ],
+    "impactType": "Moment",
+    "impactTargets": [ "TraitAddOne" ],
+    "impactContents": [ "supremcy" ]
   }
 }

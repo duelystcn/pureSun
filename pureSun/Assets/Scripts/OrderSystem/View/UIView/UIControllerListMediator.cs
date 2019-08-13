@@ -6,6 +6,8 @@ using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.Animation;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.ChooseMakeStage;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.TraitCombination;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView;
 using OrderSystem;
 using PureMVC.Interfaces;
@@ -54,6 +56,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView
             notificationList.Add(UIViewSystemEvent.UI_USER_OPERAT);
             notificationList.Add(UIViewSystemEvent.UI_ANIMATION_SYS);
             notificationList.Add(UIViewSystemEvent.UI_MANA_INFA_SYS);
+            notificationList.Add(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS);
             AddCommonNotificationInterests(notificationList);
             return notificationList.ToArray();
         }
@@ -93,6 +96,14 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                 SendNotification(UIViewSystemEvent.UI_ANIMATION_SYS, null, UIViewSystemEvent.UI_ANIMATION_SYS_START);
             };
             bool callBackDelay = false;
+
+            //是自己的还是对手的
+            bool myself = false;
+
+            if (playerCode == playerCodeNotification)
+            {
+                myself = true;
+            }
 
             switch (notification.Name)
             {
@@ -388,12 +399,6 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                 case UIViewSystemEvent.UI_MANA_INFA_SYS:
                     int changeNum = 0;
                     ManaInfoView manaInfoView = null;
-                    //是自己的费用还是对手的
-                    bool myself = false;
-                    if (playerCode == playerCodeNotification)
-                    {
-                        myself = true;
-                    }
                     switch (notification.Type)
                     {
                         case UIViewSystemEvent.UI_MANA_INFA_SYS_OPEN:
@@ -413,6 +418,25 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                             changeNum = Convert.ToInt32(notification.Body);
                             manaInfoView = UIControllerLIst.GetViewByName<ManaInfoView>(UIViewName.ManaInfoView);
                             manaInfoView.ChangeManaUpperLimit(changeNum, myself);
+                            break;
+                    }
+                    break;
+                case UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS:
+                    TraitCombinationView traitCombinationView = null;
+                    switch (notification.Type)
+                    {
+                        case UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS_OPEN:
+                            UIControllerLIst.ShowView(UIViewName.TraitCombinationView);
+                            break;
+                        case UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS_INIT:
+                            List<TraitType> traitTypes = notification.Body as List<TraitType>;
+                            traitCombinationView = UIControllerLIst.GetViewByName<TraitCombinationView>(UIViewName.TraitCombinationView);
+                            traitCombinationView.UITraitCombinationSysInit(traitTypes, myself);
+                            break;
+                        case UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS_ADD:
+                            string traitType = notification.Body.ToString();
+                            traitCombinationView = UIControllerLIst.GetViewByName<TraitCombinationView>(UIViewName.TraitCombinationView);
+                            traitCombinationView.UITraitCombinationSysAdd(traitType, myself);
                             break;
                     }
                     break;

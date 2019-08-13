@@ -197,6 +197,23 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string UI_MANA_INFA_SYS_USABLE_CHANGE = "UIManaInfoSysUsableChange";
 
+        /// <summary>
+        /// 科技显示相关
+        /// </summary>
+        public const string UI_TRAIT_COMBINATION_SYS = "UITraitCombinationSys";
+        /// <summary>
+        /// 科技显示打开
+        /// </summary>
+        public const string UI_TRAIT_COMBINATION_SYS_OPEN = "UITraitCombinationSysOpen";
+        /// <summary>
+        /// 科技显示初始化
+        /// </summary>
+        public const string UI_TRAIT_COMBINATION_SYS_INIT = "UITraitCombinationSysInit";
+        /// <summary>
+        /// 科技增加
+        /// </summary>
+        public const string UI_TRAIT_COMBINATION_SYS_ADD = "UITraitCombinationSysAdd";
+
 
 
 

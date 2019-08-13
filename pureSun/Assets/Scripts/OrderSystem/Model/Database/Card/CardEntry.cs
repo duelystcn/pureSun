@@ -1,5 +1,5 @@
 ﻿using Assets.Scripts.OrderSystem.Metrics;
-using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.ChooseMakeStage;
 using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.Model.Database.Card

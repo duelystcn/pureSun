@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
+namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.ChooseMakeStage
 {
     //复合选择界面
     public class ViewChooseMakeStage : ViewBaseView

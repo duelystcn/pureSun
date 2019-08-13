@@ -8,8 +8,8 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: CardOutLigtht
-  m_Shader: {fileID: 4800000, guid: a17967d1596e0cc4aabf9930daaac779, type: 3}
-  m_ShaderKeywords: _ShowInnerGlow
+  m_Shader: {fileID: 4800000, guid: ab0e0f1dc8215b0419e83aa2a5c775e9, type: 3}
+  m_ShaderKeywords: _ShowInnerGlow _ShowOutline
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -41,7 +41,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
@@ -60,6 +60,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _DualGrid: 1
     - _EdgeAlphaThreshold: 0.37
     - _EdgeDampRate: 2
     - _GlossMapScale: 1
@@ -72,7 +73,7 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
-    - _OriginAlphaThreshold: 0.2
+    - _OriginAlphaThreshold: 0.95
     - _Parallax: 0.02
     - _ShowInnerGlow: 1
     - _ShowOutline: 0
@@ -83,6 +84,6 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EdgeColor: {r: 1, g: 0, b: 0, a: 1}
+    - _EdgeColor: {r: 0, g: 0.95253134, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _InnerGlowColor: {r: 1, g: 0, b: 0, a: 1}

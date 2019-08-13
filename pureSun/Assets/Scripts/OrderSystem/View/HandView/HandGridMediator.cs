@@ -140,6 +140,11 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                             callBackDelay = true;
                             handGridView.PlayerRemoveOneCard(handCellItemRemove, callBack);
                             break;
+                        //是否可用渲染
+                        case HandSystemEvent.HAND_CHANGE_CAN_USE_JUDGE:
+                            List<HandCellItem> handCells = notification.Body as List<HandCellItem>;
+                            handGridView.HandChangeCanUseJudge(handCells);
+                            break;
 
                     }
                     break;

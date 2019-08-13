@@ -84,6 +84,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public List<EffectInfo> TargetEffectInfos = new List<EffectInfo>();
 
 
-
+       
+      
     }
 }

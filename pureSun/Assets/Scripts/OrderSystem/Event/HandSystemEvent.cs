@@ -21,6 +21,9 @@
         public const string HAND_CHANGE_REMOVE_ONE_CARD = "handChangeRemoveOneCard";
         //手牌区动画开始
         public const string HAND_CHANGE_ANIMATION_START = "handChangeRemoveOneCard";
+        //手牌可用渲染变化
+        public const string HAND_CHANGE_CAN_USE_JUDGE = "handChangeCanUseJudge";
+
 
 
         //手牌操作

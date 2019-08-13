@@ -15,11 +15,13 @@ namespace Assets.Scripts.OrderSystem.View.HandView
         private bool isDown = false;
        
 
-        public HandCellInstance handCellInstance = null;
 
         public HandCellItem handCellItem;
-
+        //视图
         public CardIntactView cardIntactView;
+        public HandCellInstance handCellInstance;
+
+
 
 
 
@@ -31,16 +33,18 @@ namespace Assets.Scripts.OrderSystem.View.HandView
         public void LoadHandCellItem(HandCellItem handCellItem)
         {
             this.handCellItem = handCellItem;
-
+            //详细图读取后隐藏
             cardIntactView.LoadCard(handCellItem.cardEntry);
             cardIntactView.gameObject.SetActive(false);
+            //缩略图读取
+            handCellInstance.LoadCard(handCellItem.cardEntry);
 
-            TextMeshProUGUI cardName = UtilityHelper.FindChild<TextMeshProUGUI>(handCellInstance.transform, "CardName");
-            cardName.text = handCellItem.cardEntry.name;
-            TextMeshProUGUI cardCost = UtilityHelper.FindChild<TextMeshProUGUI>(handCellInstance.transform, "CardCost");
-            cardCost.text = handCellItem.cardEntry.cost.ToString();
-            string path = "Image/Hand/" + handCellItem.cardEntry.bgImageName + "_hand";
-            changeImageSprite(handCellInstance, path);
+            SetCanUseOutLight(handCellItem);
+        }
+
+        public void SetCanUseOutLight(HandCellItem handCellItem) {
+            handCellInstance.SetOutLight(handCellItem.canUse);
+            cardIntactView.SetOutLight(handCellItem.canUse);
         }
 
         public void PointerEnter()

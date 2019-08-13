@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
+﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using OrderSystem;
 using System.Collections;
 using System.Collections.Generic;
@@ -75,6 +76,18 @@ namespace Assets.Scripts.OrderSystem.View.HandView
 
 
         }
+        //改变了可用显示
+        public void HandChangeCanUseJudge(List<HandCellItem> handCellItems) {
+            foreach (HandCellItem handCellItem in handCellItems) {
+                foreach (HandCellView handCellView in handCellViews) {
+                    if (handCellItem.cardEntry.uuid == handCellView.handCellItem.cardEntry.uuid) {
+                        handCellView.SetCanUseOutLight(handCellItem);
+                    }
+
+                }
+            }
+        }
+
 
         //添加一张牌
         public void PlayerDrawOneCard(HandCellItem handCellItem, UnityAction callBack)

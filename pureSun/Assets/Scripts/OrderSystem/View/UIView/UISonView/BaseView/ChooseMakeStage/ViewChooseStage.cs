@@ -1,15 +1,11 @@
-﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
-using Assets.Scripts.OrderSystem.Model.Database.Card;
+﻿using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using TMPro;
-using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
 
-namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
+using System.Collections.Generic;
+
+using UnityEngine;
+
+namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.ChooseMakeStage
 {
     //复合界面用层级
     public enum VCSLayerSort

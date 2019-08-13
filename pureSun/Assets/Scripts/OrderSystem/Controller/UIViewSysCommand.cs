@@ -10,7 +10,7 @@ namespace Assets.Scripts.OrderSystem.Controller
         {
             switch (notification.Type)
             {
-                case UIViewSystemEvent.UI_CHOOSE_STAGE_START:
+                case TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD:
                     break;
             }
         }

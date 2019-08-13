@@ -5,10 +5,11 @@ Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: OutLight
   m_Shader: {fileID: 4800000, guid: a17967d1596e0cc4aabf9930daaac779, type: 3}
-  m_ShaderKeywords: _ShowInnerGlow
+  m_ShaderKeywords: _ShowOutline
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -70,17 +71,17 @@ Material:
     - _GlossyReflections: 1
     - _InnerGlowAccuracy: 64
     - _InnerGlowAlphaSumThreshold: 0.5
-    - _InnerGlowLerpRate: 0.8
+    - _InnerGlowLerpRate: 0.432
     - _InnerGlowWidth: 0.05
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
-    - _OriginAlphaThreshold: 0.2
+    - _OriginAlphaThreshold: 0.1
     - _OutLightPow: 5
     - _OutLightStrength: 15
     - _Parallax: 0.02
-    - _ShowInnerGlow: 1
-    - _ShowOutline: 0
+    - _ShowInnerGlow: 0
+    - _ShowOutline: 1
     - _Size: 0.1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -90,6 +91,6 @@ Material:
     m_Colors:
     - _AtmoColor: {r: 0, g: 0.4, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EdgeColor: {r: 1, g: 0, b: 0.21484137, a: 1}
+    - _EdgeColor: {r: 1, g: 0, b: 0.21568632, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _InnerGlowColor: {r: 1, g: 0, b: 0, a: 1}
+    - _InnerGlowColor: {r: 0.9811321, g: 0.9811321, b: 0.9811321, a: 1}

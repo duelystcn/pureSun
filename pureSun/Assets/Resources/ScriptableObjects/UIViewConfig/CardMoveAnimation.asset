@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unique: 1
   viewLayer: 3
-  viewName: 7
+  viewName: 9
   cacheScheme: 2
   assetName: CardMoveAnimation
   alwaysUpdate: 0

@@ -34,6 +34,10 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //费用相关
         public ManaItem manaItem;
 
+        //科技相关TraitCombination
+        public TraitCombination traitCombination;
+
+
 
         public PlayerItem(string playCode)
         {
@@ -42,6 +46,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             handGridItem.Create();
             cardDeck = new CardDeck();
             manaItem = new ManaItem();
+            traitCombination = new TraitCombination();
         }
 
         //时点触发器
@@ -55,13 +60,23 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //可用费用发生了变化
         public TTManaCostUsableChange ttManaCostUsableChange;
 
+        //增加了科技
+        public TTAddTraitType ttAddTraitType;
 
-        //方法抽一张牌
+        public void AddTraitType(string traitName)
+        {
+            TraitType traitType = traitCombination.AddTraitType(traitName);
+            ttAddTraitType(traitType);
+
+        }
+
+
+            //方法抽一张牌
         public void DrawCard(int num) {
-            for (int n = 0; n < num; n++) {
-                HandCellItem handcellItem = this.handGridItem.CreateCell(this.cardDeck.GetFirstCard());
-                ttPlayerDrawACard(handcellItem);
-            }
+        for (int n = 0; n < num; n++) {
+            HandCellItem handcellItem = this.handGridItem.CreateCell(this.cardDeck.GetFirstCard());
+            ttPlayerDrawACard(handcellItem);
+        }
         }
         //移除一张手牌
         public void RemoveOneCard(HandCellItem handCellItem) {

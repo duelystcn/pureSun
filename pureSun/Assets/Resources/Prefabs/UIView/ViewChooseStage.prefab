@@ -46,13 +46,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 627747043276796298}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b822275e510b9145a1af883dda8cdbb, type: 3}
+  m_Script: {fileID: 11500000, guid: 31908be4111992f4a8b236cf1332fdfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 11400000, guid: 2e3bc99edbe0dcd4bb2ae7f8b20b6df5, type: 2}
   layerController: {fileID: 0}
   cardIntactViewPrefab: {fileID: 6876585934118765231, guid: c4106403574935840a036972c1ea021d,
     type: 3}
+  layerSort: 0
   cardIntactViews: []
 --- !u!114 &2056470332345908271
 MonoBehaviour:

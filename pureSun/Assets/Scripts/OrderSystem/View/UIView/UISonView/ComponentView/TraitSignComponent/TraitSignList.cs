@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent
+namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.TraitSignComponent
 {
     public class TraitSignList : ViewBaseView
     {

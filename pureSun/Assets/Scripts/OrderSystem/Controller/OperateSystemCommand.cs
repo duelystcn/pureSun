@@ -54,7 +54,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                         case CardEntry.CardType.TacticsCard:
                             //渲染可释放
                             //获取效果信息
-                            EffectInfo effectInfo = effectInfoProxy.effectSysItem.effectInfoMap[handCellItem.cardEntry.cardInfo.effectName[0]];
+                            EffectInfo effectInfo = effectInfoProxy.GetDepthCloneEffectByName(handCellItem.cardEntry.cardInfo.effectName[0]);
                             if (effectInfo.target == "ONE_MINION") {
                                 //传入效果，根据效果目标进行筛选渲染
                                 SendNotification(MinionSystemEvent.MINION_SYS, effectInfo, MinionSystemEvent.MINION_SYS_EFFECT_HIGHLIGHT);
@@ -75,7 +75,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                                     List<EffectInfo> effectInfos = new List<EffectInfo>();
                                     //遍历效果，进行预释放
                                     foreach (string effectName in chooseHand.cardEntry.effectName) {
-                                        EffectInfo oneEffectInfo = effectInfoProxy.effectSysItem.effectInfoMap[effectName];
+                                        EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectName);
                                         //设置状态
                                         oneEffectInfo.effectInfoStage = EffectInfoStage.UnStart;
                                         //设置所有者,手牌操作模式，所有者是当前玩家
@@ -118,7 +118,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                                     break;
                                 case CardEntry.CardType.TacticsCard:
                                     //获取效果信息
-                                    EffectInfo effectInfo = effectInfoProxy.effectSysItem.effectInfoMap[chooseHand.cardEntry.cardInfo.effectName[0]];
+                                    EffectInfo effectInfo = effectInfoProxy.GetDepthCloneEffectByName(chooseHand.cardEntry.cardInfo.effectName[0]);
                                     if (effectInfo.target == "ONE_MINION")
                                     {
                                         UtilityLog.Log("index:"+index);
@@ -152,7 +152,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                                     operateSystemProxy.IntoModeClose();
                                     break;
                                 case CardEntry.CardType.TacticsCard:
-                                    EffectInfo effectInfo = effectInfoProxy.effectSysItem.effectInfoMap[chooseHand.cardEntry.cardInfo.effectName[0]];
+                                    EffectInfo effectInfo = effectInfoProxy.GetDepthCloneEffectByName(chooseHand.cardEntry.cardInfo.effectName[0]);
                                     if (effectInfo.target == "ONE_MINION")
                                     {
                                         //取消渲染
@@ -236,7 +236,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                     if (effectCard.effectName.Length > 1) {
                         UtilityLog.LogError("this chooseEffect has many Effect");
                     }
-                    EffectInfo chooseEffect = effectInfoProxy.effectSysItem.effectInfoMap[effectCard.effectName[0]];
+                    EffectInfo chooseEffect = effectInfoProxy.GetDepthCloneEffectByName(effectCard.effectName[0]);
                     for (int n = 0; n < operateSystemProxy.operateSystemItem.effectInfos.Count; n++)
                     {
                         EffectInfo effect = operateSystemProxy.operateSystemItem.effectInfos[n];
