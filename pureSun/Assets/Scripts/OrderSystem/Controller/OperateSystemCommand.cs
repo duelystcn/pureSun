@@ -167,8 +167,10 @@ namespace Assets.Scripts.OrderSystem.Controller
                     break;
                 //选择目标阶段
                 case OperateSystemEvent.OPERATE_SYS_FIND_TARGET:
+                    //发送打开效果展示列表的消息
+                    SendNotification(UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS, null, UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_OPEN);
+
                     for (int n = 0; n < operateSystemProxy.operateSystemItem.effectInfos.Count; n++) {
-                        UtilityLog.Log("正在选择目标的效果" + operateSystemProxy.operateSystemItem.effectInfos[n].name);
                         EffectInfo effect = operateSystemProxy.operateSystemItem.effectInfos[n];
                         if (effect.effectInfoStage == EffectInfoStage.UnStart)
                         {

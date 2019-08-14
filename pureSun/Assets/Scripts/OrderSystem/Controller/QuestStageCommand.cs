@@ -24,6 +24,8 @@ namespace Assets.Scripts.OrderSystem.Controller
                     SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, null, UIViewSystemEvent.UI_MANA_INFA_SYS_OPEN);
                     //渲染科技栏
                     SendNotification(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS, null, UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS_OPEN);
+                    //渲染船只栏
+                    SendNotification(UIViewSystemEvent.UI_PLAYER_SHOW_SYS, null, UIViewSystemEvent.UI_PLAYER_SHOW_SYS_OPEN);
 
                     PlayerGroupProxy playerGroupProxy = Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
                     QuestStageCircuitProxy circuitProxy = Facade.RetrieveProxy(QuestStageCircuitProxy.NAME) as QuestStageCircuitProxy;

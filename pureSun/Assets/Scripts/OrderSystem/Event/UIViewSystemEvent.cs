@@ -214,6 +214,36 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string UI_TRAIT_COMBINATION_SYS_ADD = "UITraitCombinationSysAdd";
 
+        /// <summary>
+        /// 玩家显示相关
+        /// </summary>
+        public const string UI_PLAYER_SHOW_SYS = "UIPlayerShowSys";
+        /// <summary>
+        /// 玩家显示打开
+        /// </summary>
+        public const string UI_PLAYER_SHOW_SYS_OPEN = "UIPlayerShowSysOpen";
+        /// <summary>
+        /// 玩家显示船只
+        /// </summary>
+        public const string UI_PLAYER_SHOW_SHIP_CARD = "UIPlayerShowShipCard";
+
+
+        /// <summary>
+        /// 效果展示列表相关
+        /// </summary>
+        public const string UI_EFFECT_DISPLAY_SYS = "UIEffectDisplaySys";
+        /// <summary>
+        /// 效果展示列表打开
+        /// </summary>
+        public const string UI_EFFECT_DISPLAY_SYS_OPEN = "UIEffectDisplaySysOpen";
+        /// <summary>
+        /// 效果展示列表关闭
+        /// </summary>
+        public const string UI_EFFECT_DISPLAY_SYS_CLOSE = "UIEffectDisplaySysClose";
+        /// <summary>
+        /// 效果展示列表放入一个效果
+        /// </summary>
+        public const string UI_EFFECT_DISPLAY_SYS_PUT_ONE_EFFECT = "UIEffectDisplaySysPutOneEffect";
 
 
 

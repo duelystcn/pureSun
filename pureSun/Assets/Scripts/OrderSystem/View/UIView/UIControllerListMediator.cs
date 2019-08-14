@@ -7,6 +7,7 @@ using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.Animation;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.ChooseMakeStage;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.PlayerComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.TraitCombination;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView;
 using OrderSystem;
@@ -57,6 +58,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView
             notificationList.Add(UIViewSystemEvent.UI_ANIMATION_SYS);
             notificationList.Add(UIViewSystemEvent.UI_MANA_INFA_SYS);
             notificationList.Add(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS);
+            notificationList.Add(UIViewSystemEvent.UI_PLAYER_SHOW_SYS);
             AddCommonNotificationInterests(notificationList);
             return notificationList.ToArray();
         }
@@ -437,6 +439,15 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                             string traitType = notification.Body.ToString();
                             traitCombinationView = UIControllerLIst.GetViewByName<TraitCombinationView>(UIViewName.TraitCombinationView);
                             traitCombinationView.UITraitCombinationSysAdd(traitType, myself);
+                            break;
+                    }
+                    break;
+                case UIViewSystemEvent.UI_PLAYER_SHOW_SYS:
+                    ShipComponentView shipComponentView = null;
+                    switch (notification.Type)
+                    {
+                        case UIViewSystemEvent.UI_PLAYER_SHOW_SYS_OPEN:
+                            UIControllerLIst.ShowView(UIViewName.ShipComponentView);
                             break;
                     }
                     break;

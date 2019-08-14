@@ -53,6 +53,8 @@ namespace Assets.Scripts.OrderSystem.View.UIView
         //动画组件
         //卡牌移动动画
         CardMoveAnimation,
+        //效果展示组件
+        EffectDisplayList
 
 
         //
