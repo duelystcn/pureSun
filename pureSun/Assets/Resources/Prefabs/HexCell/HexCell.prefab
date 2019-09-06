@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3162705233192910933}
   - component: {fileID: 114851340838861760}
   - component: {fileID: 4616413906036018575}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: HexCell
   m_TagString: HexCell
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 23, y: 21}
+  m_SizeDelta: {x: 20, y: 17.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &114851340838861760
 MonoBehaviour:
@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3de012cd72cbeff468ef7689c220e7b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hexGroundComponent: {fileID: 2203910212323501084}
 --- !u!65 &4616413906036018575
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -74,8 +75,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5817335891915050792}
   - component: {fileID: 1655801162184636933}
-  - component: {fileID: 5810100141182556472}
-  m_Layer: 0
+  - component: {fileID: 2203910212323501084}
+  m_Layer: 9
   m_Name: HexGroundComponent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,7 +100,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 23, y: 21}
+  m_SizeDelta: {x: 20, y: 17.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1655801162184636933
 CanvasRenderer:
@@ -109,7 +110,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 372130951911309785}
   m_CullTransparentMesh: 0
---- !u!114 &5810100141182556472
+--- !u!114 &2203910212323501084
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -118,10 +119,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 372130951911309785}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: 861a9a6436e1e8140a30d651c27b5836, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 7b603c9ab2caae346bad61c0f203bd99, type: 2}
+  m_Material: {fileID: 2100000, guid: 7cccc4c874b1c3f4ebc5f66d5998220a, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
@@ -129,7 +130,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, Unity.ugui,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: b9015216712ec294d891211204b036a0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9f9d93428d582e84caa1b14344f7630d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -149,7 +150,7 @@ GameObject:
   - component: {fileID: 5738391107888888928}
   - component: {fileID: 1503036055155138006}
   - component: {fileID: 8194787950234339154}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: HexCellLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

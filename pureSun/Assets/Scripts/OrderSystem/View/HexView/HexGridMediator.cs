@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.OrderSystem.Event;
+﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using OrderSystem;
 using PureMVC.Interfaces;
@@ -28,7 +29,7 @@ namespace Assets.Scripts.OrderSystem.View.HexView
         {
             List<string> notificationList = new List<string>();
             notificationList.Add(HexSystemEvent.HEX_VIEW_SYS);
-            notificationList.Add(OrderSystemEvent.CHANGE_OVER);
+          
             AddCommonNotificationInterests(notificationList);
             return notificationList.ToArray();
 
@@ -57,12 +58,17 @@ namespace Assets.Scripts.OrderSystem.View.HexView
                                 };
                             }
                             break;
+                        case HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL_OVER:
+                            HexGridItem hexGridItem = notification.Body as HexGridItem;
+                            hexGridView.UpdateHexGrid(hexGridItem);
+                            break;
+                        case HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL_CANCEL_OVER:
+                            HexGridItem hexGridItemCancel = notification.Body as HexGridItem;
+                            hexGridView.UpdateHexGrid(hexGridItemCancel);
+                            break;
                     }
                     break;
-                case OrderSystemEvent.CHANGE_OVER:
-                    HexGridItem hexGridItem = notification.Body as HexGridItem;
-                    hexGridView.UpdateHexGrid(hexGridItem);
-                    break;
+               
 
             }
         }

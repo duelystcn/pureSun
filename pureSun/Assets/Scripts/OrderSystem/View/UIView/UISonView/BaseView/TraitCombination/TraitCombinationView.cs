@@ -14,13 +14,15 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.TraitCombina
 
 
 
-        public void UITraitCombinationSysInit(List<TraitType> traitTypes, bool myself) {
+        public void UITraitCombinationSysInit(List<TraitType> traitTypes, bool myself, string playerCodeNotification) {
             if (myself)
             {
                 TraitSignRowListMyself.UITraitTypeInit(traitTypes);
+                TraitSignRowListMyself.playerCode = playerCodeNotification;
             }
             else {
                 TraitSignRowListEnemy.UITraitTypeInit(traitTypes);
+                TraitSignRowListEnemy.playerCode = playerCodeNotification;
             }
 
         }

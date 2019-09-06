@@ -15,6 +15,9 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.TraitSi
 
         List<string> traitTypeList = new List<string>();
 
+        //这个组件是属于谁的
+        public string playerCode;
+
         public void UITraitTypeInit(List<TraitType> traitTypes) {
             List<string> traitTypeList = new List<string>();
             foreach (TraitType traitType in traitTypes) {

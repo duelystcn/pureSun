@@ -18,9 +18,9 @@ TagManager:
   - PostProcessing
   - HexGrid
   - HandGrid
-  - 
-  - 
-  - 
+  - TrailLayer
+  - UIViewLayer
+  - MinionGrid
   - 
   - 
   - 
@@ -52,6 +52,15 @@ TagManager:
   - name: UI_Base
     uniqueID: 633508449
     locked: 0
+  - name: HexGrid
+    uniqueID: 121974513
+    locked: 0
+  - name: MinionGrid
+    uniqueID: 3174850171
+    locked: 0
+  - name: TrailLayer
+    uniqueID: 870940777
+    locked: 0
   - name: UI_Popup
     uniqueID: 393264123
     locked: 0
@@ -63,7 +72,4 @@ TagManager:
     locked: 0
   - name: HandGrid
     uniqueID: 2316341873
-    locked: 0
-  - name: HexGrid
-    uniqueID: 121974513
     locked: 0

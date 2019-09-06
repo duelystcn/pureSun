@@ -14,11 +14,6 @@ namespace Assets.Scripts.OrderSystem.Model.Hex
         {
             get; private set;
         }
-        //
-        public Color defaultColor = Color.grey;
-        public Color touchedColor = Color.magenta;
-        public Color highlightColor = Color.magenta;
-
         public HexGridItem(HexModelInfo modelInfo)
         {
             this.modelInfo = modelInfo;
@@ -38,7 +33,7 @@ namespace Assets.Scripts.OrderSystem.Model.Hex
         void CreateCell(int x, int z, int i)
         {
             cells[i] = new HexCellItem(x, z);
-            cells[i].color = defaultColor;
+            cells[i].borderState = BorderState.Normal;
             cells[i].coordinates = HexCoordinates.FromOffsetCoordinates(x, z, modelInfo.arrayMode);
 
         }

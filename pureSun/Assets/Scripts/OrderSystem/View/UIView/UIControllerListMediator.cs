@@ -1,4 +1,4 @@
-﻿
+﻿using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
@@ -12,10 +12,8 @@ using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.TraitCombination
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView;
 using OrderSystem;
 using PureMVC.Interfaces;
-using PureMVC.Patterns.Mediator;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -59,6 +57,13 @@ namespace Assets.Scripts.OrderSystem.View.UIView
             notificationList.Add(UIViewSystemEvent.UI_MANA_INFA_SYS);
             notificationList.Add(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS);
             notificationList.Add(UIViewSystemEvent.UI_PLAYER_SHOW_SYS);
+            notificationList.Add(UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS);
+            notificationList.Add(UIViewSystemEvent.UI_PLAYER_SCORE_SHOW_SYS);
+            notificationList.Add(UIViewSystemEvent.UI_NEXT_TURN_SHOW_SYS);
+            
+            //转发监听
+            notificationList.Add(UIViewSystemEvent.UI_VIEW_ZF_HAND_CHANGE);
+
             AddCommonNotificationInterests(notificationList);
             return notificationList.ToArray();
         }
@@ -69,6 +74,11 @@ namespace Assets.Scripts.OrderSystem.View.UIView
         {
             if (notification.Name == UIViewSystemEvent.UI_ANIMATION_SYS && notification.Type == UIViewSystemEvent.UI_ANIMATION_SYS_START)
             {
+                DoExceHandleNotification();
+            }
+            else if (notification.Name == UIViewSystemEvent.UI_ANIMATION_SYS && notification.Type == UIViewSystemEvent.UI_ANIMATION_SYS_ZF_OVER_START)
+            {
+                exceINotification = false;
                 DoExceHandleNotification();
             }
             else if (notification.Name == OrderSystemEvent.CLINET_SYS)
@@ -86,8 +96,17 @@ namespace Assets.Scripts.OrderSystem.View.UIView
 
         public override void ExceHandleNotification(INotification notification)
         {
+            //判断是否是转发内容
+            if (notification.Name.Contains("=>"))
+            {
+                SendNotification(StringUtil.GeNotificationNameForNN(notification.Name), notification.Body, notification.Type);
+                return;
+            }
+
             // 处理公共请求
             HandleNotificationCommon(notification);
+
+
             ViewChooseStage viewChooseStage = null;
             List<CardDeckList> cardDeckListLoad = new List<CardDeckList>();
             CardMoveAnimation cardMoveAnimation = null;
@@ -106,7 +125,6 @@ namespace Assets.Scripts.OrderSystem.View.UIView
             {
                 myself = true;
             }
-
             switch (notification.Name)
             {
                 case UIViewSystemEvent.UI_ANIMATION_SYS:
@@ -398,6 +416,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                             break;
                     }
                     break;
+                //费用控制组件
                 case UIViewSystemEvent.UI_MANA_INFA_SYS:
                     int changeNum = 0;
                     ManaInfoView manaInfoView = null;
@@ -409,7 +428,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                         case UIViewSystemEvent.UI_MANA_INFA_SYS_INIT:
                             ManaItem manaItem = notification.Body as ManaItem;
                             manaInfoView = UIControllerLIst.GetViewByName<ManaInfoView>(UIViewName.ManaInfoView);
-                            manaInfoView.UIManaInfoSysInit(manaItem, myself);
+                            manaInfoView.UIManaInfoSysInit(manaItem, myself, playerCodeNotification);
                             break;
                         case UIViewSystemEvent.UI_MANA_INFA_SYS_USABLE_CHANGE:
                             changeNum = Convert.ToInt32(notification.Body);
@@ -423,6 +442,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                             break;
                     }
                     break;
+                //科技组件显示
                 case UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS:
                     TraitCombinationView traitCombinationView = null;
                     switch (notification.Type)
@@ -433,7 +453,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                         case UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS_INIT:
                             List<TraitType> traitTypes = notification.Body as List<TraitType>;
                             traitCombinationView = UIControllerLIst.GetViewByName<TraitCombinationView>(UIViewName.TraitCombinationView);
-                            traitCombinationView.UITraitCombinationSysInit(traitTypes, myself);
+                            traitCombinationView.UITraitCombinationSysInit(traitTypes, myself, playerCodeNotification);
                             break;
                         case UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS_ADD:
                             string traitType = notification.Body.ToString();
@@ -442,12 +462,61 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                             break;
                     }
                     break;
+                //舰船展示控制
                 case UIViewSystemEvent.UI_PLAYER_SHOW_SYS:
                     ShipComponentView shipComponentView = null;
                     switch (notification.Type)
                     {
                         case UIViewSystemEvent.UI_PLAYER_SHOW_SYS_OPEN:
                             UIControllerLIst.ShowView(UIViewName.ShipComponentView);
+                            shipComponentView = UIControllerLIst.GetViewByName<ShipComponentView>(UIViewName.ShipComponentView);
+                            shipComponentView.myselfPlayerCode = playerCode;
+                            break;
+                    }
+                    break;
+                //效果展示列控制
+                case UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS:
+                    EffectDisplayView effectDisplayView = null;
+                    switch (notification.Type)
+                    {
+                        case UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_OPEN:
+                            UIControllerLIst.ShowView(UIViewName.EffectDisplayView);
+                            break;
+                        case UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_PUT_ONE_EFFECT:
+                            effectDisplayView = UIControllerLIst.GetViewByName<EffectDisplayView>(UIViewName.EffectDisplayView);
+                            CardEntry effectCard = notification.Body as CardEntry;
+                            callBackDelay = true;
+                            effectDisplayView.ShowCradEffectByCardEntry(effectCard, callBack);
+                            break;
+                    }
+                    break;
+                //科技组件显示
+                case UIViewSystemEvent.UI_PLAYER_SCORE_SHOW_SYS:
+                    switch (notification.Type)
+                    {
+                        case UIViewSystemEvent.UI_PLAYER_SCORE_SHOW_SYS_CHANGE:
+                            ShipComponentView shipScoreComponentView = UIControllerLIst.GetViewByName<ShipComponentView>(UIViewName.ShipComponentView);
+                            shipScoreComponentView.ChangeScoreShow(myself,Convert.ToInt32(notification.Body));
+                            break;   
+                    }
+                    break;
+                case UIViewSystemEvent.UI_NEXT_TURN_SHOW_SYS:
+                    NextTurnButton nextTurnButton = null;
+                    switch (notification.Type)
+                    {
+                        case UIViewSystemEvent.UI_NEXT_TURN_SHOW_SYS_OPEN:
+                            UIControllerLIst.ShowView(UIViewName.NextTurnButton);
+                            nextTurnButton = UIControllerLIst.GetViewByName<NextTurnButton>(UIViewName.NextTurnButton);
+                            nextTurnButton.OnPointerClick = () =>
+                            {
+                                SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_END_OF_TRUN);
+                                nextTurnButton.HideButton();
+                            };
+                            nextTurnButton.InitView();
+                            break;
+                        case UIViewSystemEvent.UI_NEXT_TURN_SHOW_SYS_SHOW:
+                            nextTurnButton = UIControllerLIst.GetViewByName<NextTurnButton>(UIViewName.NextTurnButton);
+                            nextTurnButton.ShowButton();
                             break;
                     }
                     break;

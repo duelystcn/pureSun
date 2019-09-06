@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.OrderSystem.Metrics;
+﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Metrics;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
                 MinionCellItem minionCellItem = minionGridItem.minionCells[key];
                 Vector3 position = new Vector3();
                 position = MinionMetrics.erectPosition(position, hexGridItem.cells[key].X, hexGridItem.cells[key].Z, hexGridItem.modelInfo.arrayMode);
+                position.y = 1f;
                 //创建一个生物实例
                 MinionCellView cell = minionCellViews[i] = Instantiate<MinionCellView>(cellPrefab);
                 cell.transform.SetParent(transform, false);
@@ -42,8 +44,6 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
                 cell.minionCellItem = minionCellItem;
                 Text label = Instantiate<Text>(cellLabelPrefab);
                 label.rectTransform.SetParent(cell.transform, false);
-                label.rectTransform.anchoredPosition =
-                    new Vector2(position.x, position.z);
                 label.text = minionCellItem.cardEntry.atk.ToString() + "-" + minionCellItem.cardEntry.def.ToString();
                 i++;
             }

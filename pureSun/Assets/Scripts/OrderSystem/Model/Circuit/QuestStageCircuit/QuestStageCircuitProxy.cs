@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.OrderSystem.Model.Player;
+﻿using Assets.Scripts.OrderSystem.Model.Hex;
+using Assets.Scripts.OrderSystem.Model.Player;
 using PureMVC.Patterns.Proxy;
 using System.Collections.Generic;
 
@@ -8,12 +9,15 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
     {
         public new const string NAME = "QuestStageCircuitProxy";
 
+        public HexModelInfo hexModelInfo;
+
         public QuestStageCircuitItem circuitItem
         {
             get { return (QuestStageCircuitItem)base.Data; }
         }
-        public QuestStageCircuitProxy() : base(NAME) {
+        public QuestStageCircuitProxy(HexModelInfo hexModelInfo) : base(NAME) {
             QuestStageCircuitItem circuitItem = new QuestStageCircuitItem();
+            this.hexModelInfo = hexModelInfo;
             base.Data = circuitItem;
         }
         //流程开始

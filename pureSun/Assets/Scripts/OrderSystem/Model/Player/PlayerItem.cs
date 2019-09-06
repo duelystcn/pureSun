@@ -1,7 +1,9 @@
 ﻿
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
+using System.Collections.Generic;
 using UnityEngine.Events;
 using static Assets.Scripts.OrderSystem.Model.Player.PlayerComponent.PlayerTimeTrigger;
 
@@ -37,6 +39,9 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //科技相关TraitCombination
         public TraitCombination traitCombination;
 
+        //分数？生命
+        public int score = 0;
+
 
 
         public PlayerItem(string playCode)
@@ -60,9 +65,91 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //可用费用发生了变化
         public TTManaCostUsableChange ttManaCostUsableChange;
 
+        //玩家分数发生了变化
+        public TTScoreChange ttScoreChange;
+
         //增加了科技
         public TTAddTraitType ttAddTraitType;
 
+        //固定可召唤区域
+        public List<HexCoordinates> fixedCanCellHexList = new List<HexCoordinates>();
+        //变动可召唤区域
+
+        //禁止召唤区域
+
+        //制造可召唤区域列表
+        public void CreateCanCallHex(HexModelInfo hexModelInfo, HexCellItem[] cells, bool isMyself) {
+            if (hexModelInfo.hexModelType == HexModelType.Source) {
+                if (isMyself)
+                {
+                    fixedCanCellHexList.Add(new HexCoordinates(0, 0));
+                    fixedCanCellHexList.Add(new HexCoordinates(1, 0));
+                    fixedCanCellHexList.Add(new HexCoordinates(2, -1));
+                    fixedCanCellHexList.Add(new HexCoordinates(3, -1));
+                    fixedCanCellHexList.Add(new HexCoordinates(4, -2));
+                    fixedCanCellHexList.Add(new HexCoordinates(5, -2));
+                }
+                else {
+
+                }
+            }
+        }
+        //判断一个格子是否在可召唤区域内
+        public bool checkOneCellCanCall(HexCoordinates hexCoordinates) {
+            bool canCall = false;
+            foreach (HexCoordinates oneHexCoordinates in fixedCanCellHexList) {
+                if (hexCoordinates.X == oneHexCoordinates.X && hexCoordinates.Z == oneHexCoordinates.Z) {
+                    canCall = true;
+                }
+            }
+            return canCall;
+        }
+
+        //判断玩家是否能使用一张牌
+        public bool checkOneCardCanUse(CardEntry cardEntry) {
+            bool canUse = true;
+            //当前可用费用
+            int manaUsable = this.manaItem.manaUsable;
+            //当前科技
+            List<TraitType> traitTypes = this.traitCombination.traitTypes;
+              
+            //检查费用
+            if (cardEntry.cost > manaUsable)
+            {
+                canUse = false;
+            }
+            //检查科技要求
+            HashSet<string> traitdemandSet = new HashSet<string>(cardEntry.traitdemand);
+            foreach (string traitdemandNeed in traitdemandSet)
+            {
+                //需求是多少个
+                int traitdemandNum = 0;
+                foreach (string traitdemand in cardEntry.traitdemand)
+                {
+                    if (traitdemand == traitdemandNeed)
+                    {
+                        traitdemandNum++;
+                    }
+                }
+                //目前的科技有多少
+                int traitTypeNum = 0;
+                foreach (TraitType traitType in traitTypes)
+                {
+                    if (traitType.ToString() == traitdemandNeed)
+                    {
+                        traitTypeNum++;
+                    }
+                }
+                if (traitdemandNum > traitTypeNum)
+                {
+                    canUse = false;
+                }
+            }
+            return canUse;
+        }
+
+
+        //增加了一点科技
         public void AddTraitType(string traitName)
         {
             TraitType traitType = traitCombination.AddTraitType(traitName);
@@ -71,7 +158,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         }
 
 
-            //方法抽一张牌
+        //方法抽一张牌
         public void DrawCard(int num) {
         for (int n = 0; n < num; n++) {
             HandCellItem handcellItem = this.handGridItem.CreateCell(this.cardDeck.GetFirstCard());
@@ -117,6 +204,14 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             manaItem.RestoreToTheUpperLimit();
             ttManaCostUsableChange(changeNum);
         }
+        //改变分数
+        public void ChangeSocre(int changeNum)
+        {
+            score += changeNum;
+            ttScoreChange(changeNum);
+        }
+
+
     }
 
 

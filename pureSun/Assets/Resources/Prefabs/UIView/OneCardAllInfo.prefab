@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 441731459977380290}
   - component: {fileID: 441731459977380301}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: OneCardAllInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58,6 +58,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: CardIntactView
+      objectReference: {fileID: 0}
+    - target: {fileID: 3062172950604447079, guid: c4106403574935840a036972c1ea021d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 289710037668994577, guid: c4106403574935840a036972c1ea021d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 8611782060630761873, guid: c4106403574935840a036972c1ea021d,
         type: 3}
@@ -163,6 +173,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1053819668100386128, guid: c4106403574935840a036972c1ea021d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7438429599105096795, guid: c4106403574935840a036972c1ea021d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4689813879364820702, guid: c4106403574935840a036972c1ea021d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6610388018922635943, guid: c4106403574935840a036972c1ea021d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 2301518209854550233, guid: c4106403574935840a036972c1ea021d,
         type: 3}

@@ -64,6 +64,7 @@ namespace Assets.Scripts.OrderSystem.View.OperateSystem
                                 {
                                     return;
                                 }
+
                                 //判断选择了什么，放在视图层做
                                 HexCellView hexCellView = hexGridMediator.GetHexCellViewByPosition(operateSystemView.trailDrawLine.overVec);
                                 if (hexCellView != null)
@@ -85,6 +86,7 @@ namespace Assets.Scripts.OrderSystem.View.OperateSystem
                                 //还可能选择了其他目标
                                 //如果什么都没选
                                 SendNotification(OperateSystemEvent.OPERATE_SYS, null, OperateSystemEvent.OPERATE_SYS_DRAW_END_NULL);
+                               
                             };
                             break;
                     }

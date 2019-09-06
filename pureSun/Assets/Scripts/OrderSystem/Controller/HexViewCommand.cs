@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.OrderSystem.Event;
+﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.OperateSystem;
 using OrderSystem;
@@ -28,34 +29,28 @@ namespace Assets.Scripts.OrderSystem.Controller
 
                 //这一段代码写的比较糟糕，只用作效果展示
                 //需要区分模式
-                case HexSystemEvent.HEX_VIEW_SYS_CHANGE:
+                case HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL:
                     //传递的参数中有生物信息
                     OperateSystemItem operateSystemItem = notification.Body as OperateSystemItem;
-                    //获取当前玩家虚拟坐标
-                    HexCoordinates hexCoordinates = operateSystemItem.playerItem.hexCoordinates;
-                    int row = 999;
-                    if (hexCoordinates.Z < 0) {
-                        row = hexCoordinates.Z + 1;
-                    }
-                    if (hexCoordinates.Z > 0) {
-                        row = hexCoordinates.Z - 1 ;
-                    }
+                    //获取当前玩家固定可召唤区域
+                    List<HexCoordinates> fixedCanCellHexList = operateSystemItem.playerItem.fixedCanCellHexList;
+                    
                     //遍历渲染
                     foreach (HexCellItem hexCellItem in hexGridProxy.HexGrid.cells) {
-                        if (hexCellItem.coordinates.Z + Mathf.RoundToInt(hexCellItem.coordinates.X/2) == row) {
-                            hexCellItem.color = hexGridProxy.HexGrid.highlightColor;
+                        if (operateSystemItem.playerItem.checkOneCellCanCall(hexCellItem.coordinates)) {
+                            hexCellItem.borderState = BorderState.CanCall;
                         }
                     }
-                    SendNotification(OrderSystemEvent.CHANGE_OVER, hexGridProxy.HexGrid, "CHANGEOVER");
+                    SendNotification(HexSystemEvent.HEX_VIEW_SYS, hexGridProxy.HexGrid, HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL_OVER);
                     break;
-                case HexSystemEvent.HEX_VIEW_SYS_CLOSE_HIGHLIGHT:
+                case HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL_CANCEL:
                     foreach (HexCellItem hexCellItem in hexGridProxy.HexGrid.cells)
                     {
-                        if (hexCellItem.color == hexGridProxy.HexGrid.highlightColor) {
-                            hexCellItem.color = hexGridProxy.HexGrid.defaultColor;
+                        if (hexCellItem.borderState == BorderState.CanCall) {
+                            hexCellItem.borderState = BorderState.Normal;
                         }  
                     }
-                    SendNotification(OrderSystemEvent.CHANGE_OVER, hexGridProxy.HexGrid, "CHANGEOVER");
+                    SendNotification(HexSystemEvent.HEX_VIEW_SYS, hexGridProxy.HexGrid, HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL_CANCEL_OVER);
                     break;
 
             }

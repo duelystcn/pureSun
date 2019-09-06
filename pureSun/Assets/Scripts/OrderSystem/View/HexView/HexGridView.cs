@@ -19,11 +19,15 @@ namespace Assets.Scripts.OrderSystem.View.HexView
         HexModelInfo modelInfo;
         Canvas gridCanvas;
         HexMesh hexMesh;
+        //原始边框
+        public Material originalBorderColor;
+        //可召唤边框
+        public Material canCallBorderColor;
+
         void Awake()
         {
             gridCanvas = GetComponentInChildren<Canvas>();
             hexMesh = GetComponentInChildren<HexMesh>();
-
         }
         //实例化一个hexGrid-
         public void AchieveHexGrid(HexGridItem HexGrid)
@@ -61,8 +65,9 @@ namespace Assets.Scripts.OrderSystem.View.HexView
         {
             for (int i = 0; i < HexGrid.cells.Length; i++)
             {
-                cellViews[i].hexCellItem = HexGrid.cells[i];
+                cellViews[i].LoadHexCellItem(HexGrid.cells[i],this);
             }
+
             hexMesh.Triangulate(cellViews, this.modelInfo.arrayMode);
         }
         void Update()

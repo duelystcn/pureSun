@@ -1,27 +1,22 @@
 ﻿
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
-using System;
-using TMPro;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.ManaInfoComponent;
 
 namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
 {
     public class ManaInfoView : ViewBaseView
     {
-        public TextMeshProUGUI myselfManaUpperLimit;
-        public TextMeshProUGUI myselfManaUsable;
-        public TextMeshProUGUI enmeyManaUpperLimit;
-        public TextMeshProUGUI enmeyManaUsable;
+        public OnePlayerManaInfo myselfOnePlayerManaInfo;
+        public OnePlayerManaInfo enemyOnePlayerManaInfo;
 
-        public void UIManaInfoSysInit(ManaItem manaItem, bool myself)
+        public void UIManaInfoSysInit(ManaItem manaItem, bool myself, string playerCodeNotification)
         {
             if (myself)
             {
-                myselfManaUpperLimit.text = manaItem.manaUpperLimit.ToString();
-                myselfManaUsable.text = manaItem.manaUsable.ToString();
+                myselfOnePlayerManaInfo.UIManaInfoSysInit(manaItem, playerCodeNotification);
             }
             else {
-                enmeyManaUpperLimit.text = manaItem.manaUpperLimit.ToString();
-                enmeyManaUsable.text = manaItem.manaUsable.ToString();
+                enemyOnePlayerManaInfo.UIManaInfoSysInit(manaItem, playerCodeNotification);
             }
            
         }
@@ -29,10 +24,10 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
         public void ChangeManaUsable(int changeNum, bool myself)
         {
             if (myself) {
-                myselfManaUsable.text = (Convert.ToInt32(myselfManaUsable.text) + changeNum).ToString();
+                myselfOnePlayerManaInfo.ChangeManaUsable(changeNum);
             }
             else {
-                enmeyManaUsable.text = (Convert.ToInt32(enmeyManaUsable.text) + changeNum).ToString();
+                enemyOnePlayerManaInfo.ChangeManaUsable(changeNum);
             }
            
         }
@@ -41,13 +36,12 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
         {
             if (myself)
             {
-                myselfManaUpperLimit.text = (Convert.ToInt32(myselfManaUpperLimit.text) + changeNum).ToString();
+                myselfOnePlayerManaInfo.ChangeManaUpperLimit(changeNum);
             }
             else
             {
-                enmeyManaUpperLimit.text = (Convert.ToInt32(enmeyManaUpperLimit.text) + changeNum).ToString();
+                enemyOnePlayerManaInfo.ChangeManaUpperLimit(changeNum);
             }
-
         }
     }
 }

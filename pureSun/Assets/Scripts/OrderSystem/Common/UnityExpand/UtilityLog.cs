@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/*************************************************************************************
+     * 类 名 称：       UtilityLog
+     * 文 件 名：       UtilityLog
+     * 创建时间：       2019-08-14
+     * 作    者：       chenxi
+     * 说   明：        这个类是拓展了Unity的log打印日志，预计在将来拓展为可以打印日志文件   
+     * 修改时间：
+     * 修 改 人：
+    *************************************************************************************/
 using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.Common.UnityExpand
 {
+    //颜色
     public enum LogColor
     {
         BLACK,
@@ -18,7 +23,7 @@ namespace Assets.Scripts.OrderSystem.Common.UnityExpand
     }
     class UtilityLog
     {
-
+        //普通打印
         public static void Log(object msg, LogColor color = LogColor.BLACK)
         {
             if (color == LogColor.BLACK)
@@ -26,6 +31,7 @@ namespace Assets.Scripts.OrderSystem.Common.UnityExpand
             else
                 Debug.Log(string.Format(GetColor(color), msg.ToString()));
         }
+        //获取颜色
         private static string GetColor(LogColor color)
         {
             switch (color)
@@ -46,11 +52,12 @@ namespace Assets.Scripts.OrderSystem.Common.UnityExpand
                     return "<color=#000000>{0}</color>";
             }
         }
+        //打印错误
         public static void LogError(object msg)
         {
             Debug.LogError(msg);
         }
-
+        //打印警告
         public static void LogWarning(object msg)
         {
             Debug.LogWarning(msg);

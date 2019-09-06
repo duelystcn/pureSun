@@ -25,7 +25,7 @@ namespace Assets.Scripts.OrderSystem.View.CircuitView.QuestStageCircuit
                 throw new Exception(QuestStageCircuitProxy.NAME + "is null.");
             circuitButton.OnClick += () =>
             {
-                circuitProxy.IntoNextTurn();
+               
             };
         }
     }

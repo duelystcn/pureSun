@@ -1,4 +1,6 @@
 ﻿using Assets.Scripts.OrderSystem.Metrics;
+using Assets.Scripts.OrderSystem.Model.Database.Effect;
+using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.ChooseMakeStage;
 using UnityEngine;
 
@@ -43,6 +45,19 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
 
         //界面相关,卡牌所在组件位置
         public Vector3 cardPosition;
+
+        //已被触发的效果
+        public EffectInfo triggeredEffectInfo;
+
+        
+
+        //需要被展示的效果
+        public EffectInfo needShowEffectInfo;
+
+        //这张牌的当前所使用者，用于效果执行
+        public PlayerItem player;
+
+
 
 
         public void InitializeByCardInfo(CardInfo cardInfo) {

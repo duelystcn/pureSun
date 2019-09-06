@@ -15,18 +15,7 @@ namespace Assets.Scripts.OrderSystem.Model.OperateSystem
         //暂定？上一个模式
         //进入卡牌结算模式后，需要判断是否能结算成功，如果不能结算成功需要返回上一个模式，进行特殊处理？
 
-        //效果结算？写在这里吧
-        //正在结算的卡
-        public CardEntry cardEntry;
-
-
-        //正在结算的效果集合
-        public List<EffectInfo> effectInfos;
-
-
-        //正在结算的效果
-        public EffectInfo effectInfo;
-
+      
 
         public HandCellItem onChooseHandCellItem
         {

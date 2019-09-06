@@ -1,6 +1,9 @@
 ﻿
 using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
 using Newtonsoft.Json;
 using PureMVC.Patterns.Proxy;
 using System.Collections.Generic;
@@ -25,9 +28,14 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         //读取JSON文件配置
         public void LoadCardDbByJson()
         {
-            string jsonStr = File.ReadAllText("Assets/Resources/Json/EffectDb.json", Encoding.GetEncoding("gb2312"));
+            string effectSysStr = File.ReadAllText("Assets/Resources/Json/EffectDb.json", Encoding.GetEncoding("gb2312"));
             effectSysItem.effectInfoMap =
-                JsonConvert.DeserializeObject<Dictionary<string, EffectInfo>>(jsonStr);
+                JsonConvert.DeserializeObject<Dictionary<string, EffectInfo>>(effectSysStr);
+
+            string impactTimeTriggerStr = File.ReadAllText("Assets/Resources/Json/ImpactTimeTrigger.json", Encoding.GetEncoding("gb2312"));
+            effectSysItem.impactTimeTriggerMap =
+                JsonConvert.DeserializeObject<Dictionary<string, ImpactTimeTrigger>>(impactTimeTriggerStr);
+
 
         }
 
@@ -37,6 +45,29 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
             effectSysItem.EffectActionReady(effectInfo);
             return effectInfo;
         }
+
+        //cardEntry这个参数貌似不是必须的？
+        //进入卡牌结算模式
+        public void IntoModeCardSettle(CardEntry cardEntry, List<EffectInfo> effectInfos)
+        {
+            effectSysItem.effectInfosQueue.Enqueue(effectInfos);
+            effectSysItem.cardEntryQueue.Enqueue(cardEntry);
+            ExeEffectQueue();
+        }
+        public void ExeEffectQueue() {
+            if (effectSysItem.effectSysItemStage == EffectSysItemStage.UnStart) {
+                if (effectSysItem.cardEntryQueue.Count > 0)
+                {
+                    effectSysItem.effectSysItemStage = EffectSysItemStage.Executing;
+                    effectSysItem.effectInfos = effectSysItem.effectInfosQueue.Dequeue();
+                    effectSysItem.cardEntry = effectSysItem.cardEntryQueue.Dequeue();
+                    SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_TARGET);
+                }
+            }
+           
+
+        }
+
 
 
 

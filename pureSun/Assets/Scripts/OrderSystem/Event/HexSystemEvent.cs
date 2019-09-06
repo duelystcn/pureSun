@@ -10,6 +10,16 @@
 
         public const string HEX_VIEW_SYS_SHOW = "hexViewSysShow";
 
+
+        //渲染可召唤区域
+        public const string HEX_VIEW_RENDER_CAN_CALL = "hexViewRenderCanCall";
+        //渲染可召唤区域完毕
+        public const string HEX_VIEW_RENDER_CAN_CALL_OVER = "hexViewRenderCanCallOver";
+        //取消渲染可召唤区域
+        public const string HEX_VIEW_RENDER_CAN_CALL_CANCEL = "hexViewRenderCanCallCancel";
+        //取消渲染可召唤区域完毕
+        public const string HEX_VIEW_RENDER_CAN_CALL_CANCEL_OVER = "hexViewRenderCanCallCancelOver";
+
         //战场视图发生了变化
         public const string HEX_VIEW_SYS_CHANGE = "hexViewSysChange";
         //取消战场高亮提示

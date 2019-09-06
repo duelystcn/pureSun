@@ -34,12 +34,7 @@ namespace Assets.Scripts.OrderSystem.Model.OperateSystem
             operateSystemItem.onChooseHandCellItem = null;
             operateSystemItem.playerItem = null;
         }
-        //cardEntry这个参数貌似不是必须的？
-        //进入卡牌结算模式
-        public void IntoModeCardSettle(CardEntry cardEntry, List<EffectInfo> effectInfos) {
-            operateSystemItem.effectInfos = effectInfos;
-            operateSystemItem.cardEntry = cardEntry;
-        }
+       
 
 
 

@@ -16,7 +16,7 @@
 		_InnerGlowAlphaSumThreshold("Inner Glow Alpha Sum Threshold", Float) = 0.5		//内发光的透明度和的阈值
 		_InnerGlowLerpRate("Inner Glow Lerp Rate", range(0, 1)) = 0.8			//内发光颜色和原颜色的差值
 
-		[Toggle(_ShowInnerGlow)] _ShowInnerGlow("Show Inner Glow", Int) = 0		//开启外轮廓的Toggle
+		[Toggle(_ShowInnerGlow)] _ShowInnerGlow("Show Inner Glow", Int) = 0		//开启内发光的Toggle
 	}
 
 		SubShader

@@ -28,7 +28,7 @@ namespace Assets.Scripts.OrderSystem.Model.Hex
             {
                 if (HexGrid.cells[i].X.Equals(cellItem.X)&& HexGrid.cells[i].Z.Equals(cellItem.Z))
                 {
-                    HexGrid.cells[i].color = HexGrid.touchedColor;
+                   
                     break;
                 }
             }

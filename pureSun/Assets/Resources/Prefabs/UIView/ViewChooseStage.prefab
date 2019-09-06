@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2070204731024008894}
   - component: {fileID: 2723450503549756665}
   - component: {fileID: 2056470332345908271}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: ViewChooseStage
   m_TagString: Untagged
   m_Icon: {fileID: 0}

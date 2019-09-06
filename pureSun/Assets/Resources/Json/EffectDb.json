@@ -56,5 +56,17 @@
     "impactType": "Moment",
     "impactTargets": [ "TraitAddOne" ],
     "impactContents": [ "supremcy" ]
+  },
+  "SelfDrawOneCardThenGetOneScore": {
+    "name": "SelfDrawOneCardThenGetOneScore",
+    "description": "每当你抽一张牌时，获得1分",
+    "target": "Player",
+    "targetClaims": [ "Owner" ],
+    "targetClaimsContents": [ "Myself" ],
+    "impactType": "Continue",
+    "impactTimeTriggers": [ "SysSelfDrawACard" ],
+    "impactTargets": [ "Score" ],
+    "impactContents": [ "1" ]
+
   }
 }

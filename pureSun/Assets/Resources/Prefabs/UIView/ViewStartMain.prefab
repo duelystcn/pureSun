@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 18545154856051461}
   - component: {fileID: 683990495674362112}
   - component: {fileID: 4756208307672245921}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: BtnTestMap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 810812531763121034}
   - component: {fileID: 760484917986035162}
   - component: {fileID: 9150042684499779161}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: BtnStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -253,7 +253,7 @@ GameObject:
   - component: {fileID: 6527216477770474293}
   - component: {fileID: 3802632803343415360}
   - component: {fileID: 916748154220301597}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: BtnBG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,7 +325,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1884283037979718818}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -364,7 +364,7 @@ GameObject:
   - component: {fileID: 8892159873397988156}
   - component: {fileID: 5697461387517223271}
   - component: {fileID: 5599093364554964046}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -521,7 +521,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7440093233571934386}
   - component: {fileID: 8268387311803152680}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: ViewStartMain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -576,7 +576,7 @@ GameObject:
   - component: {fileID: 6820108435001138816}
   - component: {fileID: 8149522011708645540}
   - component: {fileID: 8909273621868948643}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: BtnLayout
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -654,7 +654,7 @@ GameObject:
   - component: {fileID: 5614373633662544736}
   - component: {fileID: 2445512342371786453}
   - component: {fileID: 2524945475601337058}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}

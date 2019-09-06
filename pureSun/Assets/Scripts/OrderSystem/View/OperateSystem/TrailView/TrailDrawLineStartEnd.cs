@@ -70,6 +70,9 @@ namespace Assets.Scripts.OrderSystem.View.OperateSystem.TrailView
                             overVec = hit.point;
                         }
                     }
+                    else {
+                        overVec = new Vector3(0, 0, -9999);
+                    }
 
                     firstMouseUp = false;
                     if (isAchieve)

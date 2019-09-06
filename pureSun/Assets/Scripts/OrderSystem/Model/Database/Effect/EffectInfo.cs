@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
 using System.Collections.Generic;
@@ -49,6 +50,11 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         //影响类别
         //瞬间MOMENT，持续CONTINUE
         public string impactType { get; set; }
+        //如果是持续，那么需要有触发时点和触发要求
+        public string[] impactTimeTriggers { get; set; }
+        //实例化的触发器避免重复获取
+        public List<ImpactTimeTrigger> impactTimeTriggerList = new List<ImpactTimeTrigger>();
+
         //影响目标
         //数组，生命DEF,攻击ATK
         public string[] impactTargets { get; set; }
@@ -75,6 +81,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public PlayerItem player;
         //效果选择者，当一个效果需要进行选择的时候使用
         public PlayerItem chooseByPlayer;
+
 
         //执行对象
         //目前可能存在的目标？卡（墓地，牌组，手牌）,生物，玩家，效果（选择性发动的效果）

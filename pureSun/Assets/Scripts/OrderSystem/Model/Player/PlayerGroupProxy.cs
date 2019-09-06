@@ -46,31 +46,43 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //绑定时点触发器
         public void AddTimeTrigger(PlayerItem playerItem)
         {
+            //抽一张牌
             playerItem.ttPlayerDrawACard = (HandCellItem handCellItem) =>
             {
-                SendNotification(HandSystemEvent.HAND_CHANGE, handCellItem, StringUtil.NotificationTypeAddPlayerCode(HandSystemEvent.HAND_CHANGE_DRAW_ONE_CARD,playerItem.playerCode));
-                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, handCellItem, TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD);
+                SendNotification(UIViewSystemEvent.UI_VIEW_ZF_HAND_CHANGE, handCellItem, StringUtil.NotificationTypeAddPlayerCode(HandSystemEvent.HAND_CHANGE_DRAW_ONE_CARD,playerItem.playerCode));
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, handCellItem, StringUtil.NotificationTypeAddPlayerCode(TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD, playerItem.playerCode));
                 SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
+
             };
+            //移除一张牌
             playerItem.ttPlayerRemoveACard = (HandCellItem handCellItem) =>
             {
                 SendNotification(HandSystemEvent.HAND_CHANGE, handCellItem, StringUtil.NotificationTypeAddPlayerCode(HandSystemEvent.HAND_CHANGE_REMOVE_ONE_CARD, playerItem.playerCode));
                 SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
             };
+            //费用上限变化
             playerItem.ttManaCostLimitChange = (int changeNum ) =>
             {
                 SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, changeNum, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_LIMIT_CHANGE, playerItem.playerCode));
                 SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
             };
+            //费用变化
             playerItem.ttManaCostUsableChange = (int changeNum) =>
             {
                 SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, changeNum, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_USABLE_CHANGE, playerItem.playerCode));
                 SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
             };
+            //增加科技
             playerItem.ttAddTraitType = (TraitType traitType) =>
             {
                 SendNotification(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS, traitType, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS_ADD, playerItem.playerCode));
                 SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
+            };
+            //分数变化
+            playerItem.ttScoreChange = (int changeNum) =>
+            {
+                SendNotification(UIViewSystemEvent.UI_PLAYER_SCORE_SHOW_SYS, changeNum, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_PLAYER_SCORE_SHOW_SYS_CHANGE, playerItem.playerCode));
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, changeNum, StringUtil.NotificationTypeAddPlayerCode(TimeTriggerEvent.TIME_TRIGGER_SYS_SCORE_CHANGE, playerItem.playerCode));
             };
 
         }

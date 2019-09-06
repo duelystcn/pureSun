@@ -192,7 +192,7 @@
     "cost": "80",
     "trait": [ "neutral" ],
     "traitdemand": [ "neutral" ],
-    "effectName": [ "testEffect" ],
+    "effectName": [ "SelfDrawOneCardThenGetOneScore" ],
     "description": "每当你抽一张牌时，获得1分"
   },
   "Taxation": {

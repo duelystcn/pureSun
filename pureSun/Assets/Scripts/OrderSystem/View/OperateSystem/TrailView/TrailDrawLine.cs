@@ -52,7 +52,7 @@ namespace Assets.Scripts.OrderSystem.View.OperateSystem.TrailView
             firstMouseDown = true;
             mouseDown = true;
             firstMouseUp = false;
-            lineRenderer.SetWidth(0.1f, 0.1f);
+          
 
         }
         

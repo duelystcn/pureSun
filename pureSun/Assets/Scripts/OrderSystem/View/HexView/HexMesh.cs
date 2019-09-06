@@ -52,7 +52,7 @@ namespace Assets.Scripts.OrderSystem.View.HexView
                     center + arrayCorners[i],
                     center + arrayCorners[i + 1]
                 );
-                AddTriangleColor(cell.hexCellItem.color);
+                AddTriangleColor(Color.grey);
             }
         }
         //渲染颜色

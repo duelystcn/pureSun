@@ -1,0 +1,10 @@
+{
+  "SysSelfDrawACard": {
+    "name": "SysSelfDrawACard",
+    "description": "每当你抽一张牌时",
+    "impactTimeTriggertMonitor": "TimeTriggerSysDrawACard",
+    "impactTimeTriggertClaims": [ "Owner" ],
+    "impactTimeTriggertClaimsContents": [ "Myself" ]
+
+  }
+}

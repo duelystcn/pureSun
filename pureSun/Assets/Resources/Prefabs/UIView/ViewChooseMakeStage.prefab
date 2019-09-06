@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2309520611056816387}
   - component: {fileID: 8192089297200350118}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: ViewChooseMakeStage
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -41,10 +41,18 @@ namespace Assets.Scripts.OrderSystem.View.HandView
 
             SetCanUseOutLight(handCellItem);
         }
-
+        //设置可用给高亮
         public void SetCanUseOutLight(HandCellItem handCellItem) {
+            this.handCellItem.canUse = handCellItem.canUse;
             handCellInstance.SetOutLight(handCellItem.canUse);
             cardIntactView.SetOutLight(handCellItem.canUse);
+        }
+
+        //取消选中状态
+        public void UncheckChange()
+        {
+            isDown = false;
+            PointerExit();
         }
 
         public void PointerEnter()
@@ -66,16 +74,12 @@ namespace Assets.Scripts.OrderSystem.View.HandView
             }
         }
 
-
         // 当按钮被按下后系统自动调用此方法
         //选中卡牌后
         public void PointerDown()
         {
             isDown = true;
             OnPointerDown();
-
-
-
         }
         // 当按钮抬起的时候自动调用此方法
         public void PointerUp()

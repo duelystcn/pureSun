@@ -54,11 +54,11 @@ namespace Assets.Scripts.OrderSystem.View.UIView
         //卡牌移动动画
         CardMoveAnimation,
         //效果展示组件
-        EffectDisplayList
+        EffectDisplayView,
 
 
-        //
-
+        //下一回合按钮
+        NextTurnButton
 
     }
     //UIView名字的比较器

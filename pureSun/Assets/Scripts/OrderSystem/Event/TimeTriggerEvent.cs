@@ -16,6 +16,10 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 监听器相关，需要重新渲染手牌可用，暂时放在这里
         /// </summary>
         public const string TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE = "TimeTriggerSysHandCanUseJudge";
+        /// <summary>
+        /// 监听器相关，分数变化
+        /// </summary>
+        public const string TIME_TRIGGER_SYS_SCORE_CHANGE = "TimeTriggerSysScoreChange";
 
 
     }

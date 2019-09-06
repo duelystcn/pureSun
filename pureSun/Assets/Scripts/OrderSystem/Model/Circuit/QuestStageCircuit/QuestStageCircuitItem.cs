@@ -1,5 +1,7 @@
 ﻿
 
+using Assets.Scripts.OrderSystem.Model.Database.Effect;
+using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
 using System.Collections.Generic;
 
 namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
@@ -30,7 +32,25 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
 
         public QuestOneTurnStage oneTurnStage = QuestOneTurnStage.UnStart;
 
+        public Dictionary<string, List<EffectInfo>>  activeEffectInfoMap = new Dictionary<string, List<EffectInfo>>();
 
+        public void putOneEffectInfoInActiveMap(EffectInfo effectInfo, Dictionary<string, ImpactTimeTrigger> impactTimeTriggerMap) {
+            foreach (string impactTimeTriggerStr in effectInfo.impactTimeTriggers) {
+                ImpactTimeTrigger impactTimeTrigger = impactTimeTriggerMap[impactTimeTriggerStr];
+                effectInfo.impactTimeTriggerList.Add(impactTimeTrigger);
+                if (activeEffectInfoMap.ContainsKey(impactTimeTrigger.impactTimeTriggertMonitor))
+                {
+                    activeEffectInfoMap[impactTimeTrigger.impactTimeTriggertMonitor].Add(effectInfo);
+                }
+                else {
+                    List<EffectInfo> effectInfos = new List<EffectInfo>();
+                    effectInfos.Add(effectInfo);
+                    activeEffectInfoMap.Add(impactTimeTrigger.impactTimeTriggertMonitor, effectInfos);
+                }
+            }
+
+        }
 
     }
+    
 }

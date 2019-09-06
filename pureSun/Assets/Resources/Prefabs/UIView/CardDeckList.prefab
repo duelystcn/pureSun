@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6251639363567270734}
   - component: {fileID: 526091816420244126}
   - component: {fileID: 6469407360887346008}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: CardDeckList
   m_TagString: Untagged
   m_Icon: {fileID: 0}

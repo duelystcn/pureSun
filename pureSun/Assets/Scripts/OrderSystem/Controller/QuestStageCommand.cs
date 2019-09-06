@@ -4,7 +4,9 @@ using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
+using Assets.Scripts.OrderSystem.Model.Database.Effect;
 using Assets.Scripts.OrderSystem.Model.Player;
+using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Command;
 
@@ -29,6 +31,7 @@ namespace Assets.Scripts.OrderSystem.Controller
 
                     PlayerGroupProxy playerGroupProxy = Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
                     QuestStageCircuitProxy circuitProxy = Facade.RetrieveProxy(QuestStageCircuitProxy.NAME) as QuestStageCircuitProxy;
+                    EffectInfoProxy effectInfoProxy = Facade.RetrieveProxy(EffectInfoProxy.NAME) as EffectInfoProxy;
 
                     circuitProxy.CircuitStart(playerGroupProxy.playerGroup.playerItems);
 
@@ -40,13 +43,27 @@ namespace Assets.Scripts.OrderSystem.Controller
                         playerItem.manaItem.manaUpperLimit = 1;
                         //设置当前费用为0
                         playerItem.manaItem.manaUsable = 0;
-                        
-                        SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, playerItem.manaItem, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_INIT,playerItem.playerCode));
+                        //获取船只的效果，如果是持续效果则添加到全局监听中
+                        foreach (string effectName in playerItem.shipCard.effectName)
+                        {
+                            EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectName);
+                            if (oneEffectInfo.impactType == "Continue") {
+                                oneEffectInfo.player = playerItem;
+                                oneEffectInfo.cardEntry = playerItem.shipCard;
+                                circuitProxy.circuitItem.putOneEffectInfoInActiveMap(oneEffectInfo, effectInfoProxy.effectSysItem.impactTimeTriggerMap);
+                            }
+
+                        }
+                        ManaItem manaItem = new ManaItem();
+                        manaItem.manaUpperLimit = playerItem.manaItem.manaUpperLimit;
+                        manaItem.manaUsable = playerItem.manaItem.manaUsable;
+                        SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, manaItem, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_INIT,playerItem.playerCode));
 
                         SendNotification(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS, playerItem.traitCombination.traitTypes, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS_INIT, playerItem.playerCode));
                         //手牌渲染
                         //SendNotification(HandSystemEvent.HAND_CHANGE, playerItem.handGridItem, StringUtil.NotificationTypeAddPlayerCode(HandSystemEvent.HAND_CHANGE_AFFLUX, playerItem.playerCode));
                     }
+                    SendNotification(UIViewSystemEvent.UI_NEXT_TURN_SHOW_SYS, null, UIViewSystemEvent.UI_NEXT_TURN_SHOW_SYS_OPEN);
                     SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_START_OF_TRUN);
                     break;
             }

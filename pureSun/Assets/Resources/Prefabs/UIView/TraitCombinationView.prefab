@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3679256766883981902}
   - component: {fileID: 3679256766883981889}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: TraitCombinationView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64,7 +64,7 @@ PrefabInstance:
     - target: {fileID: 1926639788959864571, guid: c555c4821b892804ab0dd0e7bb20edee,
         type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7814324016553525279, guid: c555c4821b892804ab0dd0e7bb20edee,
         type: 3}
@@ -166,7 +166,7 @@ PrefabInstance:
     - target: {fileID: 1926639788959864571, guid: c555c4821b892804ab0dd0e7bb20edee,
         type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7814324016553525279, guid: c555c4821b892804ab0dd0e7bb20edee,
         type: 3}

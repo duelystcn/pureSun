@@ -11,6 +11,13 @@ namespace Assets.Scripts.OrderSystem.Event
 
 
 
+        /// <summary>
+        /// 尝试控制转发？
+        /// </summary>
+        public const string UI_VIEW_ZF_HAND_CHANGE = "UIView=>handChange";
+
+
+
 
         /// <summary>
         /// 开始选单相关
@@ -132,9 +139,13 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string UI_QUEST_TURN_STAGE = "UIQuestTurnStage";
         /// <summary>
-        /// 回合阶段相关开始一个回合
+        /// 开始一个回合
         /// </summary>
         public const string UI_QUEST_TURN_STAGE_START_OF_TRUN = "UIQuestStageStartOfTrun";
+        /// <summary>
+        /// 结束一个回合
+        /// </summary>
+        public const string UI_QUEST_TURN_STAGE_END_OF_TRUN = "UIQuestStageEndOfTrun";
 
 
         /// <summary>
@@ -171,9 +182,14 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string UI_ANIMATION_SYS= "UIAnimationtSys";
         /// <summary>
-        /// 进行用户选择效果界面
+        /// UI动画播放
         /// </summary>
         public const string UI_ANIMATION_SYS_START = "UIAnimationtSysStart";
+        /// <summary>
+        /// 转发完成UI动画继续播放
+        /// </summary>
+        public const string UI_ANIMATION_SYS_ZF_OVER_START = "UIAnimationtSysZFOverStart";
+
 
         /// <summary>
         /// 费用显示相关
@@ -244,6 +260,30 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 效果展示列表放入一个效果
         /// </summary>
         public const string UI_EFFECT_DISPLAY_SYS_PUT_ONE_EFFECT = "UIEffectDisplaySysPutOneEffect";
+
+
+        /// <summary>
+        /// 玩家分数显示相关
+        /// </summary>
+        public const string UI_PLAYER_SCORE_SHOW_SYS = "UIPlayerScoreShowSys";
+        /// <summary>
+        /// 玩家分数变化
+        /// </summary>
+        public const string UI_PLAYER_SCORE_SHOW_SYS_CHANGE = "UIPlayerScoreShowSysChange";
+
+
+        /// <summary>
+        /// 回合结束按钮显示相关
+        /// </summary>
+        public const string UI_NEXT_TURN_SHOW_SYS = "UINextTurnShowSys";
+        /// <summary>
+        /// 回合结束按钮显示
+        /// </summary>
+        public const string UI_NEXT_TURN_SHOW_SYS_OPEN = "UINextTurnShowSysOpen";
+        /// <summary>
+        /// 回合结束按钮显示
+        /// </summary>
+        public const string UI_NEXT_TURN_SHOW_SYS_SHOW = "UINextTurnShowSysShow";
 
 
 

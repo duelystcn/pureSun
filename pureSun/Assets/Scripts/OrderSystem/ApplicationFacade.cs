@@ -55,6 +55,7 @@ namespace OrderSystem
             RegisterCommand(UIViewSystemEvent.UI_QUEST_TURN_STAGE, () => new QuestStageOneTurnCommand());
             RegisterCommand(LogicalSysEvent.LOGICAL_SYS, () => new LogicalProcessorCommand());
             RegisterCommand(TimeTriggerEvent.TIME_TRIGGER_SYS, () => new TimeTriggerSysCommand());
+            RegisterCommand(EffectExecutionEvent.EFFECT_EXECUTION_SYS, () => new EffectExecutionCommand());
         }
 
         protected override void InitializeModel()

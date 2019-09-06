@@ -1,8 +1,16 @@
-﻿using System;
+﻿
+/*************************************************************************************
+     * 类 名 称：       RandomUtil
+     * 文 件 名：       RandomUtil
+     * 创建时间：       2019-08-14
+     * 作    者：       chenxi
+     * 说   明：        用于随机数的创建
+     * 修改时间：
+     * 修 改 人：
+    *************************************************************************************/
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Scripts.OrderSystem.Common
 {

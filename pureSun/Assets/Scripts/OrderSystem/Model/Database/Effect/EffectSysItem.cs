@@ -2,6 +2,7 @@
 
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.SpecialOperate.ChooseOperate;
@@ -10,9 +11,40 @@ using System.Collections.Generic;
 
 namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 {
+    public enum EffectSysItemStage
+    {
+        //未开始
+        UnStart,
+        //执行中
+        Executing
+    }
+
     public class EffectSysItem
     {
+        public EffectSysItemStage effectSysItemStage = EffectSysItemStage.UnStart;
+
+        //效果信息
         public Dictionary<string, EffectInfo> effectInfoMap;
+        //触发器信息
+        public Dictionary<string, ImpactTimeTrigger> impactTimeTriggerMap;
+
+        //效果结算？写在这里吧，从操作模式中移动到这里
+        //正在结算的卡
+        public CardEntry cardEntry;
+
+
+        //正在结算的效果集合
+        public List<EffectInfo> effectInfos;
+
+
+        //正在结算的效果
+        public EffectInfo effectInfo;
+
+        //结算卡队列
+        public Queue<CardEntry> cardEntryQueue = new Queue<CardEntry>();
+        //结算效果集合队列
+        public Queue<List<EffectInfo>> effectInfosQueue = new Queue<List<EffectInfo>>();
+
 
         public void EffectActionReady(EffectInfo effect) {
             if (effect.target == "ONE_MINION") {
@@ -77,7 +109,9 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                 case "TraitAddOne":
                     playerItem.AddTraitType(impactContent);
                     break;
-
+                case "Score":
+                    playerItem.ChangeSocre(Convert.ToInt32(impactContent));
+                    break;
 
             }
 

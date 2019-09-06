@@ -3,6 +3,16 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 
 
+/*************************************************************************************
+     * 类 名 称：       RandomUtil
+     * 文 件 名：       RandomUtil
+     * 创建时间：       2019-08-14
+     * 作    者：       chenxi
+     * 说   明：        用于深度复制对象，目前用到的地方是从对象库里获取对象
+     * 修改时间：
+     * 修 改 人：
+    *************************************************************************************/
+
 namespace Assets.Scripts.OrderSystem.Common
 {
 

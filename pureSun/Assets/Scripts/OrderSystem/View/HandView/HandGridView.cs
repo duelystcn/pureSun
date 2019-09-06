@@ -87,6 +87,18 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                 }
             }
         }
+        //选中的手牌没有被成功使用
+        public void HandChangeUncheckHandItem(HandCellItem uncheckHandCellItem)
+        {
+            foreach (HandCellView handCellView in handCellViews)
+            {
+                if (uncheckHandCellItem.cardEntry.uuid == handCellView.handCellItem.cardEntry.uuid)
+                {
+                    handCellView.UncheckChange();
+                }
+
+            }  
+        }
 
 
         //添加一张牌

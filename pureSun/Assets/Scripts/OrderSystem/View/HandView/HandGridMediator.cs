@@ -41,6 +41,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
 
         public override void HandleNotification(INotification notification)
         {
+           
             if (notification.Name == HandSystemEvent.HAND_CHANGE && notification.Type == HandSystemEvent.HAND_CHANGE_ANIMATION_START)
             {
                 DoExceHandleNotification();
@@ -62,6 +63,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
         //监听
         public override void ExceHandleNotification(INotification notification)
         {
+
             //处理公共请求
             HandleNotificationCommon(notification);
             //回调函数
@@ -69,6 +71,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
             {
                 exceINotification = false;
                 SendNotification(HandSystemEvent.HAND_CHANGE, null, HandSystemEvent.HAND_CHANGE_ANIMATION_START);
+
             };
             bool callBackDelay = false;
 
@@ -127,12 +130,26 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                                 {
                                     exceINotification = false;
                                     SendNotification(HandSystemEvent.HAND_CHANGE, handGridView, HandSystemEvent.HAND_CHANGE_OVER);
+                                    SendNotification(UIViewSystemEvent.UI_ANIMATION_SYS, null, UIViewSystemEvent.UI_ANIMATION_SYS_ZF_OVER_START);
                                     SendNotification(HandSystemEvent.HAND_CHANGE, null, HandSystemEvent.HAND_CHANGE_ANIMATION_START);
                                 };
                                 callBackDelay = true;
                                 HandCellItem handCellItemDraw = notification.Body as HandCellItem;
                                 handGridView.PlayerDrawOneCard(handCellItemDraw, callBack);
                             }
+                            else {
+                                //目前还没有实现对手手牌栏的显示，直接回调
+                                //回调函数
+                                callBack = () =>
+                                {
+                                    exceINotification = false; 
+                                    SendNotification(UIViewSystemEvent.UI_ANIMATION_SYS, null, UIViewSystemEvent.UI_ANIMATION_SYS_ZF_OVER_START);
+                                    SendNotification(HandSystemEvent.HAND_CHANGE, null, HandSystemEvent.HAND_CHANGE_ANIMATION_START);
+                                };
+                                callBack();
+                                callBackDelay = true;
+                            }
+
                             break;
                         //移除一张牌
                         case HandSystemEvent.HAND_CHANGE_REMOVE_ONE_CARD:
@@ -145,7 +162,12 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                             List<HandCellItem> handCells = notification.Body as List<HandCellItem>;
                             handGridView.HandChangeCanUseJudge(handCells);
                             break;
+                        //是否可用渲染
+                        case HandSystemEvent.HAND_CHANGE_UNCHECK_STATUS:
 
+                            HandCellItem uncheckHandCellItem = notification.Body as HandCellItem;
+                            handGridView.HandChangeUncheckHandItem(uncheckHandCellItem);
+                            break;
                     }
                     break;
             }

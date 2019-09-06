@@ -69,18 +69,18 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _InnerGlowAccuracy: 64
+    - _InnerGlowAccuracy: 13
     - _InnerGlowAlphaSumThreshold: 0.5
-    - _InnerGlowLerpRate: 0.432
+    - _InnerGlowLerpRate: 0.356
     - _InnerGlowWidth: 0.05
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
-    - _OriginAlphaThreshold: 0.1
+    - _OriginAlphaThreshold: 0.552
     - _OutLightPow: 5
     - _OutLightStrength: 15
     - _Parallax: 0.02
-    - _ShowInnerGlow: 0
+    - _ShowInnerGlow: 1
     - _ShowOutline: 1
     - _Size: 0.1
     - _SmoothnessTextureChannel: 0
@@ -91,6 +91,6 @@ Material:
     m_Colors:
     - _AtmoColor: {r: 0, g: 0.4, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EdgeColor: {r: 1, g: 0, b: 0.21568632, a: 1}
+    - _EdgeColor: {r: 1, g: 0.7720986, b: 0.16509432, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _InnerGlowColor: {r: 0.9811321, g: 0.9811321, b: 0.9811321, a: 1}
+    - _InnerGlowColor: {r: 0, g: 0.9700117, b: 1, a: 1}
