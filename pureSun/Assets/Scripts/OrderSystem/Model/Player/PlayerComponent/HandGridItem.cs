@@ -18,6 +18,8 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
         //index判断哪一张是最新加的？
         private int cellIndex;
 
+        public string playerCode;
+
         //模拟创建
         public void Create()
         {
@@ -31,6 +33,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
             handCellItem.color = defaultColor;
             handCellItem.uuid = System.Guid.NewGuid().ToString("N");
             handCellItem.index = cellIndex;
+            handCellItem.playerCode = playerCode;
             cellIndex++;
             handCells.Add(handCellItem);
             return handCellItem;

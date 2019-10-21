@@ -13,7 +13,7 @@ using UnityEngine;
 public class MainUI : MonoBehaviour {
 
     public HexGridView HexGridView = null;
-    public HandGridView HandGridView = null;
+    public HandControlView HandControlView = null;
     public MinionGridView minionGridView = null;
     public QuestStageCircuitButton circuitButton = null;
     public OperateSystemView operateSystemView = null;

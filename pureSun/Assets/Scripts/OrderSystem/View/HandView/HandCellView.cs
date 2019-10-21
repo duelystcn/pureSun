@@ -30,16 +30,18 @@ namespace Assets.Scripts.OrderSystem.View.HandView
         public UnityAction OnPointerEnter = () => { };
         public UnityAction OnPointerExit = () => { };
 
+        public bool myself;
         public void LoadHandCellItem(HandCellItem handCellItem)
         {
             this.handCellItem = handCellItem;
             //详细图读取后隐藏
-            cardIntactView.LoadCard(handCellItem.cardEntry);
+            cardIntactView.LoadCard(handCellItem.cardEntry, myself);
             cardIntactView.gameObject.SetActive(false);
             //缩略图读取
-            handCellInstance.LoadCard(handCellItem.cardEntry);
-
-            SetCanUseOutLight(handCellItem);
+            handCellInstance.LoadCard(handCellItem.cardEntry, myself);
+            if (myself) {
+                SetCanUseOutLight(handCellItem);
+            }
         }
         //设置可用给高亮
         public void SetCanUseOutLight(HandCellItem handCellItem) {
@@ -66,11 +68,20 @@ namespace Assets.Scripts.OrderSystem.View.HandView
 
         public void PointerExit()
         {
-            if (!isDown) {
+            if (!isDown)
+            {
                 OnPointerExit();
                 LayoutElement layoutElement = this.GetComponent<LayoutElement>();
                 layoutElement.minWidth = 179;
                 this.cardIntactView.gameObject.SetActive(false);
+            }
+            else {
+                if (!handCellItem.canUse) {
+                    OnPointerExit();
+                    LayoutElement layoutElement = this.GetComponent<LayoutElement>();
+                    layoutElement.minWidth = 179;
+                    this.cardIntactView.gameObject.SetActive(false);
+                }
             }
         }
 

@@ -51,7 +51,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.ChooseMakeSt
                 }
               
 
-                cardIntactView.LoadCard(card);
+                cardIntactView.LoadCard(card,true);
                 if (isAdd) {
                     cardIntactViews.Add(cardIntactView);
                 }

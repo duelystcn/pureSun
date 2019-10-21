@@ -113,14 +113,15 @@
   },
   "FortifiedAgent": {
     "code": "FortifiedAgent",
-    "name": "强化药剂",
+    "name": "激励",
     "type": "Tactics",
     "cost": "1",
-    "effectName": [ "moveAlterAddShield" ],
+    "effectName": [ "TargetMinionGetAtk1_Def1" ],
     "description": "目标生物获得+1+1",
-    "trait": [ "innovation" ],
-    "traitdemand": [ "innovation"],
-    "quantity": "3"
+    "trait": [ "supremcy" ],
+    "traitdemand": [ "supremcy" ],
+    "quantity": "3",
+    "targetEffectInfo": "TargetMinionGetAtk1_Def1"
   },
   "Climbingtechnology": {
     "code": "Climbingtechnology",

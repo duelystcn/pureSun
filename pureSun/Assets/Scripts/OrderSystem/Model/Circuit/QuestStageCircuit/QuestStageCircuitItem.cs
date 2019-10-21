@@ -1,23 +1,21 @@
 ﻿
 
+using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
 {
     public enum QuestOneTurnStage
     {
-        //未开始
-        UnStart,
         //开始阶段
         StartOfTrun,
         //主动阶段
         ActivePhase,
         //对手守备
         OpponentDefense,
-        //结束阶段
-        EndOfTrun,
         //延迟执行
         DelayedExecution,
         //战斗开始
@@ -30,7 +28,14 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
         public string nowPlayerCode { get;  set; }
         public List<string> playerOrder { get; set; }
 
-        public QuestOneTurnStage oneTurnStage = QuestOneTurnStage.UnStart;
+        public QuestOneTurnStage oneTurnStage;
+
+        public List<QuestOneTurnStage> questOneTurnStageList = CollectionUtil.EnumToList<QuestOneTurnStage>();
+
+        public UnityAction oneStageStartAction;
+
+        public UnityAction oneStageEndAction;
+
 
         public Dictionary<string, List<EffectInfo>>  activeEffectInfoMap = new Dictionary<string, List<EffectInfo>>();
 

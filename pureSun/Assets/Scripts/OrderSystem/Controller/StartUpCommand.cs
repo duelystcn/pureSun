@@ -8,6 +8,7 @@
 using Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
+using Assets.Scripts.OrderSystem.Model.Database.TestCase;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.View.MinionView;
@@ -35,6 +36,9 @@ namespace OrderSystem
             Facade.RegisterProxy(cardDbProxy);
             EffectInfoProxy effectInfoProxy = new EffectInfoProxy();
             Facade.RegisterProxy(effectInfoProxy);
+            TestCaseProxy testCaseProxy = new TestCaseProxy();
+            Facade.RegisterProxy(testCaseProxy);
+
 
             //UI层代理
             UIControllerListMediator uIControllerListMediator = new UIControllerListMediator(mainUI.UIControllerListView);

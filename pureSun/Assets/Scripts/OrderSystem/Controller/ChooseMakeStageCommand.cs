@@ -5,6 +5,7 @@ using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Player;
+using Assets.Scripts.OrderSystem.View.UIView;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Command;
 using static Assets.Scripts.OrderSystem.Model.Database.Card.CardEntry;
@@ -38,7 +39,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                         //判断是否大于6回合
                         if (chooseStageCircuitProxy.chooseStageCircuitItem.chooseIndex == 7)
                         {
-                            SendNotification(UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE, cardDbProxy.GetOneCardListForPool(), UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE_CLOSE);
+                            SendNotification(UIViewSystemEvent.UI_VIEW_CURRENT, UIViewConfig.getNameStrByUIViewName(UIViewName.ViewChooseMakeStage), UIViewSystemEvent.UI_VIEW_CURRENT_CLOSE_ONE_VIEW);
                             SendNotification(UIViewSystemEvent.UI_QUEST_STAGE, null, UIViewSystemEvent.UI_QUEST_STAGE_START);
                         }
                         else

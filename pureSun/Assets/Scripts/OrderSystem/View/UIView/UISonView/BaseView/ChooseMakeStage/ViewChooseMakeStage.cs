@@ -1,5 +1,6 @@
 ﻿
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView;
 using System.Collections.Generic;
@@ -124,7 +125,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.ChooseMakeSt
             for (int n = 0; n < cardEntries.Count; n++) {
                 cardEntries[n].layerSort = viewChooseStage.layerSort;
                 viewChooseStage.cardIntactViews[n].card = cardEntries[n];
-                viewChooseStage.cardIntactViews[n].LoadCard(cardEntries[n]);
+                viewChooseStage.cardIntactViews[n].LoadCard(cardEntries[n],true);
             }
 
         }
@@ -150,10 +151,39 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.ChooseMakeSt
             ViewChooseStage viewChooseStage = sortViewChosseMap[cardEntry.layerSort];
             foreach (CardIntactView cardIntactView in viewChooseStage.cardIntactViews) {
                 if (cardIntactView.card.uuid == cardEntry.uuid) {
-                    cardIntactView.LoadCard(cardEntry);
+                    cardIntactView.LoadCard(cardEntry,true);
                 }
             }
 
+        }
+        public override void InitViewForParameter(UIControllerListMediator mediator, object body)
+        {
+            List<List<CardEntry>> cardEntries = body as List<List<CardEntry>>;
+            this.LoadStartCardList(cardEntries);
+            foreach (ViewChooseStage oneViewChoose in this.sortViewChosseMap.Values)
+            {
+                foreach (CardIntactView cardIntactView in oneViewChoose.cardIntactViews)
+                {
+                    if (cardIntactView.card.layerSort == VCSLayerSort.Three)
+                    {
+                        cardIntactView.OnClick = () =>
+                        {
+                            //提示第三排为展示，不可购买
+                            cardIntactView.OnClick = () =>
+                            {
+                            };
+
+                        };
+                    }
+                    else
+                    {
+                        cardIntactView.OnClick = () =>
+                        {
+                            mediator.SendNotification(UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE, cardIntactView.card, UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE_ONE_CARD);
+                        };
+                    }
+                }
+            }
         }
 
     }

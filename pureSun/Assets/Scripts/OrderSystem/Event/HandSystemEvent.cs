@@ -6,6 +6,13 @@
         /// <summary>
         /// 手牌相关
         /// </summary>
+        /// 
+        //控制系统相关
+        public const string HAND_VIEW_SYS = "handViewSys";
+        public const string HAND_VIEW_SYS_INIT_PLAYER_CODE = "handViewSysInitPlayerCode";
+
+
+
         public const string HAND_CHANGE = "handChange";
         //某一玩家手牌注入
         public const string HAND_CHANGE_AFFLUX = "handChangeAfflux";

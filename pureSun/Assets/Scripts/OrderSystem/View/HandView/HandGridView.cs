@@ -16,6 +16,10 @@ namespace Assets.Scripts.OrderSystem.View.HandView
         public ObjectPool<HandCellView> handCellPool;
         public HandCellView cellPrefab;
         HandMesh handMesh;
+        //显示的是对手还是自己
+        public bool myself;
+
+       
        
         void Awake()
         {
@@ -118,6 +122,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
             //cell.GetComponent<HandCellInstance>().SetImage();
             cell.transform.SetParent(transform, false);
             cell.transform.localPosition = position;
+            cell.myself = myself;
             cell.LoadHandCellItem(handCellItem);
             handCellViews.Add(cell);
             yield return new WaitForSeconds(0.25f);

@@ -4,6 +4,7 @@ using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
+using Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS;
 using Newtonsoft.Json;
 using PureMVC.Patterns.Proxy;
 using System.Collections.Generic;
@@ -35,6 +36,10 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
             string impactTimeTriggerStr = File.ReadAllText("Assets/Resources/Json/ImpactTimeTrigger.json", Encoding.GetEncoding("gb2312"));
             effectSysItem.impactTimeTriggerMap =
                 JsonConvert.DeserializeObject<Dictionary<string, ImpactTimeTrigger>>(impactTimeTriggerStr);
+
+            string targetSetDbStr = File.ReadAllText("Assets/Resources/Json/TargetSetDb.json", Encoding.GetEncoding("gb2312"));
+            effectSysItem.targetSetMap =
+                JsonConvert.DeserializeObject<Dictionary<string, TargetSet>>(targetSetDbStr);
 
 
         }

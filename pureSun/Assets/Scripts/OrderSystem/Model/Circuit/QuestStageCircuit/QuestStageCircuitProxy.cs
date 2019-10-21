@@ -1,4 +1,6 @@
-﻿using Assets.Scripts.OrderSystem.Model.Hex;
+﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.Player;
 using PureMVC.Patterns.Proxy;
 using System.Collections.Generic;
@@ -19,6 +21,15 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
             QuestStageCircuitItem circuitItem = new QuestStageCircuitItem();
             this.hexModelInfo = hexModelInfo;
             base.Data = circuitItem;
+            circuitItem.oneStageStartAction = () =>
+            {
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, circuitItem.oneTurnStage, TimeTriggerEvent.TIME_TRIGGER_SYS_ONE_STAGE_START);
+            };
+            circuitItem.oneStageEndAction = () =>
+            {
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, circuitItem.oneTurnStage, TimeTriggerEvent.TIME_TRIGGER_SYS_ONE_STAGE_END);
+            };
+
         }
         //流程开始
         public void CircuitStart(Dictionary<string, PlayerItem> dictionary ) {

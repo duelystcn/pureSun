@@ -10,6 +10,23 @@ namespace Assets.Scripts.OrderSystem.Event
         public const string UI_VIEW = "UIView";
 
 
+        /// <summary>
+        /// 综合通用指令，打开关闭窗口这些通用的
+        /// </summary>
+        public const string UI_VIEW_CURRENT = "UIViewCurrent";
+
+        /// <summary>
+        /// 综合通用指令，打开窗口
+        /// </summary>
+        public const string UI_VIEW_CURRENT_OPEN_ONE_VIEW = "UIViewCurrentOpenOneView";
+
+        /// <summary>
+        /// 综合通用指令，关闭窗口
+        /// </summary>
+        public const string UI_VIEW_CURRENT_CLOSE_ONE_VIEW = "UIViewCurrentCloseOneView";
+
+
+
 
         /// <summary>
         /// 尝试控制转发？
@@ -18,19 +35,6 @@ namespace Assets.Scripts.OrderSystem.Event
 
 
 
-
-        /// <summary>
-        /// 开始选单相关
-        /// </summary>
-        public const string UI_START_MAIN = "UIStartMain";
-        /// <summary>
-        /// 开始选单打开
-        /// </summary>
-        public const string UI_START_MAIN_OPEN = "UIStartMainOpen";
-        /// <summary>
-        /// 开始选单关闭
-        /// </summary>
-        public const string UI_START_MAIN_CLOSE = "UIStartMainClose";
         /// <summary>
         /// 开始选单按钮被点击
         /// </summary>
@@ -45,14 +49,6 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 选择阶段开始
         /// </summary>
         public const string UI_CHOOSE_STAGE_START = "UIChooseStageStart";
-        /// <summary>
-        /// 选择界面打开
-        /// </summary>
-        public const string UI_CHOOSE_STAGE_OPEN = "UIChooseStageOpen";
-        /// <summary>
-        /// 选择界面关闭
-        /// </summary>
-        public const string UI_CHOOSE_STAGE_CLOSE = "UIChooseStageClose";
 
 
         /// <summary>
@@ -79,9 +75,9 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string UI_CHOOSE_MAKE_STAGE = "UIChooseMakeStage";
         /// <summary>
-        /// 组合选择阶段相关
+        /// 组合选择阶段初始化
         /// </summary>
-        public const string UI_CHOOSE_MAKE_STAGE_OPEN = "UIChooseMakeStageOpen";
+        public const string UI_CHOOSE_MAKE_STAGE_INIT = "UIChooseMakeStageInit";
         /// <summary>
         /// 组合选择阶段选择了某一张卡
         /// </summary>
@@ -130,9 +126,13 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string UI_QUEST_STAGE = "UIQuestStage";
         /// <summary>
-        /// 小局阶段相关
+        /// 小局阶段标准开始
         /// </summary>
         public const string UI_QUEST_STAGE_START = "UIQuestStageStart";
+        /// <summary>
+        /// 小局阶段特殊开始（测试用例，谜题等，跳过分发手牌，读取已存在的信息）
+        /// </summary>
+        public const string UI_QUEST_STAGE_START_SPECIAL = "UIQuestStageStartSpecial";
 
         /// <summary>
         /// 回合阶段相关
@@ -146,6 +146,15 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 结束一个回合
         /// </summary>
         public const string UI_QUEST_TURN_STAGE_END_OF_TRUN = "UIQuestStageEndOfTrun";
+        /// <summary>
+        ///开始一个阶段
+        /// </summary>
+        public const string UI_QUEST_TURN_STAGE_START_OF_STAGE= "UIQuestStageStartOfStage";
+        /// <summary>
+        ///结束一个阶段
+        /// </summary>
+        public const string UI_QUEST_TURN_STAGE_END_OF_STAGE = "UIQuestStageEndOfStage";
+
 
 
         /// <summary>
@@ -156,10 +165,7 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 卡牌详细信息窗口打开
         /// </summary>
         public const string UI_ONE_CARD_ALL_INFO_OPEN = "UIOneCardAllInfoOpen";
-        /// <summary>
-        /// 卡牌详细信息窗口关闭
-        /// </summary>
-        public const string UI_ONE_CARD_ALL_INFO_CLOSE = "UIOneCardAllInfoClose";
+     
 
 
         /// <summary>
@@ -171,10 +177,7 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string UI_USER_OPERAT_CHOOSE_EFFECT = "UIUserOperatChoooseEffect";
 
-        /// <summary>
-        /// 进行用户选择效果界面结束
-        /// </summary>
-        public const string UI_USER_OPERAT_CHOOSE_EFFECT_OVER = "UIUserOperatChoooseEffectOver";
+      
 
 
         /// <summary>
@@ -195,10 +198,6 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 费用显示相关
         /// </summary>
         public const string UI_MANA_INFA_SYS = "UIManaInfoSys";
-        /// <summary>
-        /// 费用显示打开
-        /// </summary>
-        public const string UI_MANA_INFA_SYS_OPEN = "UIManaInfoSysOpen";
         /// <summary>
         /// 费用显示初始化
         /// </summary>
@@ -234,10 +233,6 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 玩家显示相关
         /// </summary>
         public const string UI_PLAYER_SHOW_SYS = "UIPlayerShowSys";
-        /// <summary>
-        /// 玩家显示打开
-        /// </summary>
-        public const string UI_PLAYER_SHOW_SYS_OPEN = "UIPlayerShowSysOpen";
         /// <summary>
         /// 玩家显示船只
         /// </summary>
@@ -285,8 +280,15 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string UI_NEXT_TURN_SHOW_SYS_SHOW = "UINextTurnShowSysShow";
 
-
-
+        /// <summary>
+        /// 测试案例相关
+        /// </summary>
+        public const string UI_TEST_CASE_SYS = "UITestCase";
+        /// <summary>
+        /// 测试案例选择窗口打开
+        /// </summary>
+        public const string UI_TEST_CASE_VIEW_OPEN = "UITestCaseViewOpen";
+        
 
     }
 }

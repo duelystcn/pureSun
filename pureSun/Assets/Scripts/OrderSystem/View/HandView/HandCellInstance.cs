@@ -26,16 +26,26 @@ namespace Assets.Scripts.OrderSystem.View.HandView
             traitSignList.LoadTraitList(traitdemand);
         }
 
-        public void LoadCard(CardEntry cardEntry)
+        public void LoadCard(CardEntry cardEntry, bool isPositive)
         {
-            TextMeshProUGUI cardName = UtilityHelper.FindChild<TextMeshProUGUI>(this.transform, "CardName");
-            cardName.text = cardEntry.name;
-            TextMeshProUGUI cardCost = UtilityHelper.FindChild<TextMeshProUGUI>(this.transform, "CardCost");
-            cardCost.text = cardEntry.cost.ToString();
-            string path = "Image/Hand/" + cardEntry.bgImageName + "_hand";
-            MonoBehaviour handBg = UtilityHelper.FindChild<MonoBehaviour>(transform, "HandBg");
-            changeImageSprite(handBg, path);
-            LoadTraitList(cardEntry.traitdemand);
+            handOutLight.gameObject.SetActive(false);
+            if (isPositive)
+            {
+                TextMeshProUGUI cardName = UtilityHelper.FindChild<TextMeshProUGUI>(this.transform, "CardName");
+                cardName.text = cardEntry.name;
+                TextMeshProUGUI cardCost = UtilityHelper.FindChild<TextMeshProUGUI>(this.transform, "CardCost");
+                cardCost.text = cardEntry.cost.ToString();
+                string path = "Image/Hand/" + cardEntry.bgImageName + "_hand";
+                MonoBehaviour handBg = UtilityHelper.FindChild<MonoBehaviour>(transform, "HandBg");
+                changeImageSprite(handBg, path);
+                LoadTraitList(cardEntry.traitdemand);
+            }
+            else {
+
+                string path = "Image/Hand/cardback_hand";
+                MonoBehaviour handBg = UtilityHelper.FindChild<MonoBehaviour>(transform, "HandBg");
+                changeImageSprite(handBg, path);
+            }
         }
         public void SetOutLight(bool canUse) {
             handOutLight.gameObject.SetActive(canUse);

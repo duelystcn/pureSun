@@ -11,6 +11,8 @@
 
 
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Assets.Scripts.OrderSystem.Common
@@ -52,6 +54,68 @@ namespace Assets.Scripts.OrderSystem.Common
             {
                 UtilityLog.LogError("转发失败");
                 return "";
+            }
+        }
+        //传入一个notificationType返回一个map的json
+        public static string GetNTByNotificationType(string notificationType) {
+            Dictionary<string, string> TestMap = new Dictionary<string, string>();
+            TestMap.Add("NotificationType", notificationType);
+            return JsonConvert.SerializeObject(TestMap);
+        }
+        //传入一个notificationType,playerCode返回一个map的json
+        public static string GetNTByNotificationTypeAndPlayerCode(string notificationType,string playerCode)
+        {
+            Dictionary<string, string> TestMap = new Dictionary<string, string>();
+            TestMap.Add("NotificationType", notificationType);
+            TestMap.Add("PlayerCode", playerCode);
+            return JsonConvert.SerializeObject(TestMap);
+        }
+        //传入一个notificationType,UIViewName返回一个map的json
+        public static string GetNTByNotificationTypeAndUIViewName(string notificationType, string UIViewName)
+        {
+            Dictionary<string, string> TestMap = new Dictionary<string, string>();
+            TestMap.Add("NotificationType", notificationType);
+            TestMap.Add("UIViewName", UIViewName);
+            return JsonConvert.SerializeObject(TestMap);
+        }
+        //传入一个notificationType,UIViewName返回一个map的json
+        public static string GetNTByNotificationTypeAndPlayerCodeAndUIViewName(string notificationType, string playerCode, string UIViewName)
+        {
+            Dictionary<string, string> TestMap = new Dictionary<string, string>();
+            TestMap.Add("NotificationType", notificationType);
+            TestMap.Add("UIViewName", UIViewName);
+            TestMap.Add("PlayerCode", playerCode);
+            return JsonConvert.SerializeObject(TestMap);
+        }
+        //传入一个key值获取map-json中对应的值
+        public static string GetValueForNotificationTypeByKey(string notificationTypeJson,string key) {
+            if (notificationTypeJson.Contains(key))
+            {
+                Dictionary<string, string> notificationTypeMap = JsonConvert.DeserializeObject<Dictionary<string, string>>(notificationTypeJson);
+                return notificationTypeMap[key];
+            }
+            else {
+                return notificationTypeJson;
+            }
+        }
+        //直接返回map
+        public static Dictionary<string, string> GetParameterMapForNotificationType(string notificationTypeJson)
+        {
+            Dictionary<string, string> notificationTypeMap = new Dictionary<string, string>();
+            if (notificationTypeJson.Contains("NotificationType"))
+            {
+                notificationTypeMap = JsonConvert.DeserializeObject<Dictionary<string, string>>(notificationTypeJson);
+                if (!notificationTypeJson.Contains("PlayerCode"))
+                {
+                    notificationTypeMap.Add("PlayerCode", "");
+                }
+                return notificationTypeMap;
+            }
+            else
+            {
+                notificationTypeMap.Add("NotificationType", notificationTypeJson);
+                notificationTypeMap.Add("PlayerCode", "");
+                return notificationTypeMap;
             }
         }
 

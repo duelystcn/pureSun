@@ -3,6 +3,7 @@
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
+using Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.SpecialOperate.ChooseOperate;
@@ -27,6 +28,8 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public Dictionary<string, EffectInfo> effectInfoMap;
         //触发器信息
         public Dictionary<string, ImpactTimeTrigger> impactTimeTriggerMap;
+        //目标信息
+        public Dictionary<string, TargetSet> targetSetMap;
 
         //效果结算？写在这里吧，从操作模式中移动到这里
         //正在结算的卡
@@ -47,35 +50,47 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 
 
         public void EffectActionReady(EffectInfo effect) {
-            if (effect.target == "ONE_MINION") {
-                effect.TargetMinionOne = (MinionCellItem minionCellItem) =>
+            foreach (string targetSet in effect.targetSet) {
+                TargetSet targetSetDto = targetSetMap[targetSet];
+                effect.targetSetList.Add(targetSetDto);
+                if (targetSetDto.target == "ONE_MINION")
                 {
-                    for (int n = 0; n < effect.impactTargets.Length; n++) {
-                        ChangeMinion(effect.impactTargets[n], effect.impactContents[n], minionCellItem);
-                    }
-                };
-            }
-            else if (effect.target == "CHOOSE_ONE") {
-                effect.TargetChooseGrid = (ChooseGridItem chooseGridItem) =>
+                    effect.TargetMinionOne = (MinionCellItem minionCellItem) =>
+                    {
+                        for (int n = 0; n < effect.impactTargets.Length; n++)
+                        {
+                            ChangeMinion(effect.impactTargets[n], effect.impactContents[n], minionCellItem);
+                        }
+                    };
+                }
+                else if (targetSetDto.target == "CHOOSE_ONE")
                 {
-                    CardEntry[] cardEntrys = new CardEntry[effect.chooseEffectList.Length];
-                    for (int n = 0; n < effect.chooseEffectList.Length; n++) {
-                        CardEntry cardEntry = new CardEntry();
-                    }
-                };
+                    effect.TargetChooseGrid = (ChooseGridItem chooseGridItem) =>
+                    {
+                        CardEntry[] cardEntrys = new CardEntry[effect.chooseEffectList.Length];
+                        for (int n = 0; n < effect.chooseEffectList.Length; n++)
+                        {
+                            CardEntry cardEntry = new CardEntry();
+                        }
+                    };
+
+                }
+                else if (targetSetDto.target == "Player")
+                {
+                    effect.TargetPlayerList = (List<PlayerItem> playerItemList) =>
+                    {
+                        for (int n = 0; n < playerItemList.Count; n++)
+                        {
+                            for (int m = 0; m < effect.impactTargets.Length; m++)
+                            {
+                                ChangePlayer(effect.impactTargets[m], effect.impactContents[m], playerItemList[n]);
+                            }
+                        }
+                    };
+                }
 
             }
-            else if (effect.target == "Player") {
-                effect.TargetPlayerList = (List<PlayerItem> playerItemList) =>
-                {
-                    for (int n = 0; n < effect.TargetPlayerItems.Count; n++)
-                    {
-                        for (int m = 0; m < effect.impactTargets.Length; m++) {
-                            ChangePlayer(effect.impactTargets[m], effect.impactContents[m], effect.TargetPlayerItems[n]);
-                        }
-                    }
-                };
-            }
+           
 
         }
         void ChangeMinion(string impactTarget, string impactContent, MinionCellItem minionCellItem)

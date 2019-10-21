@@ -20,6 +20,23 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 监听器相关，分数变化
         /// </summary>
         public const string TIME_TRIGGER_SYS_SCORE_CHANGE = "TimeTriggerSysScoreChange";
+        /// <summary>
+        /// 监听器相关，手牌使用
+        /// </summary>
+        public const string TIME_TRIGGER_SYS_USE_HAND_CARD = "TimeTriggerSysUseHandCard";
+
+
+
+
+
+        /// <summary>
+        /// 一个阶段的开始
+        /// </summary>
+        public const string TIME_TRIGGER_SYS_ONE_STAGE_START = "TimeTriggerSysOneStageStart";
+        /// <summary>
+        /// 一个阶段的结束
+        /// </summary>
+        public const string TIME_TRIGGER_SYS_ONE_STAGE_END = "TimeTriggerSysOneStageEnd";
 
 
     }

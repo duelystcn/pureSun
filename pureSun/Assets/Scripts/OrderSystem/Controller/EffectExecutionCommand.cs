@@ -1,11 +1,14 @@
 ﻿
 
+using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
+using Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS;
 using Assets.Scripts.OrderSystem.Model.OperateSystem;
 using Assets.Scripts.OrderSystem.Model.Player;
+using Assets.Scripts.OrderSystem.View.UIView;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Command;
 using System.Collections.Generic;
@@ -41,6 +44,18 @@ namespace Assets.Scripts.OrderSystem.Controller
                         oneEffectInfo.player = exeEffectCard.player;
                         //设置所属卡牌
                         oneEffectInfo.cardEntry = exeEffectCard;
+
+                        //是否有预先选定的目标对象
+                        //将预先选择的目标存入效果中
+                        if (effectName == exeEffectCard.cardInfo.targetEffectInfo)
+                        {
+                            foreach (TargetSet targetSet in oneEffectInfo.targetSetList) {
+                                if (targetSet.target == "Minion")
+                                {
+                                    oneEffectInfo.targetSetList[0].targetMinionCellItems.Add(exeEffectCard.targetMinionCellItem);
+                                }
+                            }
+                        }
                         effectInfos.Add(oneEffectInfo);
                     }
                     //存入效果，进行结算
@@ -54,13 +69,21 @@ namespace Assets.Scripts.OrderSystem.Controller
                     break;
                 case EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_TARGET:
                     //发送打开效果展示列表的消息
-                    SendNotification(UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS, null, UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_OPEN);
+                    SendNotification(
+                         UIViewSystemEvent.UI_VIEW_CURRENT,
+                         null,
+                         StringUtil.GetNTByNotificationTypeAndUIViewName(
+                             UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW,
+                             UIViewConfig.getNameStrByUIViewName(UIViewName.EffectDisplayView)
+                             )
+                         );
 
                     for (int n = 0; n < effectInfoProxy.effectSysItem.effectInfos.Count; n++)
                     {
                         EffectInfo effect = effectInfoProxy.effectSysItem.effectInfos[n];
                         if (effect.effectInfoStage == EffectInfoStage.UnStart)
                         {
+                          
                             ExecutionEffectFindTarget(effect, playerGroupProxy);
                             //插入了用户操作
                             if (effect.effectInfoStage == EffectInfoStage.Confirming)
@@ -112,7 +135,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                             //手牌使用状态
                             case OperateSystemItem.OperateType.HandUse:
                                 //返回手牌使用完毕的信息，移除手牌
-                                playerGroupProxy.getPlayerByPlayerCode(operateSystemProxy.operateSystemItem.playerItem.playerCode).RemoveOneCard(operateSystemProxy.operateSystemItem.onChooseHandCellItem);
+                                playerGroupProxy.getPlayerByPlayerCode(operateSystemProxy.operateSystemItem.playerItem.playerCode).RemoveOneCardByUse(operateSystemProxy.operateSystemItem.onChooseHandCellItem);
                                 //结束，改变模式为初始，清除手牌
                                 operateSystemProxy.IntoModeClose();
                                 break;
@@ -132,28 +155,32 @@ namespace Assets.Scripts.OrderSystem.Controller
         public void ExecutionEffectContent(EffectInfo effectInfo)
         {
             effectInfo.effectInfoStage = EffectInfoStage.Executing;
-            switch (effectInfo.target)
-            {
-                //效果选择
-                case "ChooseEffect":
-                    //无需执行，玩家已操作
+            if (effectInfo.targetSetList.Count == 1) {
+                switch (effectInfo.targetSetList[0].target)
+                {
+                    //效果选择
+                    case "ChooseEffect":
+                        //无需执行，玩家自己操作
 
-                    break;
-                //玩家
-                case "Player":
-                    effectInfo.TargetPlayerList(effectInfo.TargetPlayerItems);
-                    break;
+                        break;
+                    //玩家
+                    case "Player":
+                        UtilityLog.Log("effectInfo:" + effectInfo.description);
+                        effectInfo.TargetPlayerList(effectInfo.targetSetList[0].targetPlayerItems);
+                        break;
 
+                }
+                effectInfo.effectInfoStage = EffectInfoStage.Finished;
+                //选择效果无需展示
+                if (effectInfo.targetSetList[0].target != "ChooseEffect")
+                {
+                    //发送已经确认目标的效果到前台进行展示
+                    CardEntry oneCardEntry = effectInfo.cardEntry;
+                    oneCardEntry.needShowEffectInfo = effectInfo;
+                    SendNotification(UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS, oneCardEntry, UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_PUT_ONE_EFFECT);
+                }
             }
-            effectInfo.effectInfoStage = EffectInfoStage.Finished;
-            //选择效果无需展示
-            if (effectInfo.target != "ChooseEffect")
-            {
-                //发送已经确认目标的效果到前台进行展示
-                CardEntry oneCardEntry = effectInfo.cardEntry;
-                oneCardEntry.needShowEffectInfo = effectInfo;
-                SendNotification(UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS, oneCardEntry, UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_PUT_ONE_EFFECT);
-            }
+           
 
 
         }
@@ -163,85 +190,100 @@ namespace Assets.Scripts.OrderSystem.Controller
         public void ExecutionEffectFindTarget(EffectInfo effectInfo, PlayerGroupProxy playerGroupProxy)
         {
             effectInfo.effectInfoStage = EffectInfoStage.Confirming;
-            //条件
-            string[] targetClaims = effectInfo.targetClaims;
-            //条件内容
-            string[] targetClaimsContents = effectInfo.targetClaimsContents;
-            //目标玩家
-            PlayerItem targetPlayer = null;
-            //类型
-            switch (effectInfo.target)
+            foreach (TargetSet targetSet in effectInfo.targetSetList)
             {
-                //效果选择
-                case "ChooseEffect":
-                    //获取玩家，根据条件筛选出复合条件的释放者和选择者
-                    //筛选结果
-                    foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
-                    {
-                        for (int n = 0; n < targetClaims.Length; n++)
+                //条件
+                string[] targetClaims = targetSet.targetClaims;
+                //条件内容
+                string[] targetClaimsContents = targetSet.targetClaimsContents;
+                //目标玩家
+                PlayerItem targetPlayer = null;
+                //类型
+                switch (targetSet.target)
+                {
+                    //效果选择
+                    case "ChooseEffect":
+                        //获取玩家，根据条件筛选出复合条件的释放者和选择者
+                        //筛选结果
+                        foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
                         {
-                            //判断所有权
-                            if (targetClaims[n] == "Owner")
+                            for (int n = 0; n < targetClaims.Length; n++)
                             {
-                                //是自己选
-                                if (targetClaimsContents[n] == "Myself")
+                                //判断所有权
+                                if (targetClaims[n] == "Owner")
                                 {
-                                    if (playerItem.playerCode == effectInfo.player.playerCode)
+                                    //是自己选
+                                    if (targetClaimsContents[n] == "Myself")
                                     {
-                                        targetPlayer = playerItem;
+                                        if (playerItem.playerCode == effectInfo.player.playerCode)
+                                        {
+                                            targetPlayer = playerItem;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    if (targetPlayer != null)
-                    {
-                        effectInfo.chooseByPlayer = targetPlayer;
-                        //发布用户需要选择信号
-                        SendNotification(LogicalSysEvent.LOGICAL_SYS, effectInfo, LogicalSysEvent.LOGICAL_SYS_CHOOSE_EFFECT);
-                        //
-                    }
-                    else
-                    {
-                        UtilityLog.Log("no player can ChooseEffect");
-                    }
-
-                    break;
-                //玩家
-                case "Player":
-                    //获取玩家，根据条件筛选出复合条件的释放者和选择者
-                    //筛选结果
-                    foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
-                    {
-                        for (int n = 0; n < targetClaims.Length; n++)
+                        if (targetPlayer != null)
                         {
-                            //判断所有权
-                            if (targetClaims[n] == "Owner")
+                            effectInfo.chooseByPlayer = targetPlayer;
+                            //发布用户需要选择信号
+                            SendNotification(LogicalSysEvent.LOGICAL_SYS, effectInfo, LogicalSysEvent.LOGICAL_SYS_CHOOSE_EFFECT);
+                            //
+                        }
+                        else
+                        {
+                            UtilityLog.Log("no player can ChooseEffect");
+                        }
+
+                        break;
+                    //玩家
+                    case "Player":
+                        //获取玩家，根据条件筛选出复合条件的释放者和选择者
+                        //筛选结果
+                        foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
+                        {
+                            for (int n = 0; n < targetClaims.Length; n++)
                             {
-                                //是自己选
-                                if (targetClaimsContents[n] == "Myself")
+                                //判断所有权
+                                if (targetClaims[n] == "Owner")
                                 {
-                                    if (playerItem.playerCode == effectInfo.player.playerCode)
+                                    //是自己选
+                                    if (targetClaimsContents[n] == "Myself")
                                     {
-                                        targetPlayer = playerItem;
+                                        if (playerItem.playerCode == effectInfo.player.playerCode)
+                                        {
+                                            targetPlayer = playerItem;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    if (targetPlayer != null)
-                    {
-                        //玩家确认
-                        effectInfo.TargetPlayerItems.Add(targetPlayer);
-                        effectInfo.effectInfoStage = EffectInfoStage.ConfirmedTarget;
-                    }
-                    else
-                    {
-                        UtilityLog.Log("no player can add TargetPlayerItems");
-                    }
-                    break;
+                        if (targetPlayer != null)
+                        {
+                            //玩家确认
+                            targetSet.targetPlayerItems.Add(targetPlayer);
+                            targetSet.hasTarget = true;
+                        }
+                        else
+                        {
+                            UtilityLog.Log("no player can add TargetPlayerItems");
+                        }
+                        break;
 
+                }
             }
+            bool hasTargetOver = true;
+            foreach (TargetSet targetSet in effectInfo.targetSetList)
+            {
+                if (!targetSet.hasTarget) {
+                    hasTargetOver = false;
+                }
+            }
+            if (hasTargetOver) {
+                effectInfo.effectInfoStage = EffectInfoStage.ConfirmedTarget;
+            }
+
+
         }
     }
 }

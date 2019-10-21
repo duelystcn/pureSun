@@ -2,12 +2,15 @@
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Database.TestCase;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.Animation;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.ChooseMakeStage;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.PlayerComponent;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.TestCase;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.TraitCombination;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView;
 using OrderSystem;
@@ -47,7 +50,9 @@ namespace Assets.Scripts.OrderSystem.View.UIView
         public override string[] ListNotificationInterests()
         {
             List<string> notificationList = new List<string>();
-            notificationList.Add(UIViewSystemEvent.UI_START_MAIN);
+
+            notificationList.Add(UIViewSystemEvent.UI_VIEW_CURRENT);
+
             notificationList.Add(UIViewSystemEvent.UI_CHOOSE_STAGE);
             notificationList.Add(UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE);
             notificationList.Add(UIViewSystemEvent.UI_CARD_DECK_LIST);
@@ -60,7 +65,8 @@ namespace Assets.Scripts.OrderSystem.View.UIView
             notificationList.Add(UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS);
             notificationList.Add(UIViewSystemEvent.UI_PLAYER_SCORE_SHOW_SYS);
             notificationList.Add(UIViewSystemEvent.UI_NEXT_TURN_SHOW_SYS);
-            
+            notificationList.Add(UIViewSystemEvent.UI_TEST_CASE_SYS);
+
             //转发监听
             notificationList.Add(UIViewSystemEvent.UI_VIEW_ZF_HAND_CHANGE);
 
@@ -118,13 +124,6 @@ namespace Assets.Scripts.OrderSystem.View.UIView
             };
             bool callBackDelay = false;
 
-            //是自己的还是对手的
-            bool myself = false;
-
-            if (playerCode == playerCodeNotification)
-            {
-                myself = true;
-            }
             switch (notification.Name)
             {
                 case UIViewSystemEvent.UI_ANIMATION_SYS:
@@ -135,47 +134,53 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                             break;
                     }
                     break;
-
-                case UIViewSystemEvent.UI_START_MAIN:
+                case UIViewSystemEvent.UI_VIEW_CURRENT:
                     switch (notification.Type)
                     {
-                        //开始菜单打开
-                        case UIViewSystemEvent.UI_START_MAIN_OPEN:
+                        case UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW:
+                            UIViewName viewNameOpen = UIViewConfig.getUIViewNameByNameStr(parameterMap["UIViewName"]);
+                            UIControllerLIst.ShowView(viewNameOpen);
+                            //初始化页面
+                            UIControllerLIst.GetViewByName<ViewBaseView>(viewNameOpen).InitViewForParameter(this, notification.Body);
+                            //一些界面打开时需要初始化
+                            switch (viewNameOpen) {
+                                case UIViewName.CardDeckList:
+                                    PlayerItem playerItem = notification.Body as PlayerItem;
+                                    List<CardDeckList> cardDeckLists = UIControllerLIst.GetViewListByName<CardDeckList>(UIViewName.CardDeckList);
+                                    for (int num = 0; num < cardDeckLists.Count; num++)
+                                    {
+                                        if (cardDeckLists[num].playerItem == null)
+                                        {
+                                            cardDeckLists[num].playerItem = playerItem;
+                                            //设置位置
+                                            //0在左，1在右
+                                            //己方始终显示在左边
+                                            Vector3 position = new Vector3();
+                                            if (playerItem.playerCode == playerCode)
+                                            {
+                                                position.x = -600;
 
-                            UIControllerLIst.ShowView(UIViewName.StartMain);
-                            UIControllerLIst.ShowView(UIViewName.CardMoveAnimation);
-                            ViewStartMain viewMain = UIControllerLIst.GetViewByName<ViewStartMain>(UIViewName.StartMain);
-                            viewMain.StartCompleteGameUnityAction += () =>
-                            {
-                                SendNotification(UIViewSystemEvent.UI_START_MAIN, null, UIViewSystemEvent.UI_START_MAIN_CLOSE);
-                                SendNotification(OrderSystemEvent.START_CIRCUIT, null, OrderSystemEvent.START_CIRCUIT_START);
-                            };
-                            viewMain.StartTestMapUnityAction += () =>
-                            {
-                                SendNotification(UIViewSystemEvent.UI_START_MAIN, null, UIViewSystemEvent.UI_START_MAIN_CLOSE);
-                                SendNotification(OrderSystemEvent.START_CIRCUIT, null, OrderSystemEvent.START_CIRCUIT_TEST_MAP);
-                            };
+                                            }
+                                            else
+                                            {
+                                                position.x = 430;
+
+                                            }
+                                            cardDeckLists[num].transform.localPosition = position;
+                                        }
+                                    }
+                                    break;
+                            }
                             break;
-                        //开始菜单关闭
-                        case UIViewSystemEvent.UI_START_MAIN_CLOSE:
-                            UIControllerLIst.HideView(UIViewName.StartMain);
+                        case UIViewSystemEvent.UI_VIEW_CURRENT_CLOSE_ONE_VIEW:
+                            UIViewName viewNameClose = UIViewConfig.getUIViewNameByNameStr(notification.Body as string);
+                            UIControllerLIst.HideView(viewNameClose);
                             break;
                     }
                     break;
                 case UIViewSystemEvent.UI_CHOOSE_STAGE:
                     switch (notification.Type)
-                    {
-                        //选择阶段窗口打开
-                        case UIViewSystemEvent.UI_CHOOSE_STAGE_OPEN:
-
-                            UIControllerLIst.ShowView(UIViewName.ChooseStage);
-
-                            break;
-                        case UIViewSystemEvent.UI_CHOOSE_STAGE_CLOSE:
-
-                            UIControllerLIst.HideView(UIViewName.ChooseStage);
-
-                            break;
+                    { 
                         case UIViewSystemEvent.UI_CHOOSE_STAGE_LOAD_CARD_ENTRY:
                             viewChooseStage = UIControllerLIst.GetViewByName<ViewChooseStage>(UIViewName.ChooseStage);
                             List<CardEntry> shipCardEntryList = (List<CardEntry>)notification.Body;
@@ -202,8 +207,6 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                                 }
 
                             }
-
-
                             break;
                         case UIViewSystemEvent.UI_CHOOSE_STAGE_ONE_SHIP_CARD_ANIMATION:
                             viewChooseStage = UIControllerLIst.GetViewByName<ViewChooseStage>(UIViewName.ChooseStage);
@@ -237,104 +240,24 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                     ViewChooseMakeStage viewChooseMakeStage = UIControllerLIst.GetViewByName<ViewChooseMakeStage>(UIViewName.ViewChooseMakeStage);
                     switch (notification.Type)
                     {
-                        //打开界面
-                        case UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE_OPEN:
-
-                            UIControllerLIst.ShowView(UIViewName.ViewChooseMakeStage);
-                            List<List<CardEntry>> cardEntries = notification.Body as List<List<CardEntry>>;
-                            viewChooseMakeStage = UIControllerLIst.GetViewByName<ViewChooseMakeStage>(UIViewName.ViewChooseMakeStage);
-                            viewChooseMakeStage.LoadStartCardList(cardEntries);
-                            foreach (ViewChooseStage oneViewChoose in viewChooseMakeStage.sortViewChosseMap.Values)
-                            {
-                                foreach (CardIntactView cardIntactView in oneViewChoose.cardIntactViews)
-                                {
-                                    if (cardIntactView.card.layerSort == VCSLayerSort.Three)
-                                    {
-                                        cardIntactView.OnClick = () =>
-                                        {
-                                            //提示第三排为展示，不可购买
-                                            cardIntactView.OnClick = () =>
-                                        {
-                                        };
-
-                                        };
-                                    }
-                                    else
-                                    {
-                                        cardIntactView.OnClick = () =>
-                                        {
-                                            SendNotification(UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE, cardIntactView.card, UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE_ONE_CARD);
-                                        };
-                                    }
-                                }
-                            }
-
-
-                            break;
-                        //关闭界面
-                        case UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE_CLOSE:
-
-                            UIControllerLIst.HideView(UIViewName.ViewChooseMakeStage);
-
-
-                            break;
                         //获取下一组数据
                         case UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE_LOAD_NEXT_LIST:
-
                             List<CardEntry> cardList = notification.Body as List<CardEntry>;
                             viewChooseMakeStage = UIControllerLIst.GetViewByName<ViewChooseMakeStage>(UIViewName.ViewChooseMakeStage);
                             viewChooseMakeStage.LoadNewCardList(cardList);
-
-
                             break;
                         case UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE_ONE_CARD_SUCCESS:
 
                             CardEntry card = notification.Body as CardEntry;
                             viewChooseMakeStage.ChangeOneCradForBuyed(card);
-
-
                             break;
                     }
                     break;
                 case UIViewSystemEvent.UI_CARD_DECK_LIST:
                     switch (notification.Type)
                     {
-
-                        //第一次进入界面是打开
-                        case UIViewSystemEvent.UI_CARD_DECK_LIST_OPEN:
-
-
-                            PlayerItem playerItem = notification.Body as PlayerItem;
-                            UIControllerLIst.ShowView(UIViewName.CardDeckList);
-                            List<CardDeckList> cardDeckLists = UIControllerLIst.GetViewListByName<CardDeckList>(UIViewName.CardDeckList);
-                            for (int num = 0; num < cardDeckLists.Count; num++)
-                            {
-                                if (cardDeckLists[num].playerItem == null)
-                                {
-                                    cardDeckLists[num].playerItem = playerItem;
-                                    //设置位置
-                                    //0在左，1在右
-                                    //己方始终显示在左边
-                                    Vector3 position = new Vector3();
-                                    if (playerItem.playerCode == playerCode)
-                                    {
-                                        position.x = -600;
-
-                                    }
-                                    else
-                                    {
-                                        position.x = 430;
-
-                                    }
-                                    cardDeckLists[num].transform.localPosition = position;
-                                }
-                            }
-
-
-                            break;
                         //读取牌组
                         case UIViewSystemEvent.UI_CARD_DECK_LIST_LOAD:
-
                             PlayerItem playerItemLoad = notification.Body as PlayerItem;
                             cardDeckListLoad = UIControllerLIst.GetViewListByName<CardDeckList>(UIViewName.CardDeckList);
                             for (int num = 0; num < cardDeckListLoad.Count; num++)
@@ -348,35 +271,22 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                                         cardHeadView.card.cardPosition = cardHeadView.transform.position;
                                         cardHeadView.OnPointerEnter = () =>
                                         {
-                                            SendNotification(UIViewSystemEvent.UI_ONE_CARD_ALL_INFO, cardHeadView.card, UIViewSystemEvent.UI_ONE_CARD_ALL_INFO_OPEN);
+                                            SendNotification(
+                                                UIViewSystemEvent.UI_VIEW_CURRENT,
+                                                cardHeadView.card,
+                                                StringUtil.GetNTByNotificationTypeAndUIViewName(
+                                                    UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW,
+                                                    UIViewConfig.getNameStrByUIViewName(UIViewName.OneCardAllInfo)
+                                                    )
+                                                );
                                         };
                                         cardHeadView.OnPointerExit = () =>
                                         {
-                                            SendNotification(UIViewSystemEvent.UI_ONE_CARD_ALL_INFO, cardHeadView.card, UIViewSystemEvent.UI_ONE_CARD_ALL_INFO_CLOSE);
+                                            SendNotification(UIViewSystemEvent.UI_VIEW_CURRENT, UIViewConfig.getNameStrByUIViewName(UIViewName.OneCardAllInfo), UIViewSystemEvent.UI_VIEW_CURRENT_CLOSE_ONE_VIEW);
                                         };
                                     }
                                 }
                             }
-
-
-                            break;
-                    }
-                    break;
-                case UIViewSystemEvent.UI_ONE_CARD_ALL_INFO:
-                    switch (notification.Type)
-                    {
-                        case UIViewSystemEvent.UI_ONE_CARD_ALL_INFO_OPEN:
-
-                            CardEntry cardEntry = notification.Body as CardEntry;
-                            UIControllerLIst.ShowView(UIViewName.OneCardAllInfo);
-                            OneCardAllInfo oneCardAllInfo = UIControllerLIst.GetViewByName<OneCardAllInfo>(UIViewName.OneCardAllInfo);
-                            oneCardAllInfo.LoadCardInfo(cardEntry);
-
-
-
-                            break;
-                        case UIViewSystemEvent.UI_ONE_CARD_ALL_INFO_CLOSE:
-                            UIControllerLIst.HideView(UIViewName.OneCardAllInfo);
                             break;
                     }
                     break;
@@ -411,9 +321,6 @@ namespace Assets.Scripts.OrderSystem.View.UIView
 
                             }
                             break;
-                        case UIViewSystemEvent.UI_USER_OPERAT_CHOOSE_EFFECT_OVER:
-                            UIControllerLIst.HideView(UIViewName.ChooseStage);
-                            break;
                     }
                     break;
                 //费用控制组件
@@ -422,9 +329,6 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                     ManaInfoView manaInfoView = null;
                     switch (notification.Type)
                     {
-                        case UIViewSystemEvent.UI_MANA_INFA_SYS_OPEN:
-                            UIControllerLIst.ShowView(UIViewName.ManaInfoView);
-                            break;
                         case UIViewSystemEvent.UI_MANA_INFA_SYS_INIT:
                             ManaItem manaItem = notification.Body as ManaItem;
                             manaInfoView = UIControllerLIst.GetViewByName<ManaInfoView>(UIViewName.ManaInfoView);
@@ -447,9 +351,6 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                     TraitCombinationView traitCombinationView = null;
                     switch (notification.Type)
                     {
-                        case UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS_OPEN:
-                            UIControllerLIst.ShowView(UIViewName.TraitCombinationView);
-                            break;
                         case UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS_INIT:
                             List<TraitType> traitTypes = notification.Body as List<TraitType>;
                             traitCombinationView = UIControllerLIst.GetViewByName<TraitCombinationView>(UIViewName.TraitCombinationView);
@@ -462,26 +363,11 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                             break;
                     }
                     break;
-                //舰船展示控制
-                case UIViewSystemEvent.UI_PLAYER_SHOW_SYS:
-                    ShipComponentView shipComponentView = null;
-                    switch (notification.Type)
-                    {
-                        case UIViewSystemEvent.UI_PLAYER_SHOW_SYS_OPEN:
-                            UIControllerLIst.ShowView(UIViewName.ShipComponentView);
-                            shipComponentView = UIControllerLIst.GetViewByName<ShipComponentView>(UIViewName.ShipComponentView);
-                            shipComponentView.myselfPlayerCode = playerCode;
-                            break;
-                    }
-                    break;
                 //效果展示列控制
                 case UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS:
                     EffectDisplayView effectDisplayView = null;
                     switch (notification.Type)
                     {
-                        case UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_OPEN:
-                            UIControllerLIst.ShowView(UIViewName.EffectDisplayView);
-                            break;
                         case UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_PUT_ONE_EFFECT:
                             effectDisplayView = UIControllerLIst.GetViewByName<EffectDisplayView>(UIViewName.EffectDisplayView);
                             CardEntry effectCard = notification.Body as CardEntry;
@@ -500,26 +386,20 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                             break;   
                     }
                     break;
+                //结束按钮的显示控制
                 case UIViewSystemEvent.UI_NEXT_TURN_SHOW_SYS:
                     NextTurnButton nextTurnButton = null;
                     switch (notification.Type)
                     {
-                        case UIViewSystemEvent.UI_NEXT_TURN_SHOW_SYS_OPEN:
-                            UIControllerLIst.ShowView(UIViewName.NextTurnButton);
-                            nextTurnButton = UIControllerLIst.GetViewByName<NextTurnButton>(UIViewName.NextTurnButton);
-                            nextTurnButton.OnPointerClick = () =>
-                            {
-                                SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_END_OF_TRUN);
-                                nextTurnButton.HideButton();
-                            };
-                            nextTurnButton.InitView();
-                            break;
                         case UIViewSystemEvent.UI_NEXT_TURN_SHOW_SYS_SHOW:
-                            nextTurnButton = UIControllerLIst.GetViewByName<NextTurnButton>(UIViewName.NextTurnButton);
-                            nextTurnButton.ShowButton();
+                            if (myself) {
+                                nextTurnButton = UIControllerLIst.GetViewByName<NextTurnButton>(UIViewName.NextTurnButton);
+                                nextTurnButton.ShowButton();
+                            }
                             break;
                     }
                     break;
+               
             }
             if (callBackDelay == false)
             {

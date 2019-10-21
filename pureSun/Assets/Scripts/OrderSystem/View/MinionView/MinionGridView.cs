@@ -17,7 +17,10 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
         public Text cellLabelPrefab;
         MinionMesh minionMesh;
         Canvas gridCanvas;
-        public Material outLight;
+ 
+
+        public Material effectTargetMaterial;
+        public Material originalMaterial;
 
         void Awake()
         {
@@ -64,12 +67,12 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
         public void RenderOneMinionCellByMinionCellItem(MinionCellView minionCellView, MinionCellItem minionCellItem) {
             minionCellView.minionCellItem = minionCellItem;
             Image imageComponent = minionCellView.GetComponent<Image>();
-            if (minionCellItem.IsHighLight == false)
+            if (minionCellItem.IsEffectTarget == false)
             {
                 imageComponent.material = null;
             }
             else {
-                imageComponent.material = outLight;
+                imageComponent.material = effectTargetMaterial;
             }
         }
 

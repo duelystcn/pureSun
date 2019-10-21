@@ -37,7 +37,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                     
                     //遍历渲染
                     foreach (HexCellItem hexCellItem in hexGridProxy.HexGrid.cells) {
-                        if (operateSystemItem.playerItem.checkOneCellCanCall(hexCellItem.coordinates)) {
+                        if (operateSystemItem.playerItem.CheckOneCellCanCall(hexCellItem.coordinates)) {
                             hexCellItem.borderState = BorderState.CanCall;
                         }
                     }

@@ -42,12 +42,23 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //分数？生命
         public int score = 0;
 
+        //添加在玩家身上的限制
+        //每回合可以使用的资源牌的最大数
+        public int canUseResourceMaxNumOneTurn = 1;
+        //每回合可以使用的资源牌(每次使用会减少一次)
+        public int canUseResourceNum = 0;
+        //可使用资源次数恢复到最大数
+        public void RestoreCanUseResourceNumMax() {
+            canUseResourceNum = canUseResourceMaxNumOneTurn;
+
+        }
 
 
         public PlayerItem(string playCode)
         {
             this.playerCode = playCode;
             handGridItem = new HandGridItem();
+            handGridItem.playerCode = playerCode;
             handGridItem.Create();
             cardDeck = new CardDeck();
             manaItem = new ManaItem();
@@ -59,6 +70,9 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         public TTPlayerDrawACard ttPlayerDrawACard;
         //移除一张牌
         public TTPlayerRemoveACard ttPlayerRemoveACard;
+        //使用一张牌
+        public TTPlayerUseACard ttPlayerUseACard;
+
 
         //费用上限发生了变化
         public TTManaCostLimitChange ttManaCostLimitChange;
@@ -95,7 +109,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             }
         }
         //判断一个格子是否在可召唤区域内
-        public bool checkOneCellCanCall(HexCoordinates hexCoordinates) {
+        public bool CheckOneCellCanCall(HexCoordinates hexCoordinates) {
             bool canCall = false;
             foreach (HexCoordinates oneHexCoordinates in fixedCanCellHexList) {
                 if (hexCoordinates.X == oneHexCoordinates.X && hexCoordinates.Z == oneHexCoordinates.Z) {
@@ -104,10 +118,25 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             }
             return canCall;
         }
+        //手牌可使用判断
+        public void ChangeHandCardCanUse() {
+            foreach (HandCellItem handCellItem in this.handGridItem.handCells)
+            {
+                handCellItem.canUse = CheckOneCardCanUse(handCellItem.cardEntry);
+            }
+        }
 
         //判断玩家是否能使用一张牌
-        public bool checkOneCardCanUse(CardEntry cardEntry) {
+        public bool CheckOneCardCanUse(CardEntry cardEntry) {
             bool canUse = true;
+            //判断是否还可以再使用资源卡
+            if (cardEntry.WhichCard == CardEntry.CardType.ResourceCard) {
+                if (canUseResourceNum <= 0) {
+                    canUse = false;
+                    return canUse;
+                }
+            }
+
             //当前可用费用
             int manaUsable = this.manaItem.manaUsable;
             //当前科技
@@ -117,6 +146,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             if (cardEntry.cost > manaUsable)
             {
                 canUse = false;
+                return canUse;
             }
             //检查科技要求
             HashSet<string> traitdemandSet = new HashSet<string>(cardEntry.traitdemand);
@@ -143,6 +173,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player
                 if (traitdemandNum > traitTypeNum)
                 {
                     canUse = false;
+                    return canUse;
                 }
             }
             return canUse;
@@ -156,14 +187,24 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             ttAddTraitType(traitType);
 
         }
-
+        //增加一张固定的手牌，且不触发时点
+        public void AddCardToHandAndNoTT(CardEntry card)
+        {
+            HandCellItem handcellItem = this.handGridItem.CreateCell(card);
+        }
 
         //方法抽一张牌
         public void DrawCard(int num) {
-        for (int n = 0; n < num; n++) {
-            HandCellItem handcellItem = this.handGridItem.CreateCell(this.cardDeck.GetFirstCard());
-            ttPlayerDrawACard(handcellItem);
+            for (int n = 0; n < num; n++) {
+                HandCellItem handcellItem = this.handGridItem.CreateCell(this.cardDeck.GetFirstCard());
+                ttPlayerDrawACard(handcellItem);
+            }
         }
+        //因为使用而失去一张手牌
+        public void RemoveOneCardByUse(HandCellItem handCellItem)
+        {
+            ttPlayerUseACard(handCellItem);
+            RemoveOneCard(handCellItem);
         }
         //移除一张手牌
         public void RemoveOneCard(HandCellItem handCellItem) {
@@ -183,7 +224,6 @@ namespace Assets.Scripts.OrderSystem.Model.Player
                 UtilityLog.LogError("找不到要移除的手牌");
 
             }
-           
         }
         //改变费用上限
         public void ChangeManaUpperLimit(int num)
@@ -209,6 +249,10 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         {
             score += changeNum;
             ttScoreChange(changeNum);
+        }
+        //因为打出一张牌而减少了费用
+        public void ChangeManaUsableByUseHand(HandCellItem chooseHand) {
+            ChangeManaUsable(chooseHand.cardEntry.cost);
         }
 
 

@@ -15,6 +15,10 @@ namespace Assets.Scripts.OrderSystem.View
         public string playerCode;
         //当前消息所属者
         public string playerCodeNotification;
+        //是自己的还是对手的
+        public bool myself = false;
+        //type参数
+        public Dictionary<string, string> parameterMap;
 
         public MediatorExpand(string mediatorName, object viewComponent = null) : base(mediatorName, viewComponent)
         {
@@ -27,8 +31,9 @@ namespace Assets.Scripts.OrderSystem.View
         //在这里可以添加所有界面需要处理的信息
         public void HandleNotificationCommon(INotification notification)
         {
-            playerCodeNotification = StringUtil.GetPlayerCodeForNP(notification.Type);
-            notification.Type = StringUtil.GetNotificationTypeForNP(notification.Type);
+            parameterMap = StringUtil.GetParameterMapForNotificationType(notification.Type);
+            playerCodeNotification = parameterMap["PlayerCode"];
+            notification.Type = parameterMap["NotificationType"];
             switch (notification.Name)
             {
                 case OrderSystemEvent.CLINET_SYS:
@@ -40,6 +45,13 @@ namespace Assets.Scripts.OrderSystem.View
                             break;
                     }
                     break;
+            }
+            if (playerCode == playerCodeNotification)
+            {
+                myself = true;
+            }
+            else {
+                myself = false;
             }
         }
 

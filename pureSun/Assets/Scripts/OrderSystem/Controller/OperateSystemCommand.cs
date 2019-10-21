@@ -10,6 +10,7 @@ using Assets.Scripts.OrderSystem.Model.OperateSystem;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using Assets.Scripts.OrderSystem.Util;
+using Assets.Scripts.OrderSystem.View.UIView;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Command;
 using System.Collections.Generic;
@@ -55,8 +56,9 @@ namespace Assets.Scripts.OrderSystem.Controller
                         case CardEntry.CardType.TacticsCard:
                             //渲染可释放
                             //获取效果信息
-                            EffectInfo effectInfo = effectInfoProxy.GetDepthCloneEffectByName(handCellItem.cardEntry.cardInfo.effectName[0]);
-                            if (effectInfo.target == "ONE_MINION") {
+                            EffectInfo effectInfo = effectInfoProxy.GetDepthCloneEffectByName(handCellItem.cardEntry.cardInfo.targetEffectInfo);
+                            effectInfo.player = playerItem;
+                            if (effectInfo.targetSetList[0].target == "Minion") {
                                 //传入效果，根据效果目标进行筛选渲染
                                 SendNotification(MinionSystemEvent.MINION_SYS, effectInfo, MinionSystemEvent.MINION_SYS_EFFECT_HIGHLIGHT);
                             }
@@ -71,6 +73,9 @@ namespace Assets.Scripts.OrderSystem.Controller
                     switch (operateSystemProxy.operateSystemItem.operateModeType) {
                         //手牌使用状态
                         case OperateSystemItem.OperateType.HandUse:
+
+
+
                             switch (chooseHand.cardEntry.WhichCard) {
                                 case CardEntry.CardType.ResourceCard:
                                     chooseHand.cardEntry.player = playerItem;
@@ -80,14 +85,16 @@ namespace Assets.Scripts.OrderSystem.Controller
                                     break;
                                 case CardEntry.CardType.MinionCard:
                                     //检查是否可用释放
-                                    bool canUse = playerItem.checkOneCardCanUse(chooseHand.cardEntry);
-                                    bool canCall = playerItem.checkOneCellCanCall(hexCellItem.coordinates);
+                                    bool canUse = playerItem.CheckOneCardCanUse(chooseHand.cardEntry);
+                                    bool canCall = playerItem.CheckOneCellCanCall(hexCellItem.coordinates);
                                     //检查所选格子是否可用召唤
                                     if (canUse && canCall)
                                     {
-                                        minionGridProxy.minionGridItem.AddOneMinion(index, chooseHand.cardEntry);
+                                        minionGridProxy.minionGridItem.AddOneMinion(index, chooseHand);
+                                        //减少费用
+                                        playerItem.ChangeManaUsableByUseHand(chooseHand);
                                         //移除手牌
-                                        playerItem.RemoveOneCard(chooseHand);
+                                        playerItem.RemoveOneCardByUse(chooseHand);
                                         //通知生物层发生变更重新渲染
                                         SendNotification(MinionSystemEvent.MINION_VIEW, minionGridProxy.minionGridItem, MinionSystemEvent.MINION_VIEW_CHANGE_OVER);
                                         //通知战场层去除渲染
@@ -99,21 +106,42 @@ namespace Assets.Scripts.OrderSystem.Controller
                                         SendNotification(OperateSystemEvent.OPERATE_SYS, null, OperateSystemEvent.OPERATE_SYS_DRAW_END_NULL);
                                     }
                                     break;
-                                case CardEntry.CardType.TacticsCard:
-                                    //获取效果信息
-                                    EffectInfo effectInfo = effectInfoProxy.GetDepthCloneEffectByName(chooseHand.cardEntry.cardInfo.effectName[0]);
-                                    if (effectInfo.target == "ONE_MINION")
+                                case CardEntry.CardType.TacticsCard:                          
+                                    //如果存在目标，则需要先选择目标再释放
+                                    if (chooseHand.cardEntry.cardInfo.targetEffectInfo != "Null")
                                     {
-                                        UtilityLog.Log("index:"+index);
-                                        //判断格子上是否有生物
-                                        MinionCellItem minionCellItem = minionGridProxy.GetMinionCellItemByIndex(index);
-                                        if (minionCellItem!=null) {
-                                            //检查是否满足效果释放条件
-                                            //释放
-                                            effectInfo.TargetMinionOne(minionCellItem);
+                                        bool hasTarget = false;
+                                        EffectInfo targetEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(chooseHand.cardEntry.cardInfo.targetEffectInfo);
+                                        if (targetEffectInfo.targetSetList[0].target == "Minion")
+                                        {
+                                            //判断格子上是否有生物
+                                            MinionCellItem minionCellItem = minionGridProxy.GetMinionCellItemByIndex(index);
+                                            if (minionCellItem != null)
+                                            {
+                                                //检查是否满足效果释放条件
+                                                if (targetEffectInfo.checkEffectToTargetMinionCellItem(minionCellItem))
+                                                {
+                                                    //确认目标
+                                                    chooseHand.cardEntry.targetMinionCellItem = minionCellItem;
+                                                    hasTarget = true;
+                                                }
 
+                                            }
                                         }
+                                        if (hasTarget)
+                                        {
+                                            //执行卡牌
+                                            SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, chooseHand.cardEntry, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_CARD);
+                                        }
+                                      
                                     }
+                                    //如果不需要选择目标或者需要选择多个目标则先执行
+                                    else {
+                                        //执行卡牌
+                                        SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, chooseHand.cardEntry, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_CARD);
+                                    }
+                                    
+
                                     //结束，改变模式为初始，清除手牌
                                     operateSystemProxy.IntoModeClose();
                                     break;
@@ -127,8 +155,9 @@ namespace Assets.Scripts.OrderSystem.Controller
                     {
                         //手牌使用状态
                         case OperateSystemItem.OperateType.HandUse:
+                           
                             //手牌回复原位
-                            SendNotification(HandSystemEvent.HAND_CHANGE, chooseHand, HandSystemEvent.HAND_CHANGE_UNCHECK_STATUS);
+                            SendNotification(HandSystemEvent.HAND_CHANGE, chooseHand, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_UNCHECK_STATUS, playerItem.playerCode));
                             switch (chooseHand.cardEntry.WhichCard)
                             {
                                 case CardEntry.CardType.MinionCard:
@@ -138,7 +167,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                                     break;
                                 case CardEntry.CardType.TacticsCard:
                                     EffectInfo effectInfo = effectInfoProxy.GetDepthCloneEffectByName(chooseHand.cardEntry.cardInfo.effectName[0]);
-                                    if (effectInfo.target == "ONE_MINION")
+                                    if (effectInfo.targetSetList[0].target == "Minion")
                                     {
                                         //取消渲染
                                         SendNotification(MinionSystemEvent.MINION_SYS, effectInfo, MinionSystemEvent.MINION_SYS_EFFECT_HIGHLIGHT_CLOSE);
@@ -163,10 +192,10 @@ namespace Assets.Scripts.OrderSystem.Controller
                         EffectInfo effect = effectInfoProxy.effectSysItem.effectInfos[n];
                         if (effect.effectInfoStage == EffectInfoStage.Confirming)
                         {
-                            if (effect.target == "ChooseEffect")
+                            if (effect.targetSetList[0].target == "ChooseEffect")
                             {
                                 //确认目标
-                                effect.TargetEffectInfos.Add(chooseEffect);
+                                effect.targetSetList[0].targetEffectInfos.Add(chooseEffect);
                                 //设置为确认完毕
                                 effect.effectInfoStage = EffectInfoStage.ConfirmedTarget;
                                 //添加新效果
@@ -179,8 +208,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                                 //将这个效果添加到队列中
                                 effectInfoProxy.effectSysItem.effectInfos.Add(chooseEffect);
                                 //返回一个选择完毕的信号
-                                SendNotification(UIViewSystemEvent.UI_USER_OPERAT, null,
-                                         StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_USER_OPERAT_CHOOSE_EFFECT_OVER, playerItem.playerCode));
+                                SendNotification(UIViewSystemEvent.UI_VIEW_CURRENT, UIViewConfig.getNameStrByUIViewName(UIViewName.ChooseStage), UIViewSystemEvent.UI_VIEW_CURRENT_CLOSE_ONE_VIEW);
                                 //返回继续执行效果选择的信号
                                 SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_TARGET);
                             }

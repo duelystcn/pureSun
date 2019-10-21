@@ -1,8 +1,11 @@
 ﻿using Assets.Scripts.OrderSystem.Common;
+using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Database.Persistence;
+using Assets.Scripts.OrderSystem.Model.Database.TestCase;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.OperateSystem;
@@ -14,11 +17,13 @@ using Assets.Scripts.OrderSystem.View.HexView;
 using Assets.Scripts.OrderSystem.View.MinionView;
 using Assets.Scripts.OrderSystem.View.OperateSystem;
 using Assets.Scripts.OrderSystem.View.SpecialOperateView.ChooseView;
+using Assets.Scripts.OrderSystem.View.UIView;
 using OrderSystem;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Command;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Assets.Scripts.OrderSystem.Controller
 {
@@ -71,7 +76,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                 Facade.RegisterMediator(chooseGridMediator);
 
                 //手牌区代理（需要放在操作系统后）
-                HandGridMediator handGridMediator = new HandGridMediator(mainUI.HandGridView);
+                HandViewMediator handGridMediator = new HandViewMediator(mainUI.HandControlView);
                 Facade.RegisterMediator(handGridMediator);
             }
            
@@ -81,10 +86,12 @@ namespace Assets.Scripts.OrderSystem.Controller
             PlayerGroupProxy playerGroupProxy = Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
             HexGridProxy hexGridProxy = Facade.RetrieveProxy(HexGridProxy.NAME) as HexGridProxy;
             QuestStageCircuitProxy questStageCircuitProxy = Facade.RetrieveProxy(QuestStageCircuitProxy.NAME) as QuestStageCircuitProxy;
+            CardDbProxy cardDbProxy = Facade.RetrieveProxy(CardDbProxy.NAME) as CardDbProxy;
 
             switch (notification.Type) {
                 case OrderSystemEvent.START_CIRCUIT_MAIN:
-                    SendNotification(UIViewSystemEvent.UI_START_MAIN, null, UIViewSystemEvent.UI_START_MAIN_OPEN);
+                    SendNotification(UIViewSystemEvent.UI_VIEW_CURRENT, null, StringUtil.GetNTByNotificationTypeAndUIViewName(UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW, UIViewConfig.getNameStrByUIViewName(UIViewName.StartMain)));
+                    SendNotification(UIViewSystemEvent.UI_VIEW_CURRENT, null, StringUtil.GetNTByNotificationTypeAndUIViewName(UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW, UIViewConfig.getNameStrByUIViewName(UIViewName.CardMoveAnimation)));
                     break;
                 case OrderSystemEvent.START_CIRCUIT_START:
                     //CardDbProxy cardDbProxy = Facade.RetrieveProxy(CardDbProxy.NAME) as CardDbProxy;
@@ -100,14 +107,35 @@ namespace Assets.Scripts.OrderSystem.Controller
                     //开启卡组列渲染
                     foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
                     {
-                        SendNotification(UIViewSystemEvent.UI_CARD_DECK_LIST, playerItem, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_CARD_DECK_LIST_OPEN, playerItem.playerCode));
+                        SendNotification(
+                            UIViewSystemEvent.UI_VIEW_CURRENT, 
+                            playerItem, 
+                            StringUtil.GetNTByNotificationTypeAndPlayerCodeAndUIViewName(
+                                UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW, 
+                                playerItem.playerCode, 
+                                UIViewConfig.getNameStrByUIViewName(UIViewName.CardDeckList)
+                                )
+                            );
                     }
                     //开启选择阶段
                     SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, null, UIViewSystemEvent.UI_CHOOSE_STAGE_START);
                    
                     break;
-                case OrderSystemEvent.START_CIRCUIT_TEST_MAP:
-                    CardDbProxy cardDbProxy = Facade.RetrieveProxy(CardDbProxy.NAME) as CardDbProxy;
+                case OrderSystemEvent.START_CIRCUIT_TEST_CASE:
+                    TestCaseProxy testCaseProxy = Facade.RetrieveProxy(TestCaseProxy.NAME) as TestCaseProxy;
+                    List<TestCaseInfo> testCaseInfoList = testCaseProxy.testCaseInfoMap.Values.ToList();
+                    SendNotification(
+                          UIViewSystemEvent.UI_VIEW_CURRENT,
+                          testCaseInfoList,
+                          StringUtil.GetNTByNotificationTypeAndUIViewName(
+                              UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW,
+                              UIViewConfig.getNameStrByUIViewName(UIViewName.TestCaseView)
+                              )
+                          );
+                    break;
+                //开始一个测试
+                case OrderSystemEvent.START_CIRCUIT_TEST_CASE_START_ONE:
+                    TestCaseInfo chooseOneTestCase = notification.Body as TestCaseInfo;
                     //玩家信息初始化
                     playerGroupProxy.AddPlayer("TEST1", PlayerType.HumanPlayer);
                     playerGroupProxy.AddPlayer("TEST2", PlayerType.AIPlayer);
@@ -116,6 +144,53 @@ namespace Assets.Scripts.OrderSystem.Controller
                     //设置虚拟坐标
                     playerGroupProxy.playerGroup.playerItems["TEST1"].hexCoordinates = new HexCoordinates(0, -1);
                     playerGroupProxy.playerGroup.playerItems["TEST2"].hexCoordinates = new HexCoordinates(0, 4);
+                    foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
+                    {
+                        PI_Player pI_Player = new PI_Player();
+                        if (playerItem.playerCode == "TEST1")
+                        {
+                            pI_Player = chooseOneTestCase.myselfPlayer;
+                            playerItem.CreateCanCallHex(questStageCircuitProxy.hexModelInfo, hexGridProxy.HexGrid.cells, true);
+                        }
+                        else {
+                            pI_Player = chooseOneTestCase.enemyPlayer;
+                            playerItem.CreateCanCallHex(questStageCircuitProxy.hexModelInfo, hexGridProxy.HexGrid.cells, false);
+                        }
+                        //创建牌库
+                        playerItem.cardDeck = new CardDeck();
+                        foreach (string cardName in pI_Player.deckCard) {
+                            CardEntry cardEntry = new CardEntry();
+                            cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode(cardName));
+                            playerItem.cardDeck.cardEntryList.Add(cardEntry);
+                        }
+                        CardEntry shipCard = new CardEntry();
+                        shipCard.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode(pI_Player.shipCardCode));
+                        playerItem.shipCard = shipCard;
+                        //手牌
+                        foreach (string cardName in pI_Player.handCard)
+                        {
+                            CardEntry cardEntry = new CardEntry();
+                            cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode(cardName));
+                            playerItem.AddCardToHandAndNoTT(cardEntry);
+                            
+                        }
+                    }
+                    SendNotification(UIViewSystemEvent.UI_VIEW_CURRENT, UIViewConfig.getNameStrByUIViewName(UIViewName.TestCaseView), UIViewSystemEvent.UI_VIEW_CURRENT_CLOSE_ONE_VIEW);
+                    SendNotification(UIViewSystemEvent.UI_QUEST_STAGE, null, UIViewSystemEvent.UI_QUEST_STAGE_START_SPECIAL);
+                    SendNotification(OperateSystemEvent.OPERATE_TRAIL_DRAW, null, OperateSystemEvent.OPERATE_TRAIL_DRAW_CREATE);
+                    break;
+                //开始测试地图
+                case OrderSystemEvent.START_CIRCUIT_TEST_MAP:
+                   
+                    //玩家信息初始化
+                    playerGroupProxy.AddPlayer("TEST1", PlayerType.HumanPlayer);
+                    playerGroupProxy.AddPlayer("TEST2", PlayerType.AIPlayer);
+                    //设定UI段显示为玩家TEST1
+                    SendNotification(OrderSystemEvent.CLINET_SYS, "TEST1", OrderSystemEvent.CLINET_SYS_OWNER_CHANGE);
+                    //设置虚拟坐标
+                    playerGroupProxy.playerGroup.playerItems["TEST1"].hexCoordinates = new HexCoordinates(0, -1);
+                    playerGroupProxy.playerGroup.playerItems["TEST2"].hexCoordinates = new HexCoordinates(0, 4);
+
                     foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
                     {
                         //渲染可召唤区域
@@ -156,10 +231,6 @@ namespace Assets.Scripts.OrderSystem.Controller
                         playerItem.shipCard = shipCard;
 
                     }
-
-
-
-
                     SendNotification(UIViewSystemEvent.UI_QUEST_STAGE, null, UIViewSystemEvent.UI_QUEST_STAGE_START);
                     SendNotification(OperateSystemEvent.OPERATE_TRAIL_DRAW, null, OperateSystemEvent.OPERATE_TRAIL_DRAW_CREATE);
                     break;

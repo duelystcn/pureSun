@@ -61,15 +61,15 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
         }
         public void ShowCradEffect(CardEntry cardEntry) {
             cardIntactView.gameObject.SetActive(true);
-            cardIntactView.LoadCard(cardEntry);
+            cardIntactView.LoadCard(cardEntry,true);
         }
         public void ShowEffectIndicationTrail(CardEntry cardEntry)
         {
             List<Vector3> endVectors = new List<Vector3>();
             EffectInfo effectInfo = cardEntry.needShowEffectInfo;
-            switch (effectInfo.target) {
+            switch (effectInfo.targetSetList[0].target) {
                 case "Player":      
-                    for (int n = 0; n < effectInfo.TargetPlayerItems.Count; n++)
+                    for (int n = 0; n < effectInfo.targetSetList[0].targetPlayerItems.Count; n++)
                     {
                         for (int m = 0; m < effectInfo.impactTargets.Length; m++)
                         {
@@ -79,7 +79,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
                                 //资源上限
                                 case "ManaUpperLimit":
                                     onePlayerManaInfos = GameObject.FindObjectsOfType<OnePlayerManaInfo>();
-                                    foreach (PlayerItem playerItem in effectInfo.TargetPlayerItems)
+                                    foreach (PlayerItem playerItem in effectInfo.targetSetList[0].targetPlayerItems)
                                     {
                                         foreach (OnePlayerManaInfo onePlayerManaInfo in onePlayerManaInfos)
                                         {
@@ -95,7 +95,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
                                 //可用费用
                                 case "ManaUsable":
                                     onePlayerManaInfos = GameObject.FindObjectsOfType<OnePlayerManaInfo>();
-                                    foreach (PlayerItem playerItem in effectInfo.TargetPlayerItems)
+                                    foreach (PlayerItem playerItem in effectInfo.targetSetList[0].targetPlayerItems)
                                     {
                                         foreach (OnePlayerManaInfo onePlayerManaInfo in onePlayerManaInfos)
                                         {
@@ -111,7 +111,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
                                 //科技相关
                                 case "TraitAddOne":
                                     TraitSignRowList[] traitSignRowLists = GameObject.FindObjectsOfType<TraitSignRowList>();
-                                    foreach (PlayerItem playerItem in effectInfo.TargetPlayerItems) {
+                                    foreach (PlayerItem playerItem in effectInfo.targetSetList[0].targetPlayerItems) {
                                         foreach (TraitSignRowList traitSignRowList in traitSignRowLists)
                                         {
                                             if (traitSignRowList.playerCode == playerItem.playerCode) {
@@ -125,7 +125,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
                                 //分数相关
                                 case "Score":
                                     ShipComponentView[] shipComponentViews = GameObject.FindObjectsOfType<ShipComponentView>();
-                                    foreach (PlayerItem playerItem in effectInfo.TargetPlayerItems)
+                                    foreach (PlayerItem playerItem in effectInfo.targetSetList[0].targetPlayerItems)
                                     {
                                         if (shipComponentViews[0].myselfPlayerCode == playerItem.playerCode)
                                         {

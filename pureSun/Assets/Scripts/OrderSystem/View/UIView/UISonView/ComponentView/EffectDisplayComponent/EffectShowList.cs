@@ -23,7 +23,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.EffectD
             CardIntactView cardIntactView = cardIntactViewPool.Pop();
             cardIntactView.transform.SetParent(transform, false);
             cardIntactView.transform.localPosition = position;
-            cardIntactView.LoadCard(cardEntry);
+            cardIntactView.LoadCard(cardEntry,true);
             cardIntactViews.Add(cardIntactView);
 
         }

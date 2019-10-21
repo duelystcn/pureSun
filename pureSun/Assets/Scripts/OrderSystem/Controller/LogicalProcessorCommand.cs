@@ -34,16 +34,16 @@ namespace Assets.Scripts.OrderSystem.Controller
                     //如果是玩家
                     if (playerItem.playerType == PlayerType.HumanPlayer)
                     {
-                        SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, 
-                                         chooseStageCircuitProxy.chooseStageCircuitItem.playerShipCardMap[playerCode], 
-                                         StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_CHOOSE_STAGE_LOAD_CARD_ENTRY, playerCode));
+                        SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE,
+                                        chooseStageCircuitProxy.chooseStageCircuitItem.playerShipCardMap[playerCode],
+                                        StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_CHOOSE_STAGE_LOAD_CARD_ENTRY, playerCode));
 
                     }
                     //AI玩家
                     else if (playerItem.playerType == PlayerType.AIPlayer)
                     {
                         //AI进行船只渲染
-                        SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, chooseStageCircuitProxy.chooseStageCircuitItem.playerShipCardMap[playerCode], StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_CHOOSE_STAGE_LOAD_CARD_ENTRY, playerCode));
+                        SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, chooseStageCircuitProxy.chooseStageCircuitItem.playerShipCardMap[playerCode], StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_CHOOSE_STAGE_LOAD_CARD_ENTRY, playerCode));
                         //AI选择船只
                         CardEntry shipCardEntry = chooseStageCircuitProxy.chooseStageCircuitItem.playerShipCardMap[playerCode][0];
                         SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, shipCardEntry, UIViewSystemEvent.UI_CHOOSE_STAGE_ONE_CARD);
@@ -71,7 +71,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                             cardEntries.Add(oneCardEntry);
                         }
                         SendNotification(UIViewSystemEvent.UI_USER_OPERAT, cardEntries,
-                                          StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_USER_OPERAT_CHOOSE_EFFECT, playerItem.playerCode));
+                                          StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_USER_OPERAT_CHOOSE_EFFECT, playerItem.playerCode));
 
 
                     }

@@ -1,5 +1,6 @@
 ﻿
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -58,7 +59,9 @@ namespace Assets.Scripts.OrderSystem.View.UIView
 
 
         //下一回合按钮
-        NextTurnButton
+        NextTurnButton,
+        //测试列表
+        TestCaseView,
 
     }
     //UIView名字的比较器
@@ -98,10 +101,13 @@ namespace Assets.Scripts.OrderSystem.View.UIView
         //被遮挡后是否需要更新
         public bool alwaysUpdate;
         //是否遮挡了整个屏幕
-        public bool coverScreen;                    
+        public bool coverScreen;
 
-
-
-
+        public static UIViewName getUIViewNameByNameStr(string name) {
+            return (UIViewName)Enum.Parse(typeof(UIViewName), name);
+        }
+        public static string getNameStrByUIViewName(UIViewName viewName) {
+            return Enum.GetName(typeof(UIViewName), viewName);
+        }
     }
 }

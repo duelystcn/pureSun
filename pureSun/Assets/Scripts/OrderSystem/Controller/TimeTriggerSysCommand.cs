@@ -2,6 +2,7 @@
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
+using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
 using Assets.Scripts.OrderSystem.Model.Player;
@@ -16,21 +17,21 @@ namespace Assets.Scripts.OrderSystem.Controller
     {
         public override void Execute(INotification notification)
         {
-            string playerCodeNotification = StringUtil.GetPlayerCodeForNP(notification.Type);
-            notification.Type = StringUtil.GetNotificationTypeForNP(notification.Type);
+            string playerCodeNotification = StringUtil.GetValueForNotificationTypeByKey(notification.Type, "PlayerCode");
+            notification.Type = StringUtil.GetValueForNotificationTypeByKey(notification.Type, "NotificationType");
 
             PlayerGroupProxy playerGroupProxy = Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
             QuestStageCircuitProxy circuitProxy = Facade.RetrieveProxy(QuestStageCircuitProxy.NAME) as QuestStageCircuitProxy;
             switch (notification.Type)
             {
+                //判断手牌是否可用
                 case TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE:
                     string playerCode = notification.Body as string;
                     PlayerItem playerItem = playerGroupProxy.playerGroup.playerItems[playerCode];
-                    foreach (HandCellItem handCellItem in playerItem.handGridItem.handCells) {
-                        handCellItem.canUse = playerItem.checkOneCardCanUse(handCellItem.cardEntry);
-                    }
-                    SendNotification(HandSystemEvent.HAND_CHANGE, playerItem.handGridItem.handCells, HandSystemEvent.HAND_CHANGE_CAN_USE_JUDGE);
+                    playerItem.ChangeHandCardCanUse();
+                    SendNotification(HandSystemEvent.HAND_CHANGE, playerItem.handGridItem.handCells, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_CAN_USE_JUDGE, playerCode));
                     break;
+                //抽了一张牌
                 case TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD:
                     if (circuitProxy.circuitItem.activeEffectInfoMap.ContainsKey(TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD)) {
                         List<EffectInfo> effectInfos = circuitProxy.circuitItem.activeEffectInfoMap[TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD];
@@ -54,6 +55,16 @@ namespace Assets.Scripts.OrderSystem.Controller
                                 }
                             }
                         }
+
+                    }
+                    break;
+                //使用了一张手牌
+                case TimeTriggerEvent.TIME_TRIGGER_SYS_USE_HAND_CARD:
+                    HandCellItem handCellItemUse = notification.Body as HandCellItem;
+                    switch (handCellItemUse.cardEntry.WhichCard) {
+                        case CardEntry.CardType.ResourceCard:
+                            playerGroupProxy.playerGroup.playerItems[handCellItemUse.playerCode].canUseResourceNum--;
+                            break;
 
                     }
                     break;

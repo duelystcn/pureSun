@@ -1,0 +1,31 @@
+{
+  "TestTacticsTarget": {
+    "name": "TestTacticsTarget",
+    "description": "测试法术指向目标",
+    "myselfPlayer": {
+      "playerCode": "TEST1",
+      "shipCardCode": "FindWay",
+      "handCard": [ "FortifiedAgent", "FortifiedAgent" ],
+      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ]
+    },
+    "enemyPlayer": {
+      "playerCode": "TEST2",
+      "shipCardCode": "FindWay",
+      "handCard": [ "FortifiedAgent", "FortifiedAgent" ],
+      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ]
+    }
+  },
+  "TestMinion": {
+    "name": "TestMinion",
+    "description": "测试生物",
+    "myselfPlayer": {
+      "handCard": [ "FortifiedAgent", "FortifiedAgent" ],
+      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ]
+    },
+    "enemyPlayer": {
+      "handCard": [ "FortifiedAgent", "FortifiedAgent" ],
+      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ]
+    }
+  }
+
+}

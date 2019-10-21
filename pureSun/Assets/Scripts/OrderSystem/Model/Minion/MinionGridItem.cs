@@ -1,5 +1,6 @@
 ﻿
 using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -15,11 +16,12 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             minionCells = new Dictionary<int, MinionCellItem>();
 
         }
-        public void AddOneMinion(int index,CardEntry cardEntry) {
+        public void AddOneMinion(int index, HandCellItem chooseHand) {
             MinionCellItem minionCellItem = new MinionCellItem();
-            minionCellItem.cardEntry = cardEntry;
+            minionCellItem.cardEntry = chooseHand.cardEntry;
+            minionCellItem.playerCode = chooseHand.playerCode;
             minionCellItem.color = Color.red;
-            minionCellItem.IsHighLight = false;
+            minionCellItem.IsEffectTarget = false;
             minionCellItem.uuid = System.Guid.NewGuid().ToString("N");
             minionCells.Add(index,minionCellItem);
         }

@@ -24,7 +24,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.Animation
             Vector3 endPosition = cardDeckList.transform.position;
             //激活动画组件
             ActiveCardMoveAnimation(startPosition);
-            cardMoveAnimation.LoadCard(cardIntactView.card);
+            cardMoveAnimation.LoadCard(cardIntactView.card,true);
             StartCoroutine(MoveOneCard(callBack, startPosition, endPosition));
         }
 

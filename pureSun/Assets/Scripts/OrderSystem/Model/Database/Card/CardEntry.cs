@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.OrderSystem.Metrics;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
+using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.ChooseMakeStage;
 using UnityEngine;
@@ -35,6 +36,8 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
         //描述
         public string description { get; set; }
 
+       
+
 
         //功能属性
         //复合式选择框所属层级
@@ -56,6 +59,11 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
 
         //这张牌的当前所使用者，用于效果执行
         public PlayerItem player;
+
+        //目标暂存
+        //生物
+        public MinionCellItem targetMinionCellItem;
+
 
 
 

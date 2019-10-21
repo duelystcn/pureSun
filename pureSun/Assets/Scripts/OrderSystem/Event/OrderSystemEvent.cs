@@ -23,6 +23,14 @@ namespace OrderSystem
         public const string START_CIRCUIT_START = "StartCircuitStart";
 
         public const string START_CIRCUIT_TEST_MAP = "StartCircuitTestMap";
+        /// <summary>
+        /// 选择测试用例
+        /// </summary>
+        public const string START_CIRCUIT_TEST_CASE = "StartCircuitTestCase";
+        /// <summary>
+        /// 进入一个测试用例
+        /// </summary>
+        public const string START_CIRCUIT_TEST_CASE_START_ONE = "StartCircuitTestCaseStartOne";
 
 
 

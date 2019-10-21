@@ -1,0 +1,27 @@
+{
+  "OneMyselfMinion": {
+    "name": "OneMyselfMinion",
+    "target": "Minion",
+    "targetClaims": [ "Owner" ],
+    "targetClaimsContents": [ "Myself" ],
+    "targetClaimsNums": 1,
+    "description": "选择一个己方生物"
+  },
+  "MyselfChooseEffect": {
+    "name": "MyselfChooseEffect",
+    "target": "ChooseEffect",
+    "targetClaims": [ "Owner" ],
+    "targetClaimsContents": [ "Myself" ],
+    "targetClaimsNums": 1,
+    "description": "己方玩家选择一个目标效果"
+  },
+  "MyselfPlayer": {
+    "name": "MyselfPlayer",
+    "target": "Player",
+    "targetClaims": [ "Owner" ],
+    "targetClaimsContents": [ "Myself" ],
+    "targetClaimsNums": 1,
+    "description": "选择己方玩家"
+  }
+
+}

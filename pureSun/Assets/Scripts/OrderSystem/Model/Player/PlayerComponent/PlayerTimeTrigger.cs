@@ -8,6 +8,8 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
         public delegate void TTPlayerDrawACard(HandCellItem handCellItem);
         //玩家移除一张牌
         public delegate void TTPlayerRemoveACard(HandCellItem handCellItem);
+        //玩家使用一张牌
+        public delegate void TTPlayerUseACard(HandCellItem handCellItem);
 
 
         //玩家费用上限发生了变化

@@ -1,5 +1,6 @@
 ﻿
 
+using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
 using Assets.Scripts.OrderSystem.Model.Minion;
@@ -23,8 +24,10 @@ namespace Assets.Scripts.OrderSystem.Controller
                     EffectInfo effectInfo = notification.Body as EffectInfo;
                     List<MinionCellItem> mList = new List<MinionCellItem>();
                     foreach (MinionCellItem minionCellItem in minionGridProxy.minionGridItem.minionCells.Values) {
-                        minionCellItem.IsHighLight = true;
-                        mList.Add(minionCellItem);
+                        if (effectInfo.checkEffectToTargetMinionCellItem(minionCellItem)) {
+                            minionCellItem.IsEffectTarget = true;
+                            mList.Add(minionCellItem);
+                        } 
                     }
                     //通知生物层发生变更重新渲染部分生物
                     SendNotification(MinionSystemEvent.MINION_VIEW, mList, MinionSystemEvent.MINION_VIEW_MINIONS_CHANGE);
@@ -33,8 +36,8 @@ namespace Assets.Scripts.OrderSystem.Controller
                     List<MinionCellItem> mListClose = new List<MinionCellItem>();
                     foreach (MinionCellItem minionCellItem in minionGridProxy.minionGridItem.minionCells.Values)
                     {
-                        if (minionCellItem.IsHighLight == true) {
-                            minionCellItem.IsHighLight = false;
+                        if (minionCellItem.IsEffectTarget == true) {
+                            minionCellItem.IsEffectTarget = false;
                         }
                         mListClose.Add(minionCellItem);
                     }

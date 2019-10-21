@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
+using Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
 using System.Collections.Generic;
@@ -29,23 +30,20 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public string name { get; set; }
         //描述
         public string description { get; set; }
-
-        public string target { get; set; }
+        //目标集合
+        public string[] targetSet { get; set; }
+        //实例化目标集
+        public List<TargetSet> targetSetList = new List<TargetSet>();
 
         //选择效果列表
         public string[] chooseEffectList { get; set; }
         //复合效果列表
         public string[] complexEffectList { get; set; }
+        
+
+     
 
 
-        //目标要求
-        //所有者
-        //Owner
-        //--Myself
-        //--Enemy
-        public string[] targetClaims { get; set; }
-
-        public string[] targetClaimsContents { get; set; }
 
         //影响类别
         //瞬间MOMENT，持续CONTINUE
@@ -83,14 +81,39 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public PlayerItem chooseByPlayer;
 
 
-        //执行对象
-        //目前可能存在的目标？卡（墓地，牌组，手牌）,生物，玩家，效果（选择性发动的效果）
-        public List<CardEntry> TargetCardEntries = new List<CardEntry>();
-        public List<MinionCellItem> TargetMinionCellItems = new List<MinionCellItem>();
-        public List<PlayerItem> TargetPlayerItems = new List<PlayerItem>();
-        public List<EffectInfo> TargetEffectInfos = new List<EffectInfo>();
+   
 
+        //检查一个效果是否可以作用与目标生物
+        public bool checkEffectToTargetMinionCellItem(MinionCellItem minionCellItem) {
+            bool isEffectTarget = true;
+            //遍历条件
+            foreach (TargetSet targetSet in this.targetSetList)
+            {
+                //条件
+                string[] targetClaims = targetSet.targetClaims;
+                //条件内容
+                string[] targetClaimsContents = targetSet.targetClaimsContents;
+               
+                for (int n = 0; n < targetClaims.Length; n++)
+                {
+                    //判断所有权
+                    if (targetClaims[n] == "Owner")
+                    {
+                        //是自己选
+                        if (targetClaimsContents[n] == "Myself")
+                        {
+                            if (minionCellItem.playerCode != this.player.playerCode)
+                            {
+                                isEffectTarget = false;
+                            }
+                        }
+                    }
+                }
 
+            }
+            return isEffectTarget;
+          
+        }
        
       
     }

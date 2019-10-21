@@ -22,5 +22,9 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.PlayerCompon
                 enemyScore.text = (Convert.ToInt32(enemyScore.text) + changeNum).ToString();
             }
         }
+        public override void InitViewForParameter(UIControllerListMediator mediator, object body)
+        {
+            this.myselfPlayerCode = mediator.playerCode;
+        }
     }
 }

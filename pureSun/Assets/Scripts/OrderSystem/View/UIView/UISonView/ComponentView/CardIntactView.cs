@@ -27,22 +27,33 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView
             }
            
         }
-        public void LoadCard(CardEntry card) {
+        public void LoadCard(CardEntry card, bool isPositive) {
             this.card = card;
-            LoadTraitList(card.traitdemand);
-            TextMeshProUGUI cardName = UtilityHelper.FindChild<TextMeshProUGUI>(transform, "CardName");
-            cardName.text = card.cardInfo.name;
-            TextMeshProUGUI cardCost = UtilityHelper.FindChild<TextMeshProUGUI>(transform, "CardCost");
-            cardCost.text = card.cost.ToString();
-            TextMeshProUGUI cardDescription = UtilityHelper.FindChild<TextMeshProUGUI>(transform, "CardDescription");
-            cardDescription.text = card.description;
-            //Assets\Resources\Image\CardBG
-            //image路径
-            string path = "Image/Card/CardBG/";
-            path = path + card.bgImageName;
-            MonoBehaviour cardBg = UtilityHelper.FindChild<MonoBehaviour>(transform, "CardBg");
-            changeImageSprite(cardBg, path);
             outLight.gameObject.SetActive(false);
+            if (isPositive)
+            {
+                LoadTraitList(card.traitdemand);
+                TextMeshProUGUI cardName = UtilityHelper.FindChild<TextMeshProUGUI>(transform, "CardName");
+                cardName.text = card.cardInfo.name;
+                TextMeshProUGUI cardCost = UtilityHelper.FindChild<TextMeshProUGUI>(transform, "CardCost");
+                cardCost.text = card.cost.ToString();
+                TextMeshProUGUI cardDescription = UtilityHelper.FindChild<TextMeshProUGUI>(transform, "CardDescription");
+                cardDescription.text = card.description;
+                //Assets\Resources\Image\CardBG
+                //image路径
+                string path = "Image/Card/CardBG/";
+                path = path + card.bgImageName;
+                MonoBehaviour cardBg = UtilityHelper.FindChild<MonoBehaviour>(transform, "CardBg");
+                changeImageSprite(cardBg, path);
+               
+            }
+            else {
+                //image路径
+                string path = "Image/Card/CardBG/cardback";
+                MonoBehaviour cardBg = UtilityHelper.FindChild<MonoBehaviour>(transform, "CardBg");
+                changeImageSprite(cardBg, path);
+            }
+            
 
         }
 

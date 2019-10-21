@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+﻿using Assets.Scripts.OrderSystem.Common;
+using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
@@ -9,16 +10,16 @@ using UnityEngine.Events;
 
 namespace Assets.Scripts.OrderSystem.View.HandView
 {
-    class HandGridMediator : MediatorExpand
+    class HandViewMediator : MediatorExpand
     {
         public new const string NAME = "HandGridMediator";
 
-        public HandGridView handGridView
+        public HandControlView handControlView
         {
-            get { return (HandGridView)base.ViewComponent; }
+            get { return (HandControlView)base.ViewComponent; }
         }
 
-        public HandGridMediator(HandGridView handGridView) : base(NAME, handGridView)
+        public HandViewMediator(HandControlView handControlView) : base(NAME, handControlView)
         {
             
         }
@@ -35,6 +36,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
         {
             List<string> notificationList = new List<string>();
             notificationList.Add(HandSystemEvent.HAND_CHANGE);
+            notificationList.Add(HandSystemEvent.HAND_VIEW_SYS);
             AddCommonNotificationInterests(notificationList);
             return notificationList.ToArray();
         }
@@ -84,31 +86,38 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                         case HandSystemEvent.HAND_CHANGE_AFFLUX:
                             HandGridItem handGridItem = notification.Body as HandGridItem;
                             if (playerCode.Equals(playerCodeNotification)) {
-                                handGridView.AchieveHandGrid(handGridItem);
-                                SendNotification(HandSystemEvent.HAND_CHANGE, handGridView, HandSystemEvent.HAND_CHANGE_OVER);
+                                handControlView.handGridViewMap[playerCodeNotification].AchieveHandGrid(handGridItem);               
+                                SendNotification(HandSystemEvent.HAND_CHANGE, handControlView.handGridViewMap[playerCodeNotification], StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_OVER, playerCodeNotification));
                             }
                             break;
                         case HandSystemEvent.HAND_CHANGE_OVER:
-                            foreach (HandCellView handCellView in handGridView.handCellViews) {
-                                handCellView.OnPointerDown = () =>
+                            //只有是自己的牌才会激活操作
+                            if (myself)
+                            {
+                                foreach (HandCellView handCellView in handControlView.handGridViewMap[playerCodeNotification].handCellViews)
                                 {
+                                    handCellView.OnPointerDown = () =>
+                                    {
+                                        if (handCellView.handCellItem.canUse) {
+                                            //消息通知-进入选中手牌操作模式
+                                            SendNotification(OperateSystemEvent.OPERATE_SYS, handCellView.handCellItem, OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE);
+                                            //消息通知-划线组件激活
+                                            SendNotification(OperateSystemEvent.OPERATE_TRAIL_DRAW, handCellView.handCellItem, OperateSystemEvent.OPERATE_TRAIL_DRAW_START);
+                                        }
+                                        
+                                    };
+                                    //发出鼠标移入消息
+                                    handCellView.OnPointerEnter = () =>
+                                    {
+                                        //SendNotification(HandSystemEvent.HAND_CHANGE, handCellView.handCellItem, HandSystemEvent.HAND_CHANGE_POINTER_ENTER);
+                                    };
+                                    //发出鼠标移出消息
+                                    handCellView.OnPointerExit = () =>
+                                    {
+                                        //SendNotification(HandSystemEvent.HAND_CHANGE, handCellView.handCellItem, HandSystemEvent.HAND_CHANGE_POINTER_EXIT);
+                                    };
 
-                                    //消息通知-进入选中手牌操作模式
-                                    SendNotification(OperateSystemEvent.OPERATE_SYS, handCellView.handCellItem, OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE);
-                                    //消息通知-划线组件激活
-                                    SendNotification(OperateSystemEvent.OPERATE_TRAIL_DRAW, handCellView.handCellItem, OperateSystemEvent.OPERATE_TRAIL_DRAW_START);
-                                };
-                                //发出鼠标移入消息
-                                handCellView.OnPointerEnter = () =>
-                                {
-                                    //SendNotification(HandSystemEvent.HAND_CHANGE, handCellView.handCellItem, HandSystemEvent.HAND_CHANGE_POINTER_ENTER);
-                                };
-                                //发出鼠标移出消息
-                                handCellView.OnPointerExit = () =>
-                                {
-                                    //SendNotification(HandSystemEvent.HAND_CHANGE, handCellView.handCellItem, HandSystemEvent.HAND_CHANGE_POINTER_EXIT);
-                                };
-
+                                }
                             }
                             break;
                         //发出鼠标移入消息
@@ -123,50 +132,47 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                             break;
                         //抽了一张牌
                         case HandSystemEvent.HAND_CHANGE_DRAW_ONE_CARD:
-                            if (playerCode == playerCodeNotification)
-                            {
                                 //回调函数
                                 callBack = () =>
                                 {
                                     exceINotification = false;
-                                    SendNotification(HandSystemEvent.HAND_CHANGE, handGridView, HandSystemEvent.HAND_CHANGE_OVER);
+                                    SendNotification(HandSystemEvent.HAND_CHANGE, handControlView.handGridViewMap[playerCodeNotification], StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_OVER, playerCodeNotification));
                                     SendNotification(UIViewSystemEvent.UI_ANIMATION_SYS, null, UIViewSystemEvent.UI_ANIMATION_SYS_ZF_OVER_START);
                                     SendNotification(HandSystemEvent.HAND_CHANGE, null, HandSystemEvent.HAND_CHANGE_ANIMATION_START);
                                 };
                                 callBackDelay = true;
                                 HandCellItem handCellItemDraw = notification.Body as HandCellItem;
-                                handGridView.PlayerDrawOneCard(handCellItemDraw, callBack);
-                            }
-                            else {
-                                //目前还没有实现对手手牌栏的显示，直接回调
-                                //回调函数
-                                callBack = () =>
-                                {
-                                    exceINotification = false; 
-                                    SendNotification(UIViewSystemEvent.UI_ANIMATION_SYS, null, UIViewSystemEvent.UI_ANIMATION_SYS_ZF_OVER_START);
-                                    SendNotification(HandSystemEvent.HAND_CHANGE, null, HandSystemEvent.HAND_CHANGE_ANIMATION_START);
-                                };
-                                callBack();
-                                callBackDelay = true;
-                            }
+                                handControlView.handGridViewMap[playerCodeNotification].PlayerDrawOneCard(handCellItemDraw, callBack);
 
                             break;
                         //移除一张牌
                         case HandSystemEvent.HAND_CHANGE_REMOVE_ONE_CARD:
                             HandCellItem handCellItemRemove = notification.Body as HandCellItem;
                             callBackDelay = true;
-                            handGridView.PlayerRemoveOneCard(handCellItemRemove, callBack);
+                            handControlView.handGridViewMap[playerCodeNotification].PlayerRemoveOneCard(handCellItemRemove, callBack);
                             break;
                         //是否可用渲染
                         case HandSystemEvent.HAND_CHANGE_CAN_USE_JUDGE:
-                            List<HandCellItem> handCells = notification.Body as List<HandCellItem>;
-                            handGridView.HandChangeCanUseJudge(handCells);
+                            if (myself)
+                            {
+                                List<HandCellItem> handCells = notification.Body as List<HandCellItem>;
+                                handControlView.handGridViewMap[playerCodeNotification].HandChangeCanUseJudge(handCells);
+                            }
                             break;
-                        //是否可用渲染
+                        //手牌恢复到初始状态，当使用手牌没有成功的
                         case HandSystemEvent.HAND_CHANGE_UNCHECK_STATUS:
 
                             HandCellItem uncheckHandCellItem = notification.Body as HandCellItem;
-                            handGridView.HandChangeUncheckHandItem(uncheckHandCellItem);
+                            handControlView.handGridViewMap[playerCodeNotification].HandChangeUncheckHandItem(uncheckHandCellItem);
+                            break;
+                    }
+                    break;
+                case HandSystemEvent.HAND_VIEW_SYS:
+                    switch (notification.Type)
+                    {
+                        //创建一个手牌栏
+                        case HandSystemEvent.HAND_VIEW_SYS_INIT_PLAYER_CODE:
+                            handControlView.CreateHandGridViewByPlayerCode(playerCodeNotification, myself);
                             break;
                     }
                     break;

@@ -1,10 +1,9 @@
 {
-  "testEffect": {
-    "name": "testEffect",
+  "TargetMinionGetAtk1_Def1": {
+    "name": "TargetMinionGetAtk1_Def1",
     "description": "目标生物+1/+1",
-    "target": "ONE_MINION",
-    "targetClaims": [],
-    "impactType": "MOMENT",
+    "targetSet": [ "OneMyselfMinion" ],
+    "impactType": "Moment",
     "impactTargets": [ "ATK", "DEF" ],
     "impactContents": [ "1", "1" ]
   },
@@ -13,46 +12,36 @@
     "description": "选择一项：\n●获得一点资源上限；\n●抽一张牌；\n●增加一点至高等级",
     "chooseEffectList": [ "AddManaUpOneToMyself", "DrawCardToMyself", "AddSupremcyTraitOneToMyself" ],
     "impactType": "Moment",
-    "target": "ChooseEffect",
-    "targetClaims": [ "Owner" ],
-    "targetClaimsContents": [ "Myself" ]
+    "targetSet": [ "MyselfChooseEffect" ]
   },
   "AddManaUpOneToMyself": {
     "name": "AddManaUpOneToMyself",
-    "description": "增加一点费用上限",
-    "target": "Player",
-    "targetClaims": [ "Owner" ],
-    "targetClaimsContents": [ "Myself" ],
+    "description": "己方玩家增加一点费用上限",
+    "targetSet": [ "MyselfPlayer" ],
     "impactType": "Moment",
     "impactTargets": [ "ManaUpperLimit" ],
     "impactContents": [ "1" ]
   },
   "GetManaOneToMyself": {
     "name": "GetManaOneToMyself",
-    "description": "获得①",
-    "target": "Player",
-    "targetClaims": [ "Owner" ],
-    "targetClaimsContents": [ "Myself" ],
+    "description": "己方玩家获得①",
+    "targetSet": [ "MyselfPlayer" ],
     "impactType": "Moment",
     "impactTargets": [ "ManaUsable" ],
     "impactContents": [ "1" ]
   },
   "DrawCardToMyself": {
     "name": "DrawCardToMyself",
-    "description": "抽一张牌",
-    "target": "Player",
-    "targetClaims": [ "Owner" ],
-    "targetClaimsContents": [ "Myself" ],
+    "description": "己方玩家抽一张牌",
+    "targetSet": [ "MyselfPlayer" ],
     "impactType": "Moment",
     "impactTargets": [ "Hand" ],
     "impactContents": [ "1" ]
   },
   "AddSupremcyTraitOneToMyself": {
     "name": "AddSupremcyTraitOneToMyself",
-    "description": "增加一点至高等级",
-    "target": "Player",
-    "targetClaims": [ "Owner" ],
-    "targetClaimsContents": [ "Myself" ],
+    "description": "己方玩家增加一点至高等级",
+    "targetSet": [ "MyselfPlayer" ],
     "impactType": "Moment",
     "impactTargets": [ "TraitAddOne" ],
     "impactContents": [ "supremcy" ]
@@ -60,9 +49,7 @@
   "SelfDrawOneCardThenGetOneScore": {
     "name": "SelfDrawOneCardThenGetOneScore",
     "description": "每当你抽一张牌时，获得1分",
-    "target": "Player",
-    "targetClaims": [ "Owner" ],
-    "targetClaimsContents": [ "Myself" ],
+    "targetSet": [ "MyselfPlayer" ],
     "impactType": "Continue",
     "impactTimeTriggers": [ "SysSelfDrawACard" ],
     "impactTargets": [ "Score" ],

@@ -1,5 +1,6 @@
 ﻿
 
+using Assets.Scripts.OrderSystem.Event;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -51,6 +52,16 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView
         public void PointerClick()
         {
             OnPointerClick();
+        }
+
+        public override void InitViewForParameter(UIControllerListMediator mediator, object body)
+        {
+            this.OnPointerClick = () =>
+            {
+                mediator.SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_END_OF_STAGE);
+                this.HideButton();
+            };
+            this.InitView();
         }
 
     }

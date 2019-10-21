@@ -6,6 +6,7 @@ using Assets.Scripts.OrderSystem.Metrics;
 using Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Player;
+using Assets.Scripts.OrderSystem.View.UIView;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Command;
 using System.Collections.Generic;
@@ -48,7 +49,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                         chooseStageCircuitProxy.chooseStageCircuitItem.playerShipCardMap[playerCode].Add(fpCardShip);
                     }
                     string playerCodeNow = chooseStageCircuitProxy.GetNowPlayerCode();
-                    SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, null, UIViewSystemEvent.UI_CHOOSE_STAGE_OPEN);
+                    SendNotification(UIViewSystemEvent.UI_VIEW_CURRENT, null, StringUtil.GetNTByNotificationTypeAndUIViewName(UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW, UIViewConfig.getNameStrByUIViewName(UIViewName.ChooseStage)));
                     SendNotification(LogicalSysEvent.LOGICAL_SYS, playerCodeNow, LogicalSysEvent.LOGICAL_SYS_CHOOSE_SHIP_CARD);
                     break;
                 case UIViewSystemEvent.UI_CHOOSE_STAGE_ONE_CARD:
@@ -58,7 +59,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                     {
                        //确认选择，然后返回选择动画
                         playerItemNow.shipCard = card;
-                        SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, card, StringUtil.NotificationTypeAddPlayerCode(UIViewSystemEvent.UI_CHOOSE_STAGE_ONE_SHIP_CARD_ANIMATION, playerItemNow.playerCode));
+                        SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, card, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_CHOOSE_STAGE_ONE_SHIP_CARD_ANIMATION, playerItemNow.playerCode));
                         SendNotification(UIViewSystemEvent.UI_CARD_DECK_LIST, playerItemNow, UIViewSystemEvent.UI_CARD_DECK_LIST_LOAD);
 
                         chooseStageCircuitProxy.IntoNextTurn();
@@ -69,14 +70,14 @@ namespace Assets.Scripts.OrderSystem.Controller
                         {
                             //渲染卡池
                             // List<CardEntry> cardEntries = cardDbProxy.GetSameCardEntry(3);
-                            SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, null, UIViewSystemEvent.UI_CHOOSE_STAGE_CLOSE);
+                            SendNotification(UIViewSystemEvent.UI_VIEW_CURRENT, UIViewConfig.getNameStrByUIViewName(UIViewName.ChooseStage), UIViewSystemEvent.UI_VIEW_CURRENT_CLOSE_ONE_VIEW);
                             //第一次发牌，发三组
                             List<List<CardEntry>> cardEntries = new List<List<CardEntry>>();
                             cardEntries.Add(cardDbProxy.GetOneCardListForPool());
                             cardEntries.Add(cardDbProxy.GetOneCardListForPool());
                             cardEntries.Add(cardDbProxy.GetOneCardListForPool());
 
-                            SendNotification(UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE, cardEntries, UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE_OPEN);
+                            SendNotification(UIViewSystemEvent.UI_VIEW_CURRENT, cardEntries, StringUtil.GetNTByNotificationTypeAndUIViewName(UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW, UIViewConfig.getNameStrByUIViewName(UIViewName.ViewChooseMakeStage)));
                             //SendNotification(UIViewSystemEvent.UI_CHOOSE_STAGE, cardEntries, UIViewSystemEvent.UI_CHOOSE_STAGE_LOAD_CARD_ENTRY);
                         }
                         else
