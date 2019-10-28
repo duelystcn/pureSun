@@ -11,15 +11,13 @@ namespace Assets.Scripts.OrderSystem.Model.OperateSystem
     public class OperateSystemProxy : Proxy
     {
         public new const string NAME = "OperateSystemProxy";
-        public HexModelInfo hexModelInfo;
         public OperateSystemItem operateSystemItem
         {
             get { return (OperateSystemItem)base.Data; }
         }
-        public OperateSystemProxy(HexModelInfo hexModelInfo) : base(NAME)
+        public OperateSystemProxy() : base(NAME)
         {
             OperateSystemItem operateSystemItem = new OperateSystemItem();
-            this.hexModelInfo = hexModelInfo;
             base.Data = operateSystemItem;
         }
         //进入模式，使用手牌模式

@@ -64,10 +64,14 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
         //生物
         public MinionCellItem targetMinionCellItem;
 
+        //根据效果实例化一张卡（用作展示）
+        public void InitializeByEffectInfo(EffectInfo oneEffectInfo)
+        {
+            this.effectName = new string[1] { oneEffectInfo.name };
+            this.description = oneEffectInfo.description;
+        }
 
-
-
-
+            //根据cardInfo实例化一张卡
         public void InitializeByCardInfo(CardInfo cardInfo) {
             this.cardInfo = cardInfo;
             this.name = cardInfo.name;

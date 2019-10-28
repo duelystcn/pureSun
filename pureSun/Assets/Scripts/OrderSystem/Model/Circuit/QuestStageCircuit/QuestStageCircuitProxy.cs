@@ -11,15 +11,12 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
     {
         public new const string NAME = "QuestStageCircuitProxy";
 
-        public HexModelInfo hexModelInfo;
-
         public QuestStageCircuitItem circuitItem
         {
             get { return (QuestStageCircuitItem)base.Data; }
         }
-        public QuestStageCircuitProxy(HexModelInfo hexModelInfo) : base(NAME) {
+        public QuestStageCircuitProxy() : base(NAME) {
             QuestStageCircuitItem circuitItem = new QuestStageCircuitItem();
-            this.hexModelInfo = hexModelInfo;
             base.Data = circuitItem;
             circuitItem.oneStageStartAction = () =>
             {
@@ -31,12 +28,22 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
             };
 
         }
+
+
         //流程开始
         public void CircuitStart(Dictionary<string, PlayerItem> dictionary ) {
             circuitItem.turnNum = 1;
             CreatePlayerOrder(dictionary);
             circuitItem.nowPlayerCode = circuitItem.playerOrder[0];
         }
+
+        //读取模式的流程信息并添加到circuitItem中
+        public void LoadingGameModelTurnStage(string[] turnStage) {
+            for (int n = 0; n < turnStage.Length; n++) {
+                circuitItem.questOneTurnStageList.Add(turnStage[n]);
+            }
+        }
+
         //创建玩家流程序列
         public void CreatePlayerOrder(Dictionary<string, PlayerItem> dictionary) {
             circuitItem.playerOrder = new List<string>();

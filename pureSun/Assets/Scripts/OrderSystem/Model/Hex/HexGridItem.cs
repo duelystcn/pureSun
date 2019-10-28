@@ -1,4 +1,5 @@
 ﻿
+using Assets.Scripts.OrderSystem.Model.Database.GameModelInfo;
 using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.Model.Hex
@@ -9,7 +10,7 @@ namespace Assets.Scripts.OrderSystem.Model.Hex
     public class HexGridItem
     {
         public HexCellItem[] cells { get; private set; }
-
+        //地图模式
         public HexModelInfo modelInfo
         {
             get; private set;

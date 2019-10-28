@@ -1,0 +1,23 @@
+{
+  "StartOfTrun": {
+    "code": "StartOfTrun",
+    "name": "开始阶段",
+    "effectNeedExeList": [ "DrawCardToMyselfWhenStartOfTrun" ]
+  },
+  "ActivePhase": {
+    "code": "ActivePhase",
+    "name": "主要阶段"
+  },
+  "OpponentDefense": {
+    "code": "OpponentDefense",
+    "name": "对手守备阶段"
+  },
+  "DelayedExecution": {
+    "code": "DelayedExecution",
+    "name": "结算阶段"
+  },
+  "StartOfBattle": {
+    "code": "StartOfBattle",
+    "name": "战斗阶段"
+  }
+}

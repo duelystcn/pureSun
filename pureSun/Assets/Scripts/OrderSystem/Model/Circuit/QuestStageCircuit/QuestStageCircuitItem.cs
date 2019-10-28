@@ -8,7 +8,7 @@ using UnityEngine.Events;
 
 namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
 {
-    public enum QuestOneTurnStage
+    /** public enum QuestOneTurnStage
     {
         //开始阶段
         StartOfTrun,
@@ -20,7 +20,7 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
         DelayedExecution,
         //战斗开始
         StartOfBattle
-    }
+    } **/
 
     public class QuestStageCircuitItem
     {
@@ -28,13 +28,15 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
         public string nowPlayerCode { get;  set; }
         public List<string> playerOrder { get; set; }
 
-        public QuestOneTurnStage oneTurnStage;
+        public string oneTurnStage;
 
-        public List<QuestOneTurnStage> questOneTurnStageList = CollectionUtil.EnumToList<QuestOneTurnStage>();
+        public List<string> questOneTurnStageList =new List<string>();
 
         public UnityAction oneStageStartAction;
 
         public UnityAction oneStageEndAction;
+
+        public bool autoNextStage = false;
 
 
         public Dictionary<string, List<EffectInfo>>  activeEffectInfoMap = new Dictionary<string, List<EffectInfo>>();

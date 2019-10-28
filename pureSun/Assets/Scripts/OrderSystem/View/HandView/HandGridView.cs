@@ -30,7 +30,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
             handCellViews = new List<HandCellView>();
         }
 
-        public void AchieveHandGrid(HandGridItem handGridItem) {
+        public void AchieveHandGrid(HandGridItem handGridItem, bool myself) {
             //清除
             foreach (HandCellView handCellView in handCellViews)
             {
@@ -49,6 +49,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                 //cell.GetComponent<HandCellInstance>().SetImage();
                 cell.transform.SetParent(transform, false);
                 cell.transform.localPosition = position;
+                cell.myself = myself;
                 cell.LoadHandCellItem(handCellItem);
                 handCellViews.Add(cell);
             }

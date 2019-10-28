@@ -1,6 +1,7 @@
 ﻿
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using UnityEngine;
+using static Assets.Scripts.OrderSystem.Model.Minion.MinionComponent.MinionItemTimeTrigger;
 
 namespace Assets.Scripts.OrderSystem.Model.Minion
 {
@@ -16,6 +17,12 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
         public string uuid;
         //所有者
         public string playerCode;
+
+        //时点触发器
+        //生物攻击发生了变化
+        public TTAtkChange ttAtkChange;
+        //生物生命发生了变化
+        public TTDefChange ttDefChange;
 
     }
 }

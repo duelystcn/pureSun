@@ -16,14 +16,6 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             minionCells = new Dictionary<int, MinionCellItem>();
 
         }
-        public void AddOneMinion(int index, HandCellItem chooseHand) {
-            MinionCellItem minionCellItem = new MinionCellItem();
-            minionCellItem.cardEntry = chooseHand.cardEntry;
-            minionCellItem.playerCode = chooseHand.playerCode;
-            minionCellItem.color = Color.red;
-            minionCellItem.IsEffectTarget = false;
-            minionCellItem.uuid = System.Guid.NewGuid().ToString("N");
-            minionCells.Add(index,minionCellItem);
-        }
+       
     }
 }

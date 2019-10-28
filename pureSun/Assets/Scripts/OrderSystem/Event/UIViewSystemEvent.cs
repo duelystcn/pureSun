@@ -143,6 +143,10 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string UI_QUEST_TURN_STAGE_START_OF_TRUN = "UIQuestStageStartOfTrun";
         /// <summary>
+        /// 开始一个回合-指定阶段
+        /// </summary>
+        public const string UI_QUEST_TURN_STAGE_ASSIGN_START_OF_TRUN = "UIQuestStageAssignStartOfTrun";
+        /// <summary>
         /// 结束一个回合
         /// </summary>
         public const string UI_QUEST_TURN_STAGE_END_OF_TRUN = "UIQuestStageEndOfTrun";
@@ -154,6 +158,10 @@ namespace Assets.Scripts.OrderSystem.Event
         ///结束一个阶段
         /// </summary>
         public const string UI_QUEST_TURN_STAGE_END_OF_STAGE = "UIQuestStageEndOfStage";
+        /// <summary>
+        ///通知当前效果已结算完毕，可以判断是否结束当前阶段
+        /// </summary>
+        public const string UI_QUEST_TURN_STAGE_NEED_CHECK_END_STAGE = "UIQuestStageNeedCheckEndStage";
 
 
 

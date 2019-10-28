@@ -85,10 +85,8 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                     {
                         case HandSystemEvent.HAND_CHANGE_AFFLUX:
                             HandGridItem handGridItem = notification.Body as HandGridItem;
-                            if (playerCode.Equals(playerCodeNotification)) {
-                                handControlView.handGridViewMap[playerCodeNotification].AchieveHandGrid(handGridItem);               
-                                SendNotification(HandSystemEvent.HAND_CHANGE, handControlView.handGridViewMap[playerCodeNotification], StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_OVER, playerCodeNotification));
-                            }
+                            handControlView.handGridViewMap[playerCodeNotification].AchieveHandGrid(handGridItem,myself);               
+                            SendNotification(HandSystemEvent.HAND_CHANGE, handControlView.handGridViewMap[playerCodeNotification], StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_OVER, playerCodeNotification));
                             break;
                         case HandSystemEvent.HAND_CHANGE_OVER:
                             //只有是自己的牌才会激活操作

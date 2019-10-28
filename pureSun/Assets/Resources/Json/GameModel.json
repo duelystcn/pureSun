@@ -1,0 +1,81 @@
+{
+  "Andor": {
+    "code": "Andor",
+    "name": "安多尔",
+    "description": "思路来源于《安多尔奇迹之卡》",
+    "width": 6,
+    "height": 4,
+    "cellType": "hex",
+    "arrayMode": "HORIZ",
+    "playerNum": "2",
+    "turnStage": [
+      "StartOfTrun",
+      "ActivePhase",
+      "OpponentDefense",
+      "DelayedExecution",
+      "StartOfBattle"
+    ],
+    "playerSiteList": [
+      {
+        "attackDirection": "positive",
+        "canCallCellList": [
+          {
+            "x": 0,
+            "z": 0
+          },
+          {
+            "x": 1,
+            "z": 0
+          },
+          {
+            "x": 2,
+            "z": -1
+          },
+          {
+            "x": 3,
+            "z": -1
+          },
+          {
+            "x": 4,
+            "z": -2
+          },
+          {
+            "x": 5,
+            "z": -2
+          }
+        ]
+      },
+      {
+        "attackDirection": "negative",
+        "canCallCellList": [
+          {
+            "x": 0,
+            "z": 3
+          },
+          {
+            "x": 1,
+            "z": 3
+          },
+          {
+            "x": 2,
+            "z": 2
+          },
+          {
+            "x": 3,
+            "z": 2
+          },
+          {
+            "x": 4,
+            "z": 1
+          },
+          {
+            "x": 5,
+            "z": 1
+          }
+        ]
+      }
+    ]
+  }
+
+
+}

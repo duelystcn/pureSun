@@ -1,6 +1,7 @@
 ﻿
 
 
+using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.TraitSignComponent;
 using System.Collections.Generic;

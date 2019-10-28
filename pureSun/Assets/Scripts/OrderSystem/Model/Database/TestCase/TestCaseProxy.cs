@@ -1,6 +1,14 @@
-﻿
+﻿/*************************************************************************************
+     * 类 名 称：       TestCaseProxy
+     * 文 件 名：       TestCaseProxy
+     * 创建时间：       2019-10-28
+     * 作    者：       chenxi
+     * 说   明：       代理类，TestCaseInfo.json中的TestCase信息并实例化储存到testCaseInfoMap中
+     * 修改时间：
+     * 修 改 人：
+    *************************************************************************************/
 
-using Assets.Scripts.OrderSystem.Common.UnityExpand;
+
 using Newtonsoft.Json;
 using PureMVC.Patterns.Proxy;
 using System.Collections.Generic;

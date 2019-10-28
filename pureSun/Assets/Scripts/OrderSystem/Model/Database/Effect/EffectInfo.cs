@@ -39,9 +39,12 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public string[] chooseEffectList { get; set; }
         //复合效果列表
         public string[] complexEffectList { get; set; }
-        
 
-     
+        //是否需要展示
+        public string whetherToshow { get; set; }
+
+
+
 
 
 
@@ -62,7 +65,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         
 
         //指定一个生物
-        public EATargetMinionOne TargetMinionOne = null;
+        public EATargetMinionList TargetMinionList = null;
         //进行选择
         public EATargetChooseGrid TargetChooseGrid = null;
         //指定一个玩家

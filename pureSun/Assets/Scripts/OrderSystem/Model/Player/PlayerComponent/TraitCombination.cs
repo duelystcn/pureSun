@@ -30,7 +30,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
                 traitType = TraitType.polymorphism;
             }
             if (traitType == TraitType.error) {
-                UtilityLog.Log("找不到对应的科技类型");
+                UtilityLog.LogError("找不到对应的科技类型");
             }
             return traitType;
 

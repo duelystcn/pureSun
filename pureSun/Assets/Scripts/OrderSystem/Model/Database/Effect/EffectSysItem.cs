@@ -1,5 +1,6 @@
 ﻿
 
+using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
@@ -48,32 +49,26 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         //结算效果集合队列
         public Queue<List<EffectInfo>> effectInfosQueue = new Queue<List<EffectInfo>>();
 
+        //发送到前台进行展示的效果个数
+        public int showEffectNum = 0;
+
 
         public void EffectActionReady(EffectInfo effect) {
             foreach (string targetSet in effect.targetSet) {
-                TargetSet targetSetDto = targetSetMap[targetSet];
+                TargetSet targetSetDto = TransExpV2<TargetSet, TargetSet>.Trans(targetSetMap[targetSet]);
                 effect.targetSetList.Add(targetSetDto);
-                if (targetSetDto.target == "ONE_MINION")
+                if (targetSetDto.target == "Minion")
                 {
-                    effect.TargetMinionOne = (MinionCellItem minionCellItem) =>
+                    effect.TargetMinionList = (List<MinionCellItem> minionCellItemList) =>
                     {
-                        for (int n = 0; n < effect.impactTargets.Length; n++)
+                        for (int n = 0; n < minionCellItemList.Count; n++)
                         {
-                            ChangeMinion(effect.impactTargets[n], effect.impactContents[n], minionCellItem);
+                            for (int m = 0; m < effect.impactTargets.Length; m++)
+                            {
+                                ChangeMinion(effect.impactTargets[m], effect.impactContents[m], minionCellItemList[n]);
+                            }
                         }
                     };
-                }
-                else if (targetSetDto.target == "CHOOSE_ONE")
-                {
-                    effect.TargetChooseGrid = (ChooseGridItem chooseGridItem) =>
-                    {
-                        CardEntry[] cardEntrys = new CardEntry[effect.chooseEffectList.Length];
-                        for (int n = 0; n < effect.chooseEffectList.Length; n++)
-                        {
-                            CardEntry cardEntry = new CardEntry();
-                        }
-                    };
-
                 }
                 else if (targetSetDto.target == "Player")
                 {
@@ -99,9 +94,11 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
             {
                 case "ATK":
                     minionCellItem.cardEntry.atk = minionCellItem.cardEntry.atk + Convert.ToInt32(impactContent);
+                    minionCellItem.ttAtkChange(Convert.ToInt32(impactContent));
                     break;
                 case "DEF":
                     minionCellItem.cardEntry.def = minionCellItem.cardEntry.def + Convert.ToInt32(impactContent);
+                    minionCellItem.ttDefChange(Convert.ToInt32(impactContent));
                     break;
 
             }

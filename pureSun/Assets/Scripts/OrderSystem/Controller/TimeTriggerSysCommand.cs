@@ -63,7 +63,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                     HandCellItem handCellItemUse = notification.Body as HandCellItem;
                     switch (handCellItemUse.cardEntry.WhichCard) {
                         case CardEntry.CardType.ResourceCard:
-                            playerGroupProxy.playerGroup.playerItems[handCellItemUse.playerCode].canUseResourceNum--;
+                            playerGroupProxy.playerGroup.playerItems[handCellItemUse.cardEntry.player.playerCode].canUseResourceNum--;
                             break;
 
                     }

@@ -19,7 +19,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.TraitSi
         public string playerCode;
 
         public void UITraitTypeInit(List<TraitType> traitTypes) {
-            List<string> traitTypeList = new List<string>();
+            traitTypeList = new List<string>();
             foreach (TraitType traitType in traitTypes) {
                 traitTypeList.Add(traitType.ToString());
             }

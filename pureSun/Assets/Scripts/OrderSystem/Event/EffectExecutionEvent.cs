@@ -19,7 +19,11 @@ namespace Assets.Scripts.OrderSystem.Event
         //执行效果寻找目标
         public const string EFFECT_EXECUTION_SYS_FIND_TARGET = "EffectExecutionSysFindTarget";
 
-        //执行效果寻找目标
+        //执行效果
         public const string EFFECT_EXECUTION_SYS_EXE_EFFECT = "EffectExecutionSysExeEffect";
+
+        //展示完毕
+        public const string EFFECT_EXECUTION_SYS_EFFECT_SHOW_OVER = "EffectExecutionSysShowOver";
+
     }
 }

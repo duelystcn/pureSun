@@ -5,14 +5,16 @@
     "targetSet": [ "OneMyselfMinion" ],
     "impactType": "Moment",
     "impactTargets": [ "ATK", "DEF" ],
-    "impactContents": [ "1", "1" ]
+    "impactContents": [ "1", "1" ],
+    "whetherToshow": "Y"
   },
   "ChooseOneAddManaUpOneORDrawCardOrAddSupremcyTraitOneToMyself": {
     "name": "ChooseOneAddManaUpOneORDrawCardOrAddSupremcyTraitOneToMyself",
     "description": "选择一项：\n●获得一点资源上限；\n●抽一张牌；\n●增加一点至高等级",
     "chooseEffectList": [ "AddManaUpOneToMyself", "DrawCardToMyself", "AddSupremcyTraitOneToMyself" ],
     "impactType": "Moment",
-    "targetSet": [ "MyselfChooseEffect" ]
+    "targetSet": [ "MyselfChooseEffect" ],
+    "whetherToshow": "N"
   },
   "AddManaUpOneToMyself": {
     "name": "AddManaUpOneToMyself",
@@ -20,7 +22,8 @@
     "targetSet": [ "MyselfPlayer" ],
     "impactType": "Moment",
     "impactTargets": [ "ManaUpperLimit" ],
-    "impactContents": [ "1" ]
+    "impactContents": [ "1" ],
+    "whetherToshow": "Y"
   },
   "GetManaOneToMyself": {
     "name": "GetManaOneToMyself",
@@ -28,7 +31,8 @@
     "targetSet": [ "MyselfPlayer" ],
     "impactType": "Moment",
     "impactTargets": [ "ManaUsable" ],
-    "impactContents": [ "1" ]
+    "impactContents": [ "1" ],
+    "whetherToshow": "Y"
   },
   "DrawCardToMyself": {
     "name": "DrawCardToMyself",
@@ -36,7 +40,8 @@
     "targetSet": [ "MyselfPlayer" ],
     "impactType": "Moment",
     "impactTargets": [ "Hand" ],
-    "impactContents": [ "1" ]
+    "impactContents": [ "1" ],
+    "whetherToshow": "Y"
   },
   "AddSupremcyTraitOneToMyself": {
     "name": "AddSupremcyTraitOneToMyself",
@@ -44,7 +49,8 @@
     "targetSet": [ "MyselfPlayer" ],
     "impactType": "Moment",
     "impactTargets": [ "TraitAddOne" ],
-    "impactContents": [ "supremcy" ]
+    "impactContents": [ "supremcy" ],
+    "whetherToshow": "Y"
   },
   "SelfDrawOneCardThenGetOneScore": {
     "name": "SelfDrawOneCardThenGetOneScore",
@@ -53,7 +59,17 @@
     "impactType": "Continue",
     "impactTimeTriggers": [ "SysSelfDrawACard" ],
     "impactTargets": [ "Score" ],
-    "impactContents": [ "1" ]
-
-  }
+    "impactContents": [ "1" ],
+    "whetherToshow": "Y"
+  },
+  "DrawCardToMyselfWhenStartOfTrun": {
+    "name": "DrawCardToMyself",
+    "description": "在己方回合开始时，己方玩家抽一张牌",
+    "targetSet": [ "MyselfPlayer" ],
+    "impactType": "GameModelRule",
+    "impactTimeTriggers": [ "StartOfTrunStart" ],
+    "impactTargets": [ "Hand" ],
+    "impactContents": [ "1" ],
+    "whetherToshow": "N"
+  },
 }

@@ -17,8 +17,6 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
         public string uuid;
         //判断是否可使用标识
         public bool canUse = false;
-        //所有者
-        public string playerCode;
 
 
 

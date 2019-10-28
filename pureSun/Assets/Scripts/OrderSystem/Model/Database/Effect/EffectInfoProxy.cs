@@ -68,6 +68,11 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     effectSysItem.cardEntry = effectSysItem.cardEntryQueue.Dequeue();
                     SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_TARGET);
                 }
+                else {
+                    //UtilityLog.Log("当前没有需要结算的效果");
+                    //通知回合控制器当前堆叠已经全部执行完毕
+                    //SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_NEED_CHECK_END_STAGE);
+                }
             }
            
 

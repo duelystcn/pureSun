@@ -1,6 +1,7 @@
 ﻿
 
 
+using Assets.Scripts.OrderSystem.Model.Database.GameModelInfo;
 using OrderSystem;
 using PureMVC.Patterns.Proxy;
 
@@ -14,8 +15,11 @@ namespace Assets.Scripts.OrderSystem.Model.Hex
             get { return (HexGridItem)base.Data; }
         }
 
-        public HexGridProxy(HexModelInfo modelInfo) : base(NAME)
+        public HexGridProxy() : base(NAME)
         {
+        }
+        public void InitializeTheProxy(HexModelInfo modelInfo) {
+            
             //地图大小
             HexGridItem hexGrid = new HexGridItem(modelInfo);
             //创建

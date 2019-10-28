@@ -4,14 +4,19 @@ using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit;
+using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
+using Assets.Scripts.OrderSystem.Model.Hex;
+using Assets.Scripts.OrderSystem.Model.OperateSystem;
 using Assets.Scripts.OrderSystem.Model.Player;
+using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Command;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Assets.Scripts.OrderSystem.Model.Database.Card.CardEntry;
 
 namespace Assets.Scripts.OrderSystem.Controller
 {
@@ -20,10 +25,18 @@ namespace Assets.Scripts.OrderSystem.Controller
     {
         public override void Execute(INotification notification)
         {
-            PlayerGroupProxy playerGroupProxy = Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
-            ChooseStageCircuitProxy chooseStageCircuitProxy = Facade.RetrieveProxy(ChooseStageCircuitProxy.NAME) as ChooseStageCircuitProxy;
+            OperateSystemProxy operateSystemProxy =
+               Facade.RetrieveProxy(OperateSystemProxy.NAME) as OperateSystemProxy;
+            QuestStageCircuitProxy circuitProxy =
+              Facade.RetrieveProxy(QuestStageCircuitProxy.NAME) as QuestStageCircuitProxy;
+            PlayerGroupProxy playerGroupProxy = 
+                Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
+            ChooseStageCircuitProxy chooseStageCircuitProxy = 
+                Facade.RetrieveProxy(ChooseStageCircuitProxy.NAME) as ChooseStageCircuitProxy;
             EffectInfoProxy effectInfoProxy =
                Facade.RetrieveProxy(EffectInfoProxy.NAME) as EffectInfoProxy;
+            HexGridProxy hexGridProxy =
+                      Facade.RetrieveProxy(HexGridProxy.NAME) as HexGridProxy;
             PlayerItem playerItem = null;
             switch (notification.Type)
             {
@@ -66,8 +79,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                             EffectInfo oneEffectInfo = effectInfoProxy.effectSysItem.effectInfoMap[effectName];
                             CardEntry oneCardEntry = new CardEntry();
                             oneCardEntry.InitializeByCardInfo(effectInfo.cardEntry.cardInfo);
-                            oneCardEntry.effectName = new string[1]{effectName};
-                            oneCardEntry.description = oneEffectInfo.description;
+                            oneCardEntry.InitializeByEffectInfo(oneEffectInfo);
                             cardEntries.Add(oneCardEntry);
                         }
                         SendNotification(UIViewSystemEvent.UI_USER_OPERAT, cardEntries,
@@ -78,12 +90,58 @@ namespace Assets.Scripts.OrderSystem.Controller
                     //AI玩家
                     else if (playerItem.playerType == PlayerType.AIPlayer)
                     {
-
-                      
+                        UtilityLog.Log("AI玩家" + playerItem.playerCode + "开始选择卡牌效果");
+                        //先直接选择第一种
+                        EffectInfo oneEffectInfo = effectInfoProxy.effectSysItem.effectInfoMap[effectInfo.chooseEffectList[0]];
+                        CardEntry oneCardEntry = new CardEntry();
+                        oneCardEntry.InitializeByCardInfo(effectInfo.cardEntry.cardInfo);
+                        oneCardEntry.InitializeByEffectInfo(oneEffectInfo);
+                        SendNotification(OperateSystemEvent.OPERATE_SYS, oneCardEntry, OperateSystemEvent.OPERATE_SYS_CHOOSE_ONE_EFFECT);
                     }
                     //网络用户
                     else if (playerItem.playerType == PlayerType.NetPlayer)
                     {
+                    }
+                    break;
+                case LogicalSysEvent.LOGICAL_SYS_ACTIVE_PHASE_ACTION:
+                    //获取当前进行游戏的玩家进行接管
+                    string playerCodeNow = circuitProxy.GetNowPlayerCode();
+                    PlayerItem playerItemNow = playerGroupProxy.getPlayerByPlayerCode(playerCodeNow);
+                    UtilityLog.Log("AI玩家" + playerCodeNow + "开始操作：");
+                    //无法操作了结束回合
+                    bool canContinueOperation = true;
+
+                    //判断是否使用过资源牌
+                    if (playerItemNow.CheckResourceCardCanUse())
+                    {
+                        UtilityLog.Log("AI玩家" + playerCodeNow + "可以使用资源牌：");
+                        HandCellItem getHand = playerItemNow.GetOneCardTypeCard(CardType.ResourceCard);
+                        //检查手牌里是否存在资源牌
+                        if (getHand != null)
+                        {
+                            //使用这张手牌
+                            operateSystemProxy.IntoModeHandUse(getHand,playerItemNow);
+                            HexCellItem hexCellItem = new HexCellItem(1,1);
+                            SendNotification(OperateSystemEvent.OPERATE_SYS, hexCellItem, OperateSystemEvent.OPERATE_SYS_DRAW_END_HEX);
+                            
+                        }
+                        else {
+
+                            canContinueOperation = false;
+                        }
+                    }
+                    else {
+                        UtilityLog.Log("AI玩家" + playerCodeNow + "不可以使用资源牌：");
+                        canContinueOperation = false;
+                    }
+
+                    if (!canContinueOperation)
+                    {
+                        //结束回合
+                        SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_END_OF_STAGE);
+                    }
+                    else {
+                        circuitProxy.circuitItem.autoNextStage = false;
                     }
                     break;
             }

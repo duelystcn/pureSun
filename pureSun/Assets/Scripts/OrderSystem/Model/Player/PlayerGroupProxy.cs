@@ -54,10 +54,14 @@ namespace Assets.Scripts.OrderSystem.Model.Player
                 SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
 
             };
+            //判断手牌是否可用
+            playerItem.ttPlayerHandCanUseJudge = () =>
+            {
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
+            };
             //使用一张牌
             playerItem.ttPlayerUseACard = (HandCellItem handCellItem) =>
             {
-                handCellItem.playerCode = playerItem.playerCode;
                 SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, handCellItem, TimeTriggerEvent.TIME_TRIGGER_SYS_USE_HAND_CARD);
             };
             //移除一张牌

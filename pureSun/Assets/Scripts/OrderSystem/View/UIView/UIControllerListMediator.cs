@@ -372,6 +372,13 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                             effectDisplayView = UIControllerLIst.GetViewByName<EffectDisplayView>(UIViewName.EffectDisplayView);
                             CardEntry effectCard = notification.Body as CardEntry;
                             callBackDelay = true;
+                            //回调函数
+                            callBack = () =>
+                            {
+                                exceINotification = false;
+                                SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EFFECT_SHOW_OVER);
+                                SendNotification(UIViewSystemEvent.UI_ANIMATION_SYS, null, UIViewSystemEvent.UI_ANIMATION_SYS_START);
+                            };
                             effectDisplayView.ShowCradEffectByCardEntry(effectCard, callBack);
                             break;
                     }

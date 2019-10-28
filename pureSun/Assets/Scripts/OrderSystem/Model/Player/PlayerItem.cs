@@ -1,10 +1,12 @@
 ﻿
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Database.GameModelInfo;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using System.Collections.Generic;
 using UnityEngine.Events;
+using static Assets.Scripts.OrderSystem.Model.Database.Card.CardEntry;
 using static Assets.Scripts.OrderSystem.Model.Player.PlayerComponent.PlayerTimeTrigger;
 
 namespace Assets.Scripts.OrderSystem.Model.Player
@@ -72,7 +74,8 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         public TTPlayerRemoveACard ttPlayerRemoveACard;
         //使用一张牌
         public TTPlayerUseACard ttPlayerUseACard;
-
+        //判断手牌是否可用
+        public TTPlayerHandCanUseJudge ttPlayerHandCanUseJudge;
 
         //费用上限发生了变化
         public TTManaCostLimitChange ttManaCostLimitChange;
@@ -92,20 +95,9 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //禁止召唤区域
 
         //制造可召唤区域列表
-        public void CreateCanCallHex(HexModelInfo hexModelInfo, HexCellItem[] cells, bool isMyself) {
-            if (hexModelInfo.hexModelType == HexModelType.Source) {
-                if (isMyself)
-                {
-                    fixedCanCellHexList.Add(new HexCoordinates(0, 0));
-                    fixedCanCellHexList.Add(new HexCoordinates(1, 0));
-                    fixedCanCellHexList.Add(new HexCoordinates(2, -1));
-                    fixedCanCellHexList.Add(new HexCoordinates(3, -1));
-                    fixedCanCellHexList.Add(new HexCoordinates(4, -2));
-                    fixedCanCellHexList.Add(new HexCoordinates(5, -2));
-                }
-                else {
-
-                }
+        public void CreateCanCallHex(GMCellCoordinate[] gMCellCoordinates) {
+            foreach (GMCellCoordinate gMCell in gMCellCoordinates) {
+                fixedCanCellHexList.Add(new HexCoordinates(gMCell.x, gMCell.z));
             }
         }
         //判断一个格子是否在可召唤区域内
@@ -125,16 +117,50 @@ namespace Assets.Scripts.OrderSystem.Model.Player
                 handCellItem.canUse = CheckOneCardCanUse(handCellItem.cardEntry);
             }
         }
+        //传入一个卡牌类型，检查是否有这个类型的牌
+        public bool CheckHasOneCardTypeCard(CardType cardType) {
+            bool hasCard = false;
+            foreach (HandCellItem handCellItem in this.handGridItem.handCells)
+            {
+                if (handCellItem.cardEntry.WhichCard == cardType) {
+                    hasCard = true;
+                    return hasCard;
+                }
+            }
+            return hasCard;
+        }
+        //获取一张卡牌类型的牌，暂时先返回第一张
+        public HandCellItem GetOneCardTypeCard(CardType cardType)
+        {
+           HandCellItem getHand = null;
+            foreach (HandCellItem handCellItem in this.handGridItem.handCells)
+            {
+                if (handCellItem.cardEntry.WhichCard == cardType)
+                {
+                    getHand = handCellItem;
+                    return handCellItem;
+                }
+            }
+            return getHand;
+        }
+        //判断玩家是否可以再使用资源卡
+        public bool CheckResourceCardCanUse() {
+            bool canUse = true;
+            if (canUseResourceNum <= 0)
+            {
+                canUse = false;
+            }
+            return canUse;
+        }
+
 
         //判断玩家是否能使用一张牌
         public bool CheckOneCardCanUse(CardEntry cardEntry) {
             bool canUse = true;
             //判断是否还可以再使用资源卡
             if (cardEntry.WhichCard == CardEntry.CardType.ResourceCard) {
-                if (canUseResourceNum <= 0) {
-                    canUse = false;
-                    return canUse;
-                }
+                canUse = CheckResourceCardCanUse();
+                return canUse;
             }
 
             //当前可用费用
@@ -191,6 +217,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         public void AddCardToHandAndNoTT(CardEntry card)
         {
             HandCellItem handcellItem = this.handGridItem.CreateCell(card);
+
         }
 
         //方法抽一张牌
@@ -252,7 +279,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         }
         //因为打出一张牌而减少了费用
         public void ChangeManaUsableByUseHand(HandCellItem chooseHand) {
-            ChangeManaUsable(chooseHand.cardEntry.cost);
+            ChangeManaUsable(-chooseHand.cardEntry.cost);
         }
 
 

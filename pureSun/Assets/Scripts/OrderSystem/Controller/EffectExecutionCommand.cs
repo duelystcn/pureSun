@@ -83,7 +83,6 @@ namespace Assets.Scripts.OrderSystem.Controller
                         EffectInfo effect = effectInfoProxy.effectSysItem.effectInfos[n];
                         if (effect.effectInfoStage == EffectInfoStage.UnStart)
                         {
-                          
                             ExecutionEffectFindTarget(effect, playerGroupProxy);
                             //插入了用户操作
                             if (effect.effectInfoStage == EffectInfoStage.Confirming)
@@ -112,12 +111,23 @@ namespace Assets.Scripts.OrderSystem.Controller
                         SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_EFFECT);
                     }
                     break;
-                case EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_EFFECT:
-                    for (int n = 0; n < effectInfoProxy.effectSysItem.effectInfos.Count; n++)
+                case EffectExecutionEvent.EFFECT_EXECUTION_SYS_EFFECT_SHOW_OVER:
+                    effectInfoProxy.effectSysItem.showEffectNum--;
+                    if (effectInfoProxy.effectSysItem.effectSysItemStage == EffectSysItemStage.UnStart)
                     {
-                        ExecutionEffectContent(effectInfoProxy.effectSysItem.effectInfos[n]);
-
+                        if (effectInfoProxy.effectSysItem.cardEntryQueue.Count == 0)
+                        {
+                            if (effectInfoProxy.effectSysItem.showEffectNum == 0) {
+                                UtilityLog.Log("当前没有需要展示的效果");
+                                //通知回合控制器当前堆叠已经全部执行完毕
+                                SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_NEED_CHECK_END_STAGE);
+                            }
+                          
+                        }
                     }
+                    break;
+                case EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_EFFECT:
+                    ExecutionEffectContent(effectInfoProxy);
                     //判断是否所有效果都执行完毕了
                     bool allEffectHasFinished = true;
                     for (int n = 0; n < effectInfoProxy.effectSysItem.effectInfos.Count; n++)
@@ -129,17 +139,42 @@ namespace Assets.Scripts.OrderSystem.Controller
                     }
                     if (allEffectHasFinished)
                     {
-                        //判断状态
-                        switch (operateSystemProxy.operateSystemItem.operateModeType)
+                        //判断这一组效果是不是都是一张卡的，逻辑上来说都是一张卡
+                        CardEntry cardCheck = new CardEntry();
+                        bool cardCheckOver = true;
+                        for (int n = 0; n < effectInfoProxy.effectSysItem.effectInfos.Count; n++)
                         {
-                            //手牌使用状态
-                            case OperateSystemItem.OperateType.HandUse:
-                                //返回手牌使用完毕的信息，移除手牌
-                                playerGroupProxy.getPlayerByPlayerCode(operateSystemProxy.operateSystemItem.playerItem.playerCode).RemoveOneCardByUse(operateSystemProxy.operateSystemItem.onChooseHandCellItem);
-                                //结束，改变模式为初始，清除手牌
-                                operateSystemProxy.IntoModeClose();
-                                break;
+                            if (n == 0)
+                            {
+                                cardCheck = effectInfoProxy.effectSysItem.effectInfos[n].cardEntry;
+                            }
+                            else
+                            {
+                                if (effectInfoProxy.effectSysItem.effectInfos[n].cardEntry.uuid != cardCheck.uuid)
+                                {
+                                    cardCheckOver = false;
+                                    break;
+                                }
+                                else
+                                {
+                                    cardCheck = effectInfoProxy.effectSysItem.effectInfos[n].cardEntry;
+                                }
+                            }
                         }
+                        if (!cardCheckOver)
+                        {
+                            UtilityLog.LogError("同一个效果组来源多余一个实体");
+                        }
+                        else {
+                            if (operateSystemProxy.operateSystemItem.operateModeType == OperateSystemItem.OperateType.HandUse) {
+                                //判断来源,如果是正在使用的手牌
+                                if (operateSystemProxy.operateSystemItem.onChooseHandCellItem.cardEntry.uuid == cardCheck.uuid)
+                                {
+                                    SendNotification(OperateSystemEvent.OPERATE_SYS, null, OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE_EXE_OVER);
+                                }
+                            }
+                        }
+                       
                         //执行下一组效果
                         effectInfoProxy.effectSysItem.effectSysItemStage = EffectSysItemStage.UnStart;
                         effectInfoProxy.ExeEffectQueue();
@@ -152,37 +187,43 @@ namespace Assets.Scripts.OrderSystem.Controller
             }
         }
         //执行效果
-        public void ExecutionEffectContent(EffectInfo effectInfo)
+        public void ExecutionEffectContent(EffectInfoProxy effectInfoProxy)
         {
-            effectInfo.effectInfoStage = EffectInfoStage.Executing;
-            if (effectInfo.targetSetList.Count == 1) {
-                switch (effectInfo.targetSetList[0].target)
+            for (int n = 0; n < effectInfoProxy.effectSysItem.effectInfos.Count; n++)
+            {
+                EffectInfo effectInfo = effectInfoProxy.effectSysItem.effectInfos[n];
+                effectInfo.effectInfoStage = EffectInfoStage.Executing;
+                if (effectInfo.targetSetList.Count == 1)
                 {
-                    //效果选择
-                    case "ChooseEffect":
-                        //无需执行，玩家自己操作
+                    switch (effectInfo.targetSetList[0].target)
+                    {
+                        //效果选择
+                        case "ChooseEffect":
+                            //无需执行，玩家自己操作
 
-                        break;
-                    //玩家
-                    case "Player":
-                        UtilityLog.Log("effectInfo:" + effectInfo.description);
-                        effectInfo.TargetPlayerList(effectInfo.targetSetList[0].targetPlayerItems);
-                        break;
+                            break;
+                        //玩家
+                        case "Player":
+                            effectInfo.TargetPlayerList(effectInfo.targetSetList[0].targetPlayerItems);
+                            break;
+                        case "Minion":
+                            effectInfo.TargetMinionList(effectInfo.targetSetList[0].targetMinionCellItems);
+                            break;
 
+                    }
+                    effectInfo.effectInfoStage = EffectInfoStage.Finished;
+                    //选择效果无需展示
+                    if (effectInfo.targetSetList[0].target != "ChooseEffect")
+                    {
+                        //发送已经确认目标的效果到前台进行展示
+                        CardEntry oneCardEntry = effectInfo.cardEntry;
+                        oneCardEntry.needShowEffectInfo = effectInfo;
+                        effectInfoProxy.effectSysItem.showEffectNum++;
+                        SendNotification(UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS, oneCardEntry, UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_PUT_ONE_EFFECT);
+                    }
                 }
-                effectInfo.effectInfoStage = EffectInfoStage.Finished;
-                //选择效果无需展示
-                if (effectInfo.targetSetList[0].target != "ChooseEffect")
-                {
-                    //发送已经确认目标的效果到前台进行展示
-                    CardEntry oneCardEntry = effectInfo.cardEntry;
-                    oneCardEntry.needShowEffectInfo = effectInfo;
-                    SendNotification(UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS, oneCardEntry, UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_PUT_ONE_EFFECT);
-                }
+
             }
-           
-
-
         }
 
 
@@ -192,6 +233,23 @@ namespace Assets.Scripts.OrderSystem.Controller
             effectInfo.effectInfoStage = EffectInfoStage.Confirming;
             foreach (TargetSet targetSet in effectInfo.targetSetList)
             {
+                bool designationTargetOver = false;
+                //先判断是否已经指定了目标
+                switch (targetSet.target)
+                {
+                    case "Minion":
+                        if (targetSet.targetMinionCellItems.Count == targetSet.targetClaimsNums) {
+                            designationTargetOver = true;
+                        }
+                        break;
+                }
+                if (designationTargetOver)
+                {
+                    effectInfo.effectInfoStage = EffectInfoStage.ConfirmedTarget;
+                    continue;
+                }
+
+
                 //条件
                 string[] targetClaims = targetSet.targetClaims;
                 //条件内容
@@ -201,6 +259,9 @@ namespace Assets.Scripts.OrderSystem.Controller
                 //类型
                 switch (targetSet.target)
                 {
+                    case "Minion":
+
+                        break;
                     //效果选择
                     case "ChooseEffect":
                         //获取玩家，根据条件筛选出复合条件的释放者和选择者
@@ -232,7 +293,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                         }
                         else
                         {
-                            UtilityLog.Log("no player can ChooseEffect");
+                            UtilityLog.LogError("no player can ChooseEffect");
                         }
 
                         break;
@@ -266,7 +327,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                         }
                         else
                         {
-                            UtilityLog.Log("no player can add TargetPlayerItems");
+                            UtilityLog.LogError("no player can add TargetPlayerItems");
                         }
                         break;
 

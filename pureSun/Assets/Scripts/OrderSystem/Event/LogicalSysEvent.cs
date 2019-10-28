@@ -15,8 +15,9 @@ namespace Assets.Scripts.OrderSystem.Event
         public const string LOGICAL_SYS_CHOOSE_SHIP_CARD = "LogicalSysChooseShipCard";
 
         //需要选择效果
-
         public const string LOGICAL_SYS_CHOOSE_EFFECT = "LogicalSysChooseEffect";
 
+        //AI玩家主回合操作
+        public const string LOGICAL_SYS_ACTIVE_PHASE_ACTION = "LogicalSysActivePhaseAction";
     }
 }

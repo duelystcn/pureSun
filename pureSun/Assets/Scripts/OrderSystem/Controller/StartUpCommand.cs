@@ -8,6 +8,7 @@
 using Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
+using Assets.Scripts.OrderSystem.Model.Database.GameModelInfo;
 using Assets.Scripts.OrderSystem.Model.Database.TestCase;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
@@ -38,7 +39,9 @@ namespace OrderSystem
             Facade.RegisterProxy(effectInfoProxy);
             TestCaseProxy testCaseProxy = new TestCaseProxy();
             Facade.RegisterProxy(testCaseProxy);
-
+            //游戏模式代理
+            GameModelProxy gameModelProxy = new GameModelProxy();
+            Facade.RegisterProxy(gameModelProxy);
 
             //UI层代理
             UIControllerListMediator uIControllerListMediator = new UIControllerListMediator(mainUI.UIControllerListView);

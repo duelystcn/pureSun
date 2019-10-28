@@ -2,29 +2,73 @@
   "TestTacticsTarget": {
     "name": "TestTacticsTarget",
     "description": "测试法术指向目标",
+    "gameModelName": "Andor",
+    "startStage": "ActivePhase",
     "myselfPlayer": {
       "playerCode": "TEST1",
+      "traitList": [ "supremcy" ],
+      "manaUpperLimit": 2,
+      "manaUsable": 2,
       "shipCardCode": "FindWay",
-      "handCard": [ "FortifiedAgent", "FortifiedAgent" ],
-      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ]
+      "handCard": [ "FortifiedAgent", "FortifiedAgent", "ImperialRecruit" ],
+      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
+      "minionList": [
+        {
+          "code": "ImperialRecruit",
+          "x": 1,
+          "z": 1
+        }
+      ]
     },
     "enemyPlayer": {
       "playerCode": "TEST2",
+      "traitList": [ "supremcy" ],
+      "manaUpperLimit": 2,
+      "manaUsable": 2,
       "shipCardCode": "FindWay",
-      "handCard": [ "FortifiedAgent", "FortifiedAgent" ],
-      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ]
+      "handCard": [ "FortifiedAgent", "FortifiedAgent", "ImperialRecruit" ],
+      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
+      "minionList": [
+
+      ]
     }
   },
-  "TestMinion": {
-    "name": "TestMinion",
-    "description": "测试生物",
+  "TestMinionombat": {
+    "name": "TestTacticsTarget",
+    "description": "测试生物战斗",
+    "gameModelName": "Andor",
+    "startStage": "ActivePhase",
     "myselfPlayer": {
-      "handCard": [ "FortifiedAgent", "FortifiedAgent" ],
-      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ]
+      "playerCode": "TEST1",
+      "traitList": [ "supremcy" ],
+      "manaUpperLimit": 2,
+      "manaUsable": 2,
+      "shipCardCode": "FindWay",
+      "handCard": [ "FortifiedAgent", "FortifiedAgent", "ImperialRecruit" ],
+      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
+      "minionList": [
+        {
+          "code": "ImperialRecruit",
+          "x": 1,
+          "z": 1
+        }
+      ]
     },
     "enemyPlayer": {
-      "handCard": [ "FortifiedAgent", "FortifiedAgent" ],
-      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ]
+      "playerCode": "TEST2",
+      "traitList": [ "supremcy" ],
+      "manaUpperLimit": 2,
+      "manaUsable": 2,
+      "shipCardCode": "FindWay",
+      "handCard": [ "FortifiedAgent", "FortifiedAgent", "ImperialRecruit" ],
+      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
+      "minionList": [
+        {
+          "code": "ImperialRecruit",
+          "x": 1,
+          "z": 2
+        }
+      ]
     }
   }
 

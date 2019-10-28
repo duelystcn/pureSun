@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.OrderSystem.Event;
+﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using PureMVC.Interfaces;
@@ -12,7 +13,6 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
     {
         public new const string NAME = "MinionGridMediator";
 
-        private MinionGridProxy minionGridProxy = null;
 
         private HexGridProxy hexGridProxy = null;
 
@@ -30,12 +30,7 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
         public override void OnRegister()
         {
             base.OnRegister();
-            minionGridProxy = Facade.RetrieveProxy(MinionGridProxy.NAME) as MinionGridProxy;
-            if (null == minionGridProxy)
-                throw new Exception(MinionGridProxy.NAME + "is null.");
             hexGridProxy = Facade.RetrieveProxy(HexGridProxy.NAME) as HexGridProxy;
-            //初始化生物区域
-            minionGridView.AchieveMinionGrid(minionGridProxy.minionGridItem, hexGridProxy.HexGrid);
         }
         //监听
         public override string[] ListNotificationInterests()
@@ -49,20 +44,31 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
         {
             //处理公共请求
             HandleNotificationCommon(notification);
+            List<MinionCellItem> mList = new List<MinionCellItem>();
             switch (notification.Name)
             {
                 case MinionSystemEvent.MINION_VIEW:
                     switch (notification.Type) {
                         //生物模型变更，重新加载
                         case MinionSystemEvent.MINION_VIEW_CHANGE_OVER:
-                            MinionGridItem MinionGridItem =  notification.Body as MinionGridItem;
-                            minionGridView.AchieveMinionGrid(minionGridProxy.minionGridItem, hexGridProxy.HexGrid);
+                            MinionGridItem minionGridItem =  notification.Body as MinionGridItem;
+                            minionGridView.AchieveMinionGrid(minionGridItem, hexGridProxy.HexGrid);
                             break;
                         case MinionSystemEvent.MINION_VIEW_MINIONS_CHANGE:
-                            List<MinionCellItem> mList = notification.Body as List<MinionCellItem>;
+                            mList = notification.Body as List<MinionCellItem>;
                             minionGridView.RenderSomeMinionByMinionCellItem(mList);
                             break;
-                       
+                        case MinionSystemEvent.MINION_VIEW_MINION_CHANGE_ATK:
+                            MinionCellItem minionCellItemAtk = notification.Body as MinionCellItem;
+                            mList.Add(minionCellItemAtk);
+                            minionGridView.RenderSomeMinionByMinionCellItem(mList);
+                            break;
+                        case MinionSystemEvent.MINION_VIEW_MINION_CHANGE_DEF:
+                            MinionCellItem minionCellItemDef = notification.Body as MinionCellItem;
+                            mList.Add(minionCellItemDef);
+                            minionGridView.RenderSomeMinionByMinionCellItem(mList);
+                            UtilityLog.Log("效果执行结束");
+                            break;
                     }
                     break;
                

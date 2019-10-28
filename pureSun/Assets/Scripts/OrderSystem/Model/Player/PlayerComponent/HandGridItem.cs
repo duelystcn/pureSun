@@ -33,7 +33,6 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
             handCellItem.color = defaultColor;
             handCellItem.uuid = System.Guid.NewGuid().ToString("N");
             handCellItem.index = cellIndex;
-            handCellItem.playerCode = playerCode;
             cellIndex++;
             handCells.Add(handCellItem);
             return handCellItem;

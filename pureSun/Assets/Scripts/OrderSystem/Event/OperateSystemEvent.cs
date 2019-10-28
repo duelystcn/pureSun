@@ -10,9 +10,11 @@ namespace Assets.Scripts.OrderSystem.Event
         //操作逻辑开始
         public const string OPERATE_SYS_HAND_CHOOSE = "OperateSysHandChoose";
 
+        //效果执行完毕，清除手牌
+        public const string OPERATE_SYS_HAND_CHOOSE_EXE_OVER = "OperateSysHandChooseExeOver";
 
 
-        
+
 
         //划线结束，选择了区域格子
         public const string OPERATE_SYS_DRAW_END_HEX = "OperateSysDrawEndHex";
@@ -20,10 +22,9 @@ namespace Assets.Scripts.OrderSystem.Event
         public const string OPERATE_SYS_DRAW_END_CIRCUIT = "OperateSysDrawEndCircuit";
         //划线结束，什么都没选
         public const string OPERATE_SYS_DRAW_END_NULL = "OperateSysDrawEndNull";
-        //开始寻找目标
-        public const string OPERATE_SYS_FIND_TARGET = "OperateSysFindTarget";
-        //开始执行效果
-        public const string OPERATE_SYS_EXEC_EFFECT= "OperateSysExecEffect";
+
+       
+
 
 
 

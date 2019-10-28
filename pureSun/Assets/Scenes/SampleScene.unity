@@ -663,7 +663,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 121974513
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!114 &1142064038
@@ -974,8 +974,6 @@ MonoBehaviour:
   minionCellViews: []
   cellPrefab: {fileID: 114072028405942546, guid: 1e42ec857452d3449946ef462c46faa7,
     type: 3}
-  cellLabelPrefab: {fileID: 114977039093982378, guid: c3968204a702ef949826e9b9c80b1413,
-    type: 3}
   effectTargetMaterial: {fileID: 2100000, guid: 2b88efdfce00bd442a6d6288692bfa75,
     type: 2}
   originalMaterial: {fileID: 2100000, guid: 26d9ab6c907df304abae3c32b22294db, type: 2}
@@ -997,7 +995,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: -1120117125
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!224 &1603460296

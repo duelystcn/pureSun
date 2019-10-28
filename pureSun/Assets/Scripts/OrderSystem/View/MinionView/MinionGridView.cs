@@ -4,6 +4,7 @@ using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +15,6 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
     
         public MinionCellView[] minionCellViews;
         public MinionCellView cellPrefab;
-        public Text cellLabelPrefab;
         MinionMesh minionMesh;
         Canvas gridCanvas;
  
@@ -45,9 +45,9 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
                 cell.transform.SetParent(transform, false);
                 cell.transform.localPosition = position;
                 cell.minionCellItem = minionCellItem;
-                Text label = Instantiate<Text>(cellLabelPrefab);
-                label.rectTransform.SetParent(cell.transform, false);
-                label.text = minionCellItem.cardEntry.atk.ToString() + "-" + minionCellItem.cardEntry.def.ToString();
+                TextMeshProUGUI atkAndDef = UtilityHelper.FindChild<TextMeshProUGUI>(cell.transform, "MinionCellLabel");
+                atkAndDef.text = minionCellItem.cardEntry.atk.ToString() + "-" + minionCellItem.cardEntry.def.ToString();
+                UtilityLog.Log("生成一个生物：" + minionCellItem.cardEntry.cardInfo.name);
                 i++;
             }
             //渲染需要放在格子生成完毕后
@@ -66,6 +66,8 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
         }
         public void RenderOneMinionCellByMinionCellItem(MinionCellView minionCellView, MinionCellItem minionCellItem) {
             minionCellView.minionCellItem = minionCellItem;
+            TextMeshProUGUI atkAndDef = UtilityHelper.FindChild<TextMeshProUGUI>(minionCellView.transform, "MinionCellLabel");
+            atkAndDef.text = minionCellItem.cardEntry.atk.ToString() + "-" + minionCellItem.cardEntry.def.ToString();
             Image imageComponent = minionCellView.GetComponent<Image>();
             if (minionCellItem.IsEffectTarget == false)
             {
