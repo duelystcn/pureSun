@@ -3,6 +3,7 @@ using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.TestCase;
+using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView;
@@ -13,6 +14,7 @@ using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.PlayerComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.TestCase;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.TraitCombination;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent;
 using OrderSystem;
 using PureMVC.Interfaces;
 using System;
@@ -94,8 +96,19 @@ namespace Assets.Scripts.OrderSystem.View.UIView
             }
             else
             {
-                notificationQueue.Enqueue(notification);
-                DoExceHandleNotification();
+                //预检查，看看有没有需要直接处理的
+                parameterMap = StringUtil.GetParameterMapForNotificationType(notification.Type);
+                if (parameterMap.ContainsKey("DelayedProcess"))
+                {
+                    if ("N" == parameterMap["DelayedProcess"])
+                    {
+                        ExceHandleNotification(notification);
+                    }
+                }
+                else {
+                    notificationQueue.Enqueue(notification);
+                    DoExceHandleNotification();
+                }
             }
 
         }
@@ -141,7 +154,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                             UIViewName viewNameOpen = UIViewConfig.getUIViewNameByNameStr(parameterMap["UIViewName"]);
                             UIControllerLIst.ShowView(viewNameOpen);
                             //初始化页面
-                            UIControllerLIst.GetViewByName<ViewBaseView>(viewNameOpen).InitViewForParameter(this, notification.Body);
+                            UIControllerLIst.GetViewByName<ViewBaseView>(viewNameOpen).InitViewForParameter(this, notification.Body, parameterMap);
                             //一些界面打开时需要初始化
                             switch (viewNameOpen) {
                                 case UIViewName.CardDeckList:
@@ -268,21 +281,24 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                                     cardDeckListLoad[num].LoadPlayerInfo();
                                     foreach (CardHeadView cardHeadView in cardDeckListLoad[num].cardHeadViews)
                                     {
-                                        cardHeadView.card.cardPosition = cardHeadView.transform.position;
                                         cardHeadView.OnPointerEnter = () =>
                                         {
                                             SendNotification(
                                                 UIViewSystemEvent.UI_VIEW_CURRENT,
-                                                cardHeadView.card,
-                                                StringUtil.GetNTByNotificationTypeAndUIViewName(
+                                                cardHeadView,
+                                                StringUtil.GetNTByNotificationTypeAndUIViewNameAndOtherType(
                                                     UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW,
-                                                    UIViewConfig.getNameStrByUIViewName(UIViewName.OneCardAllInfo)
+                                                    UIViewConfig.getNameStrByUIViewName(UIViewName.OneCardAllInfo),
+                                                    "CardHeadView"
                                                     )
                                                 );
                                         };
                                         cardHeadView.OnPointerExit = () =>
                                         {
-                                            SendNotification(UIViewSystemEvent.UI_VIEW_CURRENT, UIViewConfig.getNameStrByUIViewName(UIViewName.OneCardAllInfo), UIViewSystemEvent.UI_VIEW_CURRENT_CLOSE_ONE_VIEW);
+                                            SendNotification(
+                                                UIViewSystemEvent.UI_VIEW_CURRENT, 
+                                                UIViewConfig.getNameStrByUIViewName(UIViewName.OneCardAllInfo), 
+                                                UIViewSystemEvent.UI_VIEW_CURRENT_CLOSE_ONE_VIEW);
                                         };
                                     }
                                 }
@@ -406,7 +422,21 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                             break;
                     }
                     break;
-               
+                //展示卡牌完整信息的控制
+                case UIViewSystemEvent.UI_ONE_CARD_ALL_INFO:
+                    switch (notification.Type)
+                    {
+                        case UIViewSystemEvent.UI_ONE_CARD_ALL_INFO_BUFF_CHANGE:
+                            MinionCellItem minionCellItem = notification.Body as MinionCellItem;
+                            OneCardAllInfo oneCardAllInfo = UIControllerLIst.GetViewByName<OneCardAllInfo>(UIViewName.OneCardAllInfo);
+                            if (oneCardAllInfo.cardEntryShow.uuid == minionCellItem.cardEntry.uuid) {
+                                oneCardAllInfo.LoadingAllInfoByMinionCellItem(minionCellItem);
+                            }
+                            break;
+                    }
+                    break;
+
+
             }
             if (callBackDelay == false)
             {

@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView
+namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent
 {
     public class CardHeadView : ViewBaseView
     {

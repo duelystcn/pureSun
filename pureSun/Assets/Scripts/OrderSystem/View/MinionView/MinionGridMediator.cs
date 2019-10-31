@@ -52,11 +52,15 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
                         //生物模型变更，重新加载
                         case MinionSystemEvent.MINION_VIEW_CHANGE_OVER:
                             MinionGridItem minionGridItem =  notification.Body as MinionGridItem;
-                            minionGridView.AchieveMinionGrid(minionGridItem, hexGridProxy.HexGrid);
+                            minionGridView.AchieveMinionGrid(minionGridItem, hexGridProxy.HexGrid, this);
                             break;
                         case MinionSystemEvent.MINION_VIEW_MINIONS_CHANGE:
                             mList = notification.Body as List<MinionCellItem>;
                             minionGridView.RenderSomeMinionByMinionCellItem(mList);
+                            break;
+                        case MinionSystemEvent.MINION_VIEW_ADD_ONE_MINION:
+                            MinionCellItem minionCellItemAdd = notification.Body as MinionCellItem;
+                            minionGridView.AchieveOneMinion(minionCellItemAdd, hexGridProxy.HexGrid, this);
                             break;
                         case MinionSystemEvent.MINION_VIEW_MINION_CHANGE_ATK:
                             MinionCellItem minionCellItemAtk = notification.Body as MinionCellItem;

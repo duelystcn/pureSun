@@ -37,6 +37,10 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 一个阶段的结束
         /// </summary>
         public const string TIME_TRIGGER_SYS_ONE_STAGE_END = "TimeTriggerSysOneStageEnd";
+        /// <summary>
+        /// 一个阶段的执行
+        /// </summary>
+        public const string TIME_TRIGGER_SYS_ONE_STAGE_EXECUTION = "TimeTriggerSysOneStageExecution";
 
 
     }

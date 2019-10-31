@@ -38,5 +38,13 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS
         public List<MinionCellItem> targetMinionCellItems = new List<MinionCellItem>();
         public List<PlayerItem> targetPlayerItems = new List<PlayerItem>();
         public List<EffectInfo> targetEffectInfos = new List<EffectInfo>();
+
+        //执行对象全部初始化，持续性效果每次触发前都应该初始化一次
+        public void CleanEffectTargetSetList() {
+            targetCardEntries.Clear();
+            targetMinionCellItems.Clear();
+            targetPlayerItems.Clear();
+            targetEffectInfos.Clear();
+        }
     }
 }

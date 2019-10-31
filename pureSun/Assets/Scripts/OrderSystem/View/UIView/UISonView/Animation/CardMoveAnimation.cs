@@ -1,8 +1,5 @@
-﻿
-
-using Assets.Scripts.OrderSystem.Common.UnityExpand;
-using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView;
-using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView;
+﻿using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent;
 using System;
 using System.Collections;
 using UnityEngine;

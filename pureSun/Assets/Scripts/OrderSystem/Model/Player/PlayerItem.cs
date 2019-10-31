@@ -18,7 +18,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //主要ID
         public string playerCode
         {
-            get; private set;
+            get;  set;
         }
         public PlayerType playerType;
         //手牌
@@ -52,7 +52,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //可使用资源次数恢复到最大数
         public void RestoreCanUseResourceNumMax() {
             canUseResourceNum = canUseResourceMaxNumOneTurn;
-
+            ttPlayerHandCanUseJudge();
         }
 
 
@@ -82,6 +82,8 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //可用费用发生了变化
         public TTManaCostUsableChange ttManaCostUsableChange;
 
+
+
         //玩家分数发生了变化
         public TTScoreChange ttScoreChange;
 
@@ -95,10 +97,18 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //禁止召唤区域
 
         //制造可召唤区域列表
-        public void CreateCanCallHex(GMCellCoordinate[] gMCellCoordinates) {
-            foreach (GMCellCoordinate gMCell in gMCellCoordinates) {
-                fixedCanCellHexList.Add(new HexCoordinates(gMCell.x, gMCell.z));
+        public void CreateCanCallHex(GM_PlayerSite playerSiteOne) {
+            foreach (string canCallRegionCode in playerSiteOne.canCallRegionCodes) {
+                foreach (GM_CellRegion gmCellRegion in playerSiteOne.cellRegionList)
+                {
+                    if (gmCellRegion.code == canCallRegionCode) {
+                        foreach (GM_CellCoordinate gMCell in gmCellRegion.regionCellList) {
+                            fixedCanCellHexList.Add(new HexCoordinates(gMCell.x, gMCell.z));
+                        }
+                    }
+                }
             }
+          
         }
         //判断一个格子是否在可召唤区域内
         public bool CheckOneCellCanCall(HexCoordinates hexCoordinates) {
@@ -267,6 +277,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //费用恢复至上限
         public void RestoreToTheUpperLimit()
         {
+          
             int changeNum = manaItem.manaUpperLimit - manaItem.manaUsable;
             manaItem.RestoreToTheUpperLimit();
             ttManaCostUsableChange(changeNum);

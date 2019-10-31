@@ -1,5 +1,6 @@
 ﻿
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -72,7 +73,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView
             //InitBG();
         }
         //需要通过传递参数和引用消息系统的初始化
-        public virtual void InitViewForParameter(UIControllerListMediator mediator, object body) { }
+        public virtual void InitViewForParameter(UIControllerListMediator mediator, object body, Dictionary<string, string> parameterMap) { }
         //初始化各UI对象
         protected virtual void InitUIObjects() { }
         private void InitCanvas()

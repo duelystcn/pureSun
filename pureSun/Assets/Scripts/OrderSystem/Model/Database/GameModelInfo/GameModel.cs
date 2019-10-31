@@ -28,7 +28,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.GameModelInfo
         //回合阶段
         public string[] turnStage { get; set; }
         //玩家具体设置
-        public PlayerSite[] playerSiteList { get; set; }
+        public GM_PlayerSite[] playerSiteList { get; set; }
 
     }
 }

@@ -1,75 +1,105 @@
 {
   "TargetMinionGetAtk1_Def1": {
-    "name": "TargetMinionGetAtk1_Def1",
+    "code": "TargetMinionGetAtk1_Def1",
     "description": "目标生物+1/+1",
     "targetSet": [ "OneMyselfMinion" ],
     "impactType": "Moment",
+    "effectiveTime": "Continued",
     "impactTargets": [ "ATK", "DEF" ],
     "impactContents": [ "1", "1" ],
     "whetherToshow": "Y"
   },
   "ChooseOneAddManaUpOneORDrawCardOrAddSupremcyTraitOneToMyself": {
-    "name": "ChooseOneAddManaUpOneORDrawCardOrAddSupremcyTraitOneToMyself",
+    "code": "ChooseOneAddManaUpOneORDrawCardOrAddSupremcyTraitOneToMyself",
     "description": "选择一项：\n●获得一点资源上限；\n●抽一张牌；\n●增加一点至高等级",
     "chooseEffectList": [ "AddManaUpOneToMyself", "DrawCardToMyself", "AddSupremcyTraitOneToMyself" ],
     "impactType": "Moment",
+    "effectiveTime": "Moment",
     "targetSet": [ "MyselfChooseEffect" ],
     "whetherToshow": "N"
   },
   "AddManaUpOneToMyself": {
-    "name": "AddManaUpOneToMyself",
+    "code": "AddManaUpOneToMyself",
     "description": "己方玩家增加一点费用上限",
     "targetSet": [ "MyselfPlayer" ],
     "impactType": "Moment",
+    "effectiveTime": "Permanent",
     "impactTargets": [ "ManaUpperLimit" ],
     "impactContents": [ "1" ],
     "whetherToshow": "Y"
   },
   "GetManaOneToMyself": {
-    "name": "GetManaOneToMyself",
+    "code": "GetManaOneToMyself",
     "description": "己方玩家获得①",
     "targetSet": [ "MyselfPlayer" ],
     "impactType": "Moment",
+    "effectiveTime": "Permanent",
     "impactTargets": [ "ManaUsable" ],
     "impactContents": [ "1" ],
     "whetherToshow": "Y"
   },
   "DrawCardToMyself": {
-    "name": "DrawCardToMyself",
+    "code": "DrawCardToMyself",
     "description": "己方玩家抽一张牌",
     "targetSet": [ "MyselfPlayer" ],
     "impactType": "Moment",
+    "effectiveTime": "Permanent",
     "impactTargets": [ "Hand" ],
     "impactContents": [ "1" ],
     "whetherToshow": "Y"
   },
   "AddSupremcyTraitOneToMyself": {
-    "name": "AddSupremcyTraitOneToMyself",
+    "code": "AddSupremcyTraitOneToMyself",
     "description": "己方玩家增加一点至高等级",
     "targetSet": [ "MyselfPlayer" ],
     "impactType": "Moment",
+    "effectiveTime": "Permanent",
     "impactTargets": [ "TraitAddOne" ],
     "impactContents": [ "supremcy" ],
     "whetherToshow": "Y"
   },
   "SelfDrawOneCardThenGetOneScore": {
-    "name": "SelfDrawOneCardThenGetOneScore",
+    "code": "SelfDrawOneCardThenGetOneScore",
     "description": "每当你抽一张牌时，获得1分",
     "targetSet": [ "MyselfPlayer" ],
     "impactType": "Continue",
+    "effectiveTime": "Permanent",
     "impactTimeTriggers": [ "SysSelfDrawACard" ],
     "impactTargets": [ "Score" ],
     "impactContents": [ "1" ],
     "whetherToshow": "Y"
   },
   "DrawCardToMyselfWhenStartOfTrun": {
-    "name": "DrawCardToMyself",
-    "description": "在己方回合开始时，己方玩家抽一张牌",
+    "code": "DrawCardToMyselfWhenStartOfTrun",
+    "description": "在己方开始阶段执行，己方玩家抽一张牌",
     "targetSet": [ "MyselfPlayer" ],
     "impactType": "GameModelRule",
-    "impactTimeTriggers": [ "StartOfTrunStart" ],
+    "effectiveTime": "Permanent",
+    "impactTimeTriggers": [ "StartOfTrunExecution" ],
     "impactTargets": [ "Hand" ],
     "impactContents": [ "1" ],
     "whetherToshow": "N"
   },
+  "RestoreToTheUpperLimitWhenStartOfTrun": {
+    "code": "RestoreToTheUpperLimitWhenStartOfTrun",
+    "description": "在己方开始阶段执行，可用费用恢复至上限",
+    "targetSet": [ "MyselfPlayer" ],
+    "impactType": "GameModelRule",
+    "effectiveTime": "Permanent",
+    "impactTimeTriggers": [ "StartOfTrunExecution" ],
+    "impactTargets": [ "ManaUsable" ],
+    "impactContents": [ "Max" ],
+    "whetherToshow": "N"
+  },
+  "RestoreCanUseResourceNumMaxWhenStartOfTrun": {
+    "code": "RestoreCanUseResourceNumMaxWhenStartOfTrun",
+    "description": "在己方开始阶段执行，可使用资源牌的次数恢复至上限",
+    "targetSet": [ "MyselfPlayer" ],
+    "impactType": "GameModelRule",
+    "effectiveTime": "Permanent",
+    "impactTimeTriggers": [ "StartOfTrunExecution" ],
+    "impactTargets": [ "CanUseResourceNum" ],
+    "impactContents": [ "Max" ],
+    "whetherToshow": "N"
+  }
 }

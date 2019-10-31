@@ -28,6 +28,8 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
     {
         //名称
         public string name { get; set; }
+        //名称
+        public string code { get; set; }
         //描述
         public string description { get; set; }
         //目标集合
@@ -42,6 +44,9 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 
         //是否需要展示
         public string whetherToshow { get; set; }
+
+        //持续时间
+        public string effectiveTime{ get; set; }
 
 
 
@@ -83,7 +88,12 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         //效果选择者，当一个效果需要进行选择的时候使用
         public PlayerItem chooseByPlayer;
 
-
+        public void CleanEffectTargetSetList() {
+            foreach (TargetSet targetSet in targetSetList) {
+                targetSet.CleanEffectTargetSetList();
+            }
+        
+        }
    
 
         //检查一个效果是否可以作用与目标生物

@@ -17,7 +17,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
         {
             testCaseList.addTestCase(testCaseInfoList);
         }
-        public override void InitViewForParameter(UIControllerListMediator mediator, object body)
+        public override void InitViewForParameter(UIControllerListMediator mediator, object body, Dictionary<string, string> parameterMap)
         {
             List<TestCaseInfo> testCaseInfoList = body as List<TestCaseInfo>;
             this.addTestCase(testCaseInfoList);

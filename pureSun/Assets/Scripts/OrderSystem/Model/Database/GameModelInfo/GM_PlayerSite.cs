@@ -10,11 +10,13 @@
 
 namespace Assets.Scripts.OrderSystem.Model.Database.GameModelInfo
 {
-    public class PlayerSite
+    public class GM_PlayerSite
     {
         //攻击方向
         public string attackDirection { get; set; }
+        //默认可召唤区域
+        public string[] canCallRegionCodes { get; set; }
         //可召唤区域
-        public GMCellCoordinate[] canCallCellList { get; set; }
+        public GM_CellRegion[] cellRegionList { get; set; }
     }
 }

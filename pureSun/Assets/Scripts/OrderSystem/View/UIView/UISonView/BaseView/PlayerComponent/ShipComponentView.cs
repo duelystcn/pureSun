@@ -1,6 +1,7 @@
 ﻿
 
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.PlayerCompon
                 enemyScore.text = (Convert.ToInt32(enemyScore.text) + changeNum).ToString();
             }
         }
-        public override void InitViewForParameter(UIControllerListMediator mediator, object body)
+        public override void InitViewForParameter(UIControllerListMediator mediator, object body, Dictionary<string, string> parameterMap)
         {
             this.myselfPlayerCode = mediator.playerCode;
         }

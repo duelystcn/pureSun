@@ -62,6 +62,14 @@ namespace Assets.Scripts.OrderSystem.Common
             TestMap.Add("NotificationType", notificationType);
             return JsonConvert.SerializeObject(TestMap);
         }
+        //传入一个notificationType,DelayedProcess返回一个map的json
+        public static string GetNTByNotificationTypeAndDelayedProcess(string notificationType, string delayedProcess)
+        {
+            Dictionary<string, string> TestMap = new Dictionary<string, string>();
+            TestMap.Add("NotificationType", notificationType);
+            TestMap.Add("DelayedProcess", delayedProcess);
+            return JsonConvert.SerializeObject(TestMap);
+        }
         //传入一个notificationType,playerCode返回一个map的json
         public static string GetNTByNotificationTypeAndPlayerCode(string notificationType,string playerCode)
         {
@@ -78,7 +86,27 @@ namespace Assets.Scripts.OrderSystem.Common
             TestMap.Add("UIViewName", UIViewName);
             return JsonConvert.SerializeObject(TestMap);
         }
-        //传入一个notificationType,UIViewName返回一个map的json
+        //传入一个notificationType,UIViewName,OtherType返回一个map的json
+        public static string GetNTByNotificationTypeAndUIViewNameAndOtherType(string notificationType, string UIViewName, string otherType)
+        {
+            Dictionary<string, string> TestMap = new Dictionary<string, string>();
+            TestMap.Add("NotificationType", notificationType);
+            TestMap.Add("UIViewName", UIViewName);
+            TestMap.Add("OtherType", otherType);
+            return JsonConvert.SerializeObject(TestMap);
+        }
+        //传入一个notificationType,UIViewName,OtherType,DelayedProcess返回一个map的json
+        public static string GetNTByNotificationTypeAndUIViewNameAndOtherTypeAndDelayedProcess(string notificationType, string UIViewName, string otherType, string delayedProcess)
+        {
+            Dictionary<string, string> TestMap = new Dictionary<string, string>();
+            TestMap.Add("NotificationType", notificationType);
+            TestMap.Add("UIViewName", UIViewName);
+            TestMap.Add("OtherType", otherType);
+            TestMap.Add("DelayedProcess", delayedProcess);
+            return JsonConvert.SerializeObject(TestMap);
+        }
+
+        //传入一个notificationType,playerCode,UIViewName返回一个map的json
         public static string GetNTByNotificationTypeAndPlayerCodeAndUIViewName(string notificationType, string playerCode, string UIViewName)
         {
             Dictionary<string, string> TestMap = new Dictionary<string, string>();
@@ -87,6 +115,7 @@ namespace Assets.Scripts.OrderSystem.Common
             TestMap.Add("PlayerCode", playerCode);
             return JsonConvert.SerializeObject(TestMap);
         }
+
         //传入一个key值获取map-json中对应的值
         public static string GetValueForNotificationTypeByKey(string notificationTypeJson,string key) {
             if (notificationTypeJson.Contains(key))

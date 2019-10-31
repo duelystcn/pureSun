@@ -9,12 +9,11 @@
      * 修改时间：
      * 修 改 人：
     *************************************************************************************/
-using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.PlayerComponent;
-using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.EffectDisplayComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.ManaInfoComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.TraitSignComponent;

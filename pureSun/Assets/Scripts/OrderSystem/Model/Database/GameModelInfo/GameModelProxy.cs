@@ -25,7 +25,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.GameModelInfo
         //游戏模式集合
         public Dictionary<string, GameModel> gameModelInfoMap;
         //游戏模式集合
-        public Dictionary<string, OneStageSite> stageSiteMap;
+        public Dictionary<string, GM_OneStageSite> stageSiteMap;
         //当前游戏模式
         public GameModel gameModelNow = new GameModel();
         //当前坐标模式
@@ -60,7 +60,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.GameModelInfo
                 JsonConvert.DeserializeObject<Dictionary<string, GameModel>>(gameModelInfoStr);
             string stageSiteStr = File.ReadAllText("Assets/Resources/Json/StageSite.json", Encoding.GetEncoding("gb2312"));
             stageSiteMap =
-                JsonConvert.DeserializeObject<Dictionary<string, OneStageSite>>(stageSiteStr);
+                JsonConvert.DeserializeObject<Dictionary<string, GM_OneStageSite>>(stageSiteStr);
 
         }
     }

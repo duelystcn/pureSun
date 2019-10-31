@@ -6,5 +6,12 @@
     "impactTimeTriggertClaims": [ "Owner" ],
     "impactTimeTriggertClaimsContents": [ "Myself" ]
 
+  },
+  "StartOfTrunExecution": {
+    "name": "StartOfTrunExecution",
+    "description": "在己方回合开始时",
+    "impactTimeTriggertMonitor": "StartOfTrunExecution",
+    "impactTimeTriggertClaims": [ "Owner" ],
+    "impactTimeTriggertClaimsContents": [ "Myself" ]
   }
 }

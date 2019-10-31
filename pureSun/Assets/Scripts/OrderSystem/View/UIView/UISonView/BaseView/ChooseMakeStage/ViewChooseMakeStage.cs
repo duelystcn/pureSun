@@ -3,6 +3,7 @@ using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -156,7 +157,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.ChooseMakeSt
             }
 
         }
-        public override void InitViewForParameter(UIControllerListMediator mediator, object body)
+        public override void InitViewForParameter(UIControllerListMediator mediator, object body, Dictionary<string, string> parameterMap)
         {
             List<List<CardEntry>> cardEntries = body as List<List<CardEntry>>;
             this.LoadStartCardList(cardEntries);

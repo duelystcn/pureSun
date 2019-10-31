@@ -1,6 +1,7 @@
 ﻿
 
 using Assets.Scripts.OrderSystem.Event;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -54,7 +55,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView
             OnPointerClick();
         }
 
-        public override void InitViewForParameter(UIControllerListMediator mediator, object body)
+        public override void InitViewForParameter(UIControllerListMediator mediator, object body, Dictionary<string, string> parameterMap)
         {
             this.OnPointerClick = () =>
             {

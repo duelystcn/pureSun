@@ -44,8 +44,8 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 
         }
 
-        public EffectInfo GetDepthCloneEffectByName(string effectName) {
-            EffectInfo effectInfo = TransExpV2<EffectInfo, EffectInfo>.Trans(effectSysItem.effectInfoMap[effectName]);
+        public EffectInfo GetDepthCloneEffectByName(string effectCode) {
+            EffectInfo effectInfo = TransExpV2<EffectInfo, EffectInfo>.Trans(effectSysItem.effectInfoMap[effectCode]);
             //初始化效果
             effectSysItem.EffectActionReady(effectInfo);
             return effectInfo;

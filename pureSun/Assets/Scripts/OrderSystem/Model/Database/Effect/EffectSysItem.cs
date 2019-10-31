@@ -63,6 +63,8 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     {
                         for (int n = 0; n < minionCellItemList.Count; n++)
                         {
+                            minionCellItemList[n].effectBuffInfoList.Add(effect);
+                            minionCellItemList[n].ttBuffChange();
                             for (int m = 0; m < effect.impactTargets.Length; m++)
                             {
                                 ChangeMinion(effect.impactTargets[m], effect.impactContents[m], minionCellItemList[n]);
@@ -76,6 +78,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     {
                         for (int n = 0; n < playerItemList.Count; n++)
                         {
+                            UtilityLog.Log("目标玩家：" + playerItemList[n].playerCode + "生效效果:" + effect.description, LogColor.GREEN);
                             for (int m = 0; m < effect.impactTargets.Length; m++)
                             {
                                 ChangePlayer(effect.impactTargets[m], effect.impactContents[m], playerItemList[n]);
@@ -93,11 +96,11 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
             switch (impactTarget)
             {
                 case "ATK":
-                    minionCellItem.cardEntry.atk = minionCellItem.cardEntry.atk + Convert.ToInt32(impactContent);
+                    minionCellItem.atkNow = minionCellItem.atkNow + Convert.ToInt32(impactContent);
                     minionCellItem.ttAtkChange(Convert.ToInt32(impactContent));
                     break;
                 case "DEF":
-                    minionCellItem.cardEntry.def = minionCellItem.cardEntry.def + Convert.ToInt32(impactContent);
+                    minionCellItem.defNow = minionCellItem.defNow + Convert.ToInt32(impactContent);
                     minionCellItem.ttDefChange(Convert.ToInt32(impactContent));
                     break;
 
@@ -115,7 +118,15 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     playerItem.ChangeManaUpperLimit(Convert.ToInt32(impactContent));
                     break;
                 case "ManaUsable":
-                    playerItem.ChangeManaUsable(Convert.ToInt32(impactContent));
+                    //恢复至上限使用Max,是不能被转为数字的
+                    if (impactContent == "Max")
+                    {
+                        playerItem.RestoreToTheUpperLimit();
+                    }
+                    else {
+                        playerItem.ChangeManaUsable(Convert.ToInt32(impactContent));
+                    }
+                    
                     break;
                 //科技相关
                 case "TraitAddOne":
@@ -123,6 +134,17 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     break;
                 case "Score":
                     playerItem.ChangeSocre(Convert.ToInt32(impactContent));
+                    break;
+                case "CanUseResourceNum":
+                    if (impactContent == "Max")
+                    {
+                        // 使用资源牌恢复到最大次数
+                        playerItem.RestoreCanUseResourceNumMax();
+                    }
+                    else
+                    {
+                        
+                    }
                     break;
 
             }

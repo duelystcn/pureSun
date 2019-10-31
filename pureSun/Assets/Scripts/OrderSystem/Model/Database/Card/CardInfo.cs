@@ -10,7 +10,7 @@
 
 
         public string isMoment { get; set; }
-        public string[] effectName { get; set; }
+        public string[] effectCodeList { get; set; }
         public string description { get; set; }
 
         //生物属性

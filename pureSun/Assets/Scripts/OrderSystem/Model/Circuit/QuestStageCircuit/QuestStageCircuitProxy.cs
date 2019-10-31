@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+﻿using Assets.Scripts.OrderSystem.Common;
+using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.Player;
@@ -18,13 +19,17 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
         public QuestStageCircuitProxy() : base(NAME) {
             QuestStageCircuitItem circuitItem = new QuestStageCircuitItem();
             base.Data = circuitItem;
-            circuitItem.oneStageStartAction = () =>
+            circuitItem.oneStageStartAction = (PlayerItem playerItem) =>
             {
-                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, circuitItem.oneTurnStage, TimeTriggerEvent.TIME_TRIGGER_SYS_ONE_STAGE_START);
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, circuitItem.oneTurnStage.code, StringUtil.GetNTByNotificationTypeAndPlayerCode(TimeTriggerEvent.TIME_TRIGGER_SYS_ONE_STAGE_START, playerItem.playerCode));
             };
-            circuitItem.oneStageEndAction = () =>
+            circuitItem.oneStageEndAction = (PlayerItem playerItem) =>
             {
-                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, circuitItem.oneTurnStage, TimeTriggerEvent.TIME_TRIGGER_SYS_ONE_STAGE_END);
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, circuitItem.oneTurnStage.code, StringUtil.GetNTByNotificationTypeAndPlayerCode(TimeTriggerEvent.TIME_TRIGGER_SYS_ONE_STAGE_END, playerItem.playerCode));
+            };
+            circuitItem.oneStageExecutionAction = (PlayerItem playerItem) =>
+            {
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, circuitItem.oneTurnStage.code, StringUtil.GetNTByNotificationTypeAndPlayerCode(TimeTriggerEvent.TIME_TRIGGER_SYS_ONE_STAGE_EXECUTION, playerItem.playerCode));
             };
 
         }
@@ -32,17 +37,11 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
 
         //流程开始
         public void CircuitStart(Dictionary<string, PlayerItem> dictionary ) {
-            circuitItem.turnNum = 1;
             CreatePlayerOrder(dictionary);
             circuitItem.nowPlayerCode = circuitItem.playerOrder[0];
         }
 
-        //读取模式的流程信息并添加到circuitItem中
-        public void LoadingGameModelTurnStage(string[] turnStage) {
-            for (int n = 0; n < turnStage.Length; n++) {
-                circuitItem.questOneTurnStageList.Add(turnStage[n]);
-            }
-        }
+        
 
         //创建玩家流程序列
         public void CreatePlayerOrder(Dictionary<string, PlayerItem> dictionary) {

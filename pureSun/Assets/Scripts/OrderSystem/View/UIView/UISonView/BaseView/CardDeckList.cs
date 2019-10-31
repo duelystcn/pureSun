@@ -4,6 +4,7 @@ using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent;
 using System.Collections.Generic;
 using UnityEngine;
 

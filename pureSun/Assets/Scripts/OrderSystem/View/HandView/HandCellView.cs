@@ -1,8 +1,6 @@
-﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
-using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
+﻿using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView;
-using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView;
-using TMPro;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent;
 using UnityEngine.Events;
 using UnityEngine.UI;
 

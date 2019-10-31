@@ -71,14 +71,14 @@ namespace Assets.Scripts.OrderSystem.Controller
                 case OperateSystemEvent.OPERATE_SYS_DRAW_END_HEX:
                     HexCellItem hexCellItem = notification.Body as HexCellItem;
                     int index = HexUtil.GetIndexFromModeAndHex(gameModelProxy.hexModelInfoNow, hexCellItem.coordinates);
-                    UtilityLog.Log("玩家" + playerCode + "尝试操作手牌，手牌种类为：" + chooseHand.cardEntry.WhichCard);
+                    UtilityLog.Log("玩家" + playerCode + "尝试操作手牌，手牌种类为：" + chooseHand.cardEntry.WhichCard,LogColor.BLUE);
                     //判断状态
                     switch (operateSystemProxy.operateSystemItem.operateModeType) {
                         //手牌使用状态
                         case OperateSystemItem.OperateType.HandUse:
                             switch (chooseHand.cardEntry.WhichCard) {
                                 case CardEntry.CardType.ResourceCard:
-                                    UtilityLog.Log("玩家" + playerCode + "进行操作手牌，手牌种类为：" + chooseHand.cardEntry.WhichCard);
+                                    UtilityLog.Log("玩家" + playerCode + "进行操作手牌，手牌种类为：" + chooseHand.cardEntry.WhichCard, LogColor.BLUE);
                                     chooseHand.cardEntry.player = playerItem;
                                     //执行卡牌
                                     SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, chooseHand.cardEntry, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_CARD);
@@ -91,8 +91,6 @@ namespace Assets.Scripts.OrderSystem.Controller
                                     if (canUse && canCall)
                                     {
                                         minionGridProxy.AddOneMinionByHand(index, chooseHand);
-                                        //通知生物层发生变更重新渲染
-                                        SendNotification(MinionSystemEvent.MINION_VIEW, minionGridProxy.minionGridItem, MinionSystemEvent.MINION_VIEW_CHANGE_OVER);
                                         //通知战场层去除渲染
                                         SendNotification(HexSystemEvent.HEX_VIEW_SYS, null, HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL_CANCEL);
                                         SendNotification(OperateSystemEvent.OPERATE_SYS, null, OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE_EXE_OVER);
@@ -177,7 +175,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                                     operateSystemProxy.IntoModeClose();
                                     break;
                                 case CardEntry.CardType.TacticsCard:
-                                    EffectInfo effectInfo = effectInfoProxy.GetDepthCloneEffectByName(chooseHand.cardEntry.cardInfo.effectName[0]);
+                                    EffectInfo effectInfo = effectInfoProxy.GetDepthCloneEffectByName(chooseHand.cardEntry.cardInfo.effectCodeList[0]);
                                     if (effectInfo.targetSetList[0].target == "Minion")
                                     {
                                         //取消渲染
@@ -194,10 +192,10 @@ namespace Assets.Scripts.OrderSystem.Controller
                 case OperateSystemEvent.OPERATE_SYS_CHOOSE_ONE_EFFECT:
                     CardEntry effectCard = notification.Body as CardEntry;
                     //逻辑上可以确定只能有一个效果字段？
-                    if (effectCard.effectName.Length > 1) {
+                    if (effectCard.effectCodeList.Length > 1) {
                         UtilityLog.LogError("this chooseEffect has many Effect");
                     }
-                    EffectInfo chooseEffect = effectInfoProxy.GetDepthCloneEffectByName(effectCard.effectName[0]);
+                    EffectInfo chooseEffect = effectInfoProxy.GetDepthCloneEffectByName(effectCard.effectCodeList[0]);
                     for (int n = 0; n < effectInfoProxy.effectSysItem.effectInfos.Count; n++)
                     {
                         EffectInfo effect = effectInfoProxy.effectSysItem.effectInfos[n];

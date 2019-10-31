@@ -1,6 +1,7 @@
 ﻿
 
 using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent;
 using OrderSystem;
 using System.Collections.Generic;
 using UnityEngine;

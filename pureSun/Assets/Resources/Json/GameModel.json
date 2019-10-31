@@ -18,59 +18,73 @@
     "playerSiteList": [
       {
         "attackDirection": "positive",
-        "canCallCellList": [
+        "canCallRegionCodes": [ "Defense" ],
+        "cellRegionList": [
           {
-            "x": 0,
-            "z": 0
-          },
-          {
-            "x": 1,
-            "z": 0
-          },
-          {
-            "x": 2,
-            "z": -1
-          },
-          {
-            "x": 3,
-            "z": -1
-          },
-          {
-            "x": 4,
-            "z": -2
-          },
-          {
-            "x": 5,
-            "z": -2
+            "code": "Defense",
+            "name": "∑¿œﬂ",
+            "regionCellList": [
+              {
+                "x": 0,
+                "z": 0
+              },
+              {
+                "x": 1,
+                "z": 0
+              },
+              {
+                "x": 2,
+                "z": -1
+              },
+              {
+                "x": 3,
+                "z": -1
+              },
+              {
+                "x": 4,
+                "z": -2
+              },
+              {
+                "x": 5,
+                "z": -2
+              }
+            ]
           }
         ]
       },
       {
         "attackDirection": "negative",
-        "canCallCellList": [
+        "canCallRegionCodes": [ "Defense" ],
+        "cellRegionList": [
           {
-            "x": 0,
-            "z": 3
-          },
-          {
-            "x": 1,
-            "z": 3
-          },
-          {
-            "x": 2,
-            "z": 2
-          },
-          {
-            "x": 3,
-            "z": 2
-          },
-          {
-            "x": 4,
-            "z": 1
-          },
-          {
-            "x": 5,
-            "z": 1
+            "code": "Defense",
+            "name": "∑¿œﬂ",
+            "regionCellList": [
+              {
+                "x": 0,
+                "z": 3
+              },
+              {
+                "x": 1,
+                "z": 3
+              },
+              {
+                "x": 2,
+                "z": 2
+              },
+              {
+                "x": 3,
+                "z": 2
+              },
+              {
+                "x": 4,
+                "z": 1
+              },
+              {
+                "x": 5,
+                "z": 1
+              }
+            ]
           }
         ]
       }

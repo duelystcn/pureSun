@@ -32,7 +32,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
         public string isMoment { get; set; }
 
         //效果
-        public string[] effectName { get; set; }
+        public string[] effectCodeList { get; set; }
         //描述
         public string description { get; set; }
 
@@ -46,8 +46,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
         public bool isBuyed = false;
 
 
-        //界面相关,卡牌所在组件位置
-        public Vector3 cardPosition;
+
 
         //已被触发的效果
         public EffectInfo triggeredEffectInfo;
@@ -67,7 +66,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
         //根据效果实例化一张卡（用作展示）
         public void InitializeByEffectInfo(EffectInfo oneEffectInfo)
         {
-            this.effectName = new string[1] { oneEffectInfo.name };
+            this.effectCodeList = new string[1] { oneEffectInfo.code };
             this.description = oneEffectInfo.description;
         }
 
@@ -81,7 +80,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
             this.traitdemand = cardInfo.traitdemand;
             this.uuid = System.Guid.NewGuid().ToString("N");
             this.isMoment = cardInfo.isMoment;
-            this.effectName = cardInfo.effectName;
+            this.effectCodeList = cardInfo.effectCodeList;
             switch (cardInfo.type)
             {
                 case "Minion":

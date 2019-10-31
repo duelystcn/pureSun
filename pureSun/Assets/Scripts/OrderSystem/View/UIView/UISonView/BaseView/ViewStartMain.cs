@@ -3,6 +3,7 @@
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using OrderSystem;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -47,7 +48,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
             this.gameObject.SetActive(false);
         }
 
-        public override void InitViewForParameter(UIControllerListMediator mediator, object body) {
+        public override void InitViewForParameter(UIControllerListMediator mediator, object body, Dictionary<string, string> parameterMap) {
             this.StartCompleteGameUnityAction += () =>
             {
                 mediator.SendNotification(UIViewSystemEvent.UI_VIEW_CURRENT, UIViewConfig.getNameStrByUIViewName(UIViewName.StartMain), UIViewSystemEvent.UI_VIEW_CURRENT_CLOSE_ONE_VIEW);

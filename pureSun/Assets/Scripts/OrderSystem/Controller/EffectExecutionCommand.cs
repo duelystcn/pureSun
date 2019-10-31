@@ -35,9 +35,9 @@ namespace Assets.Scripts.OrderSystem.Controller
                 case EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_CARD:
                     exeEffectCard = notification.Body as CardEntry;
                     //遍历卡牌的效果
-                    foreach (string effectName in exeEffectCard.effectName)
+                    foreach (string effectCode in exeEffectCard.effectCodeList)
                     {
-                        EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectName);
+                        EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectCode);
                         //设置状态
                         oneEffectInfo.effectInfoStage = EffectInfoStage.UnStart;
                         //设置所有者,手牌操作模式，所有者是当前玩家
@@ -45,9 +45,10 @@ namespace Assets.Scripts.OrderSystem.Controller
                         //设置所属卡牌
                         oneEffectInfo.cardEntry = exeEffectCard;
 
+
                         //是否有预先选定的目标对象
                         //将预先选择的目标存入效果中
-                        if (effectName == exeEffectCard.cardInfo.targetEffectInfo)
+                        if (effectCode == exeEffectCard.cardInfo.targetEffectInfo)
                         {
                             foreach (TargetSet targetSet in oneEffectInfo.targetSetList) {
                                 if (targetSet.target == "Minion")
@@ -118,9 +119,9 @@ namespace Assets.Scripts.OrderSystem.Controller
                         if (effectInfoProxy.effectSysItem.cardEntryQueue.Count == 0)
                         {
                             if (effectInfoProxy.effectSysItem.showEffectNum == 0) {
-                                UtilityLog.Log("当前没有需要展示的效果");
+                                UtilityLog.Log("所有效果展示完毕" + System.Guid.NewGuid().ToString("N"), LogColor.GREEN);
                                 //通知回合控制器当前堆叠已经全部执行完毕
-                                SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_NEED_CHECK_END_STAGE);
+                                SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_NEED_CHECK_END_STAGE_STATE);
                             }
                           
                         }
@@ -213,7 +214,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                     }
                     effectInfo.effectInfoStage = EffectInfoStage.Finished;
                     //选择效果无需展示
-                    if (effectInfo.targetSetList[0].target != "ChooseEffect")
+                    if (effectInfo.whetherToshow == "Y")
                     {
                         //发送已经确认目标的效果到前台进行展示
                         CardEntry oneCardEntry = effectInfo.cardEntry;

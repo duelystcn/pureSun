@@ -106,9 +106,6 @@ namespace Assets.Scripts.OrderSystem.Controller
                         }
                       
                     }
-                    //通知生物层发生变更重新渲染
-                    SendNotification(MinionSystemEvent.MINION_VIEW, minionGridProxy.minionGridItem, MinionSystemEvent.MINION_VIEW_CHANGE_OVER);
-
                     questStageCircuitProxy.CircuitStart(playerGroupProxy.playerGroup.playerItems);
                     foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
                     {
@@ -118,9 +115,9 @@ namespace Assets.Scripts.OrderSystem.Controller
                         //手牌渲染
                         SendNotification(HandSystemEvent.HAND_CHANGE, playerItem.handGridItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_AFFLUX, playerItem.playerCode));
                         //获取船只的效果，如果是持续效果则添加到全局监听中
-                        foreach (string effectName in playerItem.shipCard.effectName)
+                        foreach (string effectCode in playerItem.shipCard.effectCodeList)
                         {
-                            EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectName);
+                            EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectCode);
                             if (oneEffectInfo.impactType == "Continue")
                             {
                                 oneEffectInfo.player = playerItem;
@@ -194,15 +191,15 @@ namespace Assets.Scripts.OrderSystem.Controller
                         SendNotification(HandSystemEvent.HAND_VIEW_SYS, null, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_VIEW_SYS_INIT_PLAYER_CODE, playerItem.playerCode));
 
                         //分发手牌
-                        playerItem.DrawCard(5);
+                        playerItem.DrawCard(3);
                         //设置起始费用上限
                         playerItem.manaItem.manaUpperLimit = 1;
                         //设置当前费用为0
                         playerItem.manaItem.manaUsable = 0;
                         //获取船只的效果，如果是持续效果则添加到全局监听中
-                        foreach (string effectName in playerItem.shipCard.effectName)
+                        foreach (string effectCode in playerItem.shipCard.effectCodeList)
                         {
-                            EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectName);
+                            EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectCode);
                             if (oneEffectInfo.impactType == "Continue") {
                                 oneEffectInfo.player = playerItem;
                                 oneEffectInfo.cardEntry = playerItem.shipCard;
@@ -247,18 +244,24 @@ namespace Assets.Scripts.OrderSystem.Controller
             int number = 0;
             foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
             {
-                PlayerSite playerSiteOne = gameModelProxy.gameModelNow.playerSiteList[number];
-                playerItem.CreateCanCallHex(playerSiteOne.canCallCellList);
+                GM_PlayerSite playerSiteOne = gameModelProxy.gameModelNow.playerSiteList[number];
+                playerItem.CreateCanCallHex(playerSiteOne);
                 number++;
             }
             //初始化流程信息
-            questStageCircuitProxy.LoadingGameModelTurnStage(gameModelProxy.gameModelNow.turnStage);
             //将流程需要的监听放入到监听效果集合中
             for (int n = 0; n < gameModelProxy.gameModelNow.turnStage.Length; n++)
             {
-                OneStageSite oneStageSite = gameModelProxy.stageSiteMap[gameModelProxy.gameModelNow.turnStage[n]];
-                foreach (string effectName in oneStageSite.effectNeedExeList) {
-                    EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectName);
+                GM_OneStageSite oneStageSite = gameModelProxy.stageSiteMap[gameModelProxy.gameModelNow.turnStage[n]];
+                questStageCircuitProxy.circuitItem.questOneTurnStageList.Add(oneStageSite);
+                foreach (string effectCode in oneStageSite.effectNeedExeList) {
+                    //创建空的实体信息，在执行的时候会用到
+                    EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectCode);
+                    CardEntry cardEntry = new CardEntry();
+                    PlayerItem player = new PlayerItem("NONE");
+                    oneEffectInfo.cardEntry = cardEntry;
+                    oneEffectInfo.player = player;
+
                     if (oneEffectInfo.impactType == "GameModelRule")
                     {
                         questStageCircuitProxy.circuitItem.putOneEffectInfoInActiveMap(oneEffectInfo, effectInfoProxy.effectSysItem.impactTimeTriggerMap);

@@ -5,7 +5,7 @@ using Assets.Scripts.OrderSystem.Model.Database.Card;
 using TMPro;
 using UnityEngine.Events;
 
-namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView
+namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent
 {
     public class ShipCardHeadView : ViewBaseView
     {

@@ -51,7 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   config: {fileID: 11400000, guid: 77f1f57bde51b7048bb09c08c95bdf52, type: 2}
   layerController: {fileID: 0}
-  cardHeadPrefab: {fileID: 8535921109629381383, guid: a0f78a3c529a31f44b667f62fd5c5d84,
+  cardHeadPrefab: {fileID: 4874965565684318915, guid: a0f78a3c529a31f44b667f62fd5c5d84,
     type: 3}
   shipCardHeadViewPrefab: {fileID: 6113503608777994709, guid: 27031638c439a1847a0c9675bd97b37f,
     type: 3}

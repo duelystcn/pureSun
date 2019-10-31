@@ -3,38 +3,41 @@
 using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
+using Assets.Scripts.OrderSystem.Model.Database.GameModelInfo;
 using System.Collections.Generic;
 using UnityEngine.Events;
+using static Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit.QuestStageTimeTrigger;
 
 namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
 {
-    /** public enum QuestOneTurnStage
+    public enum QuestTurnStageState
     {
-        //开始阶段
-        StartOfTrun,
-        //主动阶段
-        ActivePhase,
-        //对手守备
-        OpponentDefense,
-        //延迟执行
-        DelayedExecution,
-        //战斗开始
-        StartOfBattle
-    } **/
+        //开始一个阶段
+        StartOfState,
+        //执行一个阶段
+        ExecutionOfState,
+        //结束一个阶段
+        EndOfState
+    } 
 
     public class QuestStageCircuitItem
     {
-        public int turnNum { get;  set; }
+        //回合数
+        public int turnNum = 0;
         public string nowPlayerCode { get;  set; }
         public List<string> playerOrder { get; set; }
 
-        public string oneTurnStage;
+        public GM_OneStageSite oneTurnStage;
 
-        public List<string> questOneTurnStageList =new List<string>();
+        public QuestTurnStageState questTurnStageState;
 
-        public UnityAction oneStageStartAction;
+        public List<GM_OneStageSite> questOneTurnStageList =new List<GM_OneStageSite>();
 
-        public UnityAction oneStageEndAction;
+        public TTOneStageStartAction oneStageStartAction;
+
+        public TTOneStageEndAction oneStageEndAction;
+
+        public TTOneStageExecutionAction oneStageExecutionAction;
 
         public bool autoNextStage = false;
 
@@ -56,6 +59,15 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
                 }
             }
 
+        }
+        //根据code返回一个StageSite
+        public GM_OneStageSite getOneStageSiteByStageCode(string stageCode) {
+            foreach (GM_OneStageSite oneStageSite in questOneTurnStageList) {
+                if (oneStageSite.code == stageCode) {
+                    return oneStageSite;
+                }
+            }
+            return null;
         }
 
     }

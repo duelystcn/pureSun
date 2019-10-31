@@ -24,5 +24,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
 
         //玩家分数发生了变化
         public delegate void TTScoreChange(int changeNum);
+
+      
     }
 }

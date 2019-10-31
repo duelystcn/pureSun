@@ -155,13 +155,17 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string UI_QUEST_TURN_STAGE_START_OF_STAGE= "UIQuestStageStartOfStage";
         /// <summary>
+        ///执行一个阶段
+        /// </summary>
+        public const string UI_QUEST_TURN_STAGE_EXECUTION_OF_STAGE = "UIQuestStageExecutionOfStage";
+        /// <summary>
         ///结束一个阶段
         /// </summary>
         public const string UI_QUEST_TURN_STAGE_END_OF_STAGE = "UIQuestStageEndOfStage";
         /// <summary>
-        ///通知当前效果已结算完毕，可以判断是否结束当前阶段
+        ///通知当前效果已结算完毕，可以判断是否结束当前阶段的状态
         /// </summary>
-        public const string UI_QUEST_TURN_STAGE_NEED_CHECK_END_STAGE = "UIQuestStageNeedCheckEndStage";
+        public const string UI_QUEST_TURN_STAGE_NEED_CHECK_END_STAGE_STATE = "UIQuestStageNeedCheckEndStageState";
 
 
 
@@ -172,7 +176,7 @@ namespace Assets.Scripts.OrderSystem.Event
         /// <summary>
         /// 卡牌详细信息窗口打开
         /// </summary>
-        public const string UI_ONE_CARD_ALL_INFO_OPEN = "UIOneCardAllInfoOpen";
+        public const string UI_ONE_CARD_ALL_INFO_BUFF_CHANGE = "UIOneCardAllInfoBuffChange";
      
 
 

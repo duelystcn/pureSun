@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView
+namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent
 {
     public class CardIntactView : ViewBaseView
     {
