@@ -39,6 +39,8 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
 
         public TTOneStageExecutionAction oneStageExecutionAction;
 
+        public TTOneTurnEndAction oneTurnEndAction;
+
         public bool autoNextStage = false;
 
 

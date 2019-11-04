@@ -28,5 +28,8 @@ namespace Assets.Scripts.OrderSystem.Event
         //生物发起一次攻击，暂时先写在这里
         public const string EFFECT_EXECUTION_SYS_LAUNCH_AN_ATTACK = "EffectExecutionSysLaunchAnAttack";
 
+        //生物的buff需要被移除
+        public const string EFFECT_EXECUTION_SYS_MINION_BUFF_NEED_REMOVE = "EffectExecutionSysMinionBuffNeedRemove";
+
     }
 }

@@ -120,6 +120,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                     }
                     else
                     {
+                        questStageCircuitProxy.circuitItem.oneTurnEndAction(playerItemNow);
                         SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_END_OF_TRUN);
                     }
                     break;

@@ -19,7 +19,7 @@ namespace Assets.Scripts.OrderSystem.Common.UnityExpand
         GREEN,
         BLUE,
         YELLOW,
-        PURPLE,
+        PURPLE
     }
     public enum LogUtType
     {
@@ -27,7 +27,8 @@ namespace Assets.Scripts.OrderSystem.Common.UnityExpand
         Stage,
         Attack,
         Other,
-        Operate
+        Operate,
+        Special
     }
 
     class UtilityLog
@@ -49,12 +50,18 @@ namespace Assets.Scripts.OrderSystem.Common.UnityExpand
             {
                 color = LogColor.YELLOW;
             }
+            else if (logType == LogUtType.Special)
+            {
+                color = LogColor.YELLOW;
+            }
+
+
             if (color == LogColor.BLACK)
             {
                 Debug.Log(msg);
             }
             else {
-                if (logType == LogUtType.Attack) {
+                if (logType == LogUtType.Special) {
                     Debug.Log(string.Format(GetColor(color), msg.ToString()));
                 }
             }

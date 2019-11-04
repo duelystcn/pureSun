@@ -5,6 +5,7 @@ using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
+using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using PureMVC.Interfaces;
@@ -22,6 +23,9 @@ namespace Assets.Scripts.OrderSystem.Controller
 
             PlayerGroupProxy playerGroupProxy = Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
             QuestStageCircuitProxy circuitProxy = Facade.RetrieveProxy(QuestStageCircuitProxy.NAME) as QuestStageCircuitProxy;
+
+            MinionGridProxy minionGridProxy =
+              Facade.RetrieveProxy(MinionGridProxy.NAME) as MinionGridProxy;
 
             EffectInfoProxy effectInfoProxy =
               Facade.RetrieveProxy(EffectInfoProxy.NAME) as EffectInfoProxy;
@@ -60,6 +64,17 @@ namespace Assets.Scripts.OrderSystem.Controller
                     {
                         SelectEffectAfterTrigger(circuitProxy.circuitItem.activeEffectInfoMap[oneTurnStageStart], playerCodeNotification, oneTurnStageStart);
                     }
+                    break;
+                //一个回合的结束，检查是否有需要清除的buff
+                case TimeTriggerEvent.TIME_TRIGGER_SYS_ONE_TURN_END:
+                    //检测生物
+                    foreach (MinionCellItem minionCellItem in minionGridProxy.minionGridItem.minionCells.Values)
+                    {
+                        minionCellItem.CheckNeedChangeEffectBuffInfo("EndOfTurn");
+                    }
+
+                    //检测玩家
+
                     break;
                 //使用了一张手牌
                 case TimeTriggerEvent.TIME_TRIGGER_SYS_USE_HAND_CARD:

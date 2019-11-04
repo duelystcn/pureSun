@@ -31,6 +31,10 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
             {
                 SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, circuitItem.oneTurnStage.code, StringUtil.GetNTByNotificationTypeAndPlayerCode(TimeTriggerEvent.TIME_TRIGGER_SYS_ONE_STAGE_EXECUTION, playerItem.playerCode));
             };
+            circuitItem.oneTurnEndAction = (PlayerItem playerItem) =>
+            {
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, null, StringUtil.GetNTByNotificationTypeAndPlayerCode(TimeTriggerEvent.TIME_TRIGGER_SYS_ONE_TURN_END, playerItem.playerCode));
+            };
 
         }
 

@@ -43,7 +43,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         //是否需要展示
         public string whetherToshow { get; set; }
         //持续时间
-        public string effectiveTime{ get; set; }
+        public EffectiveTime effectiveTime { get; set; }
         //影响类别
         //瞬间MOMENT，持续CONTINUE
         public string impactType { get; set; }
@@ -76,6 +76,11 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public PlayerItem player;
         //效果选择者，当一个效果需要进行选择的时候使用
         public PlayerItem chooseByPlayer;
+        //是否是反向执行，清除buff的时候可能会用上，默认是false
+        public bool isReverse = false;
+
+
+
 
         public void CleanEffectTargetSetList() {
             foreach (TargetSet targetSet in targetSetList) {

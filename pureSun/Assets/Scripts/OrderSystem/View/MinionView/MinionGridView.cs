@@ -2,6 +2,7 @@
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Metrics;
+using Assets.Scripts.OrderSystem.Model.Common;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.View.UIView;
@@ -175,31 +176,34 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
         public void RenderOneMinionCellByMinionCellItem(MinionCellView minionCellView, MinionCellItem minionCellItem) {
             minionCellView.minionCellItem = minionCellItem;
             TextMeshProUGUI atkAndDef = UtilityHelper.FindChild<TextMeshProUGUI>(minionCellView.transform, "MinionCellLabel");
-            string atkStr = "";
-            string defStr = "";
-            if (minionCellItem.atkNow > minionCellItem.cardEntry.atk)
+
+            string atkStr = minionCellItem.minionVariableAttributeMap.CheckCurrentValueIsBetterByCode("Atk");
+            if (atkStr == "Good")
             {
-                atkStr = "<color=\"green\">" + minionCellItem.atkNow;
+                atkStr = "<color=\"green\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CurrentValue);
             }
-            else if (minionCellItem.atkNow == minionCellItem.cardEntry.atk)
+            else if (atkStr == "Bad") {
+                atkStr = "<color=\"red\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CurrentValue);
+            }
+            else if (atkStr == "NoChange")
             {
-                atkStr = "<color=\"black\">" + minionCellItem.atkNow;
+                atkStr = "<color=\"black\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CurrentValue);
             }
-            else {
-                atkStr = "<color=\"'red\">" + minionCellItem.atkNow;
-            }
-            if (minionCellItem.cumulativeDamage == 0 && minionCellItem.defNow > minionCellItem.cardEntry.def)
+            string defStr = minionCellItem.minionVariableAttributeMap.CheckCurrentValueIsBetterByCode("Def");
+            if (defStr == "Good")
             {
-                defStr = "<color=\"green\">" + minionCellItem.defNow;
+                defStr = "<color=\"green\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CurrentValue);
             }
-            else if (minionCellItem.cumulativeDamage == 0 && minionCellItem.defNow == minionCellItem.cardEntry.def)
+            else if (defStr == "Bad")
             {
-                defStr = "<color=\"black\">" + minionCellItem.defNow;
+                defStr = "<color=\"red\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CurrentValue);
             }
-            else
+            else if (defStr == "NoChange")
             {
-                defStr = "<color=\"red\">" + minionCellItem.defNow;
+                defStr = "<color=\"black\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CurrentValue);
             }
+
+           
 
             atkAndDef.text = atkStr + "<color=\"black\">-" + defStr;
             Component minionCellBg = UtilityHelper.FindChild<Component>(minionCellView.transform, "MinionCellBg");

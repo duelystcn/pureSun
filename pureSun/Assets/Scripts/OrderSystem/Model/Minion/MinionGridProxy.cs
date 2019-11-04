@@ -54,8 +54,8 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             minionCellItem.IsEffectTarget = false;
             minionCellItem.uuid = System.Guid.NewGuid().ToString("N");
             minionCellItem.index = index;
-            minionCellItem.defNow = cardEntry.def;
-            minionCellItem.atkNow = cardEntry.atk;
+            minionCellItem.minionVariableAttributeMap.CreateVariableAttributeByOriginalValueAndCodeAndBetterAndAutoRestore("Atk", cardEntry.atk, true, true);
+            minionCellItem.minionVariableAttributeMap.CreateVariableAttributeByOriginalValueAndCodeAndBetterAndAutoRestore("Def", cardEntry.def, true, false);
             AddTimeTrigger(minionCellItem);
             minionGridItem.minionCells.Add(index, minionCellItem);
             SendNotification(MinionSystemEvent.MINION_VIEW, minionCellItem, MinionSystemEvent.MINION_VIEW_ADD_ONE_MINION);
@@ -70,9 +70,15 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             {
                 SendNotification(MinionSystemEvent.MINION_VIEW, minionCellItem, MinionSystemEvent.MINION_VIEW_MINION_CHANGE_DEF);
             };
+            //buff发生了变化
             minionCellItem.ttBuffChange = () =>
             {
                 SendNotification(UIViewSystemEvent.UI_ONE_CARD_ALL_INFO, minionCellItem, UIViewSystemEvent.UI_ONE_CARD_ALL_INFO_BUFF_CHANGE);
+            };
+            //buff需要被移除
+            minionCellItem.ttBuffNeedRemove = () =>
+            {
+                SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, minionCellItem, EffectExecutionEvent.EFFECT_EXECUTION_SYS_MINION_BUFF_NEED_REMOVE);
             };
             //生物准备发起一次攻击
             minionCellItem.ttLaunchAnAttack = () =>{

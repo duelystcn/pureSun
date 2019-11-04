@@ -23,5 +23,8 @@ namespace Assets.Scripts.OrderSystem.Model.Minion.MinionComponent
 
         //生物进行一次攻击
         public delegate void TTExecuteAnAttack();
+
+        //生物的buff需要被移除
+        public delegate void TTBuffNeedRemove();
     }
 }

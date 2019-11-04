@@ -15,5 +15,8 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
         public delegate void TTOneStageExecutionAction(PlayerItem playerItem);
         //一个阶段的开始
         public delegate void TTOneStageEndAction(PlayerItem playerItem);
+
+        //一个回合的结束
+        public delegate void TTOneTurnEndAction(PlayerItem playerItem);
     }
 }

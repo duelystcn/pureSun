@@ -34,7 +34,7 @@
     }
   },
   "TestMinionombat": {
-    "name": "TestTacticsTarget",
+    "name": "TestMinionombat",
     "description": "测试生物战斗",
     "gameModelName": "Andor",
     "startStage": "ActivePhase",
@@ -44,7 +44,7 @@
       "manaUpperLimit": 2,
       "manaUsable": 2,
       "shipCardCode": "FindWay",
-      "handCard": [ "FortifiedAgent", "FortifiedAgent", "ImperialRecruit" ],
+      "handCard": [ "Adrenaline", "Adrenaline", "ImperialRecruit" ],
       "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
       "minionList": [
         {
@@ -54,8 +54,8 @@
         },
         {
           "code": "ImperialSoldier",
-          "x": 3,
-          "z": 0
+          "x": 4,
+          "z": -1
         }
       ]
     },
@@ -65,7 +65,7 @@
       "manaUpperLimit": 2,
       "manaUsable": 2,
       "shipCardCode": "FindWay",
-      "handCard": [ "FortifiedAgent", "FortifiedAgent", "ImperialRecruit" ],
+      "handCard": [ "Adrenaline", "Adrenaline", "ImperialRecruit" ],
       "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
       "minionList": [
         {
@@ -75,11 +75,58 @@
         },
         {
           "code": "ImperialSoldier",
-          "x": 3,
+          "x": 4,
+          "z": 0
+        }
+      ]
+    }
+  },
+  "TestTacticsDebuff": {
+    "name": "TestTacticsDebuff",
+    "description": "测试生物Debuff",
+    "gameModelName": "Andor",
+    "startStage": "ActivePhase",
+    "myselfPlayer": {
+      "playerCode": "TEST1",
+      "traitList": [ "supremcy" ],
+      "manaUpperLimit": 2,
+      "manaUsable": 2,
+      "shipCardCode": "FindWay",
+      "handCard": [ "Dazzling", "Dazzling", "ImperialRecruit" ],
+      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
+      "minionList": [
+        {
+          "code": "ImperialRecruit",
+          "x": 1,
           "z": 1
+        },
+        {
+          "code": "ImperialSoldier",
+          "x": 4,
+          "z": -1
+        }
+      ]
+    },
+    "enemyPlayer": {
+      "playerCode": "TEST2",
+      "traitList": [ "supremcy" ],
+      "manaUpperLimit": 2,
+      "manaUsable": 2,
+      "shipCardCode": "FindWay",
+      "handCard": [ "Adrenaline", "Adrenaline", "ImperialRecruit" ],
+      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
+      "minionList": [
+        {
+          "code": "ImperialRecruit",
+          "x": 1,
+          "z": 2
+        },
+        {
+          "code": "ImperialSoldier",
+          "x": 4,
+          "z": 0
         }
       ]
     }
   }
-
 }

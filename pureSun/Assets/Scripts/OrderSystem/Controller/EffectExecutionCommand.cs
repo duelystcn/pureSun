@@ -137,6 +137,30 @@ namespace Assets.Scripts.OrderSystem.Controller
                         }
                     }
                     break;
+                case EffectExecutionEvent.EFFECT_EXECUTION_SYS_MINION_BUFF_NEED_REMOVE:
+                    MinionCellItem needRemoveBuffMinionCellItem = notification.Body as MinionCellItem;
+                    UtilityLog.Log("生物【" + needRemoveBuffMinionCellItem.cardEntry.name + "】的buff需要被清除", LogUtType.Effect);
+                    foreach (EffectInfo oneEffectInfoBuffCheck in needRemoveBuffMinionCellItem.effectBuffInfoList)
+                    {
+                        //倒计时小于则清除buff
+                        if (oneEffectInfoBuffCheck.effectiveTime.ContinuousRound < 0)
+                        {
+                            EffectInfo oneReverseEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(oneEffectInfoBuffCheck.code);
+
+                            oneReverseEffectInfo.targetSetList[0].targetMinionCellItems.Add(needRemoveBuffMinionCellItem);
+                            oneReverseEffectInfo.effectInfoStage = EffectInfoStage.ConfirmedTarget;
+                            oneReverseEffectInfo.whetherToshow = "N";
+                            oneReverseEffectInfo.isReverse = true;
+
+                            CardEntry cardEntry = new CardEntry();
+                            cardEntry.player = playerGroupProxy.getPlayerByPlayerCode(needRemoveBuffMinionCellItem.playerCode);
+                            oneReverseEffectInfo.cardEntry = cardEntry;
+                            effectInfos.Add(oneReverseEffectInfo);
+                            effectInfoProxy.IntoModeCardSettle(exeEffectCard, effectInfos);
+                        }
+                        
+                    }
+                    break;
                 case EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_EFFECT:
                     ExecutionEffectContent(effectInfoProxy);
                     //判断是否所有效果都执行完毕了

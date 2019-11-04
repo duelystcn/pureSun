@@ -429,8 +429,11 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                         case UIViewSystemEvent.UI_ONE_CARD_ALL_INFO_BUFF_CHANGE:
                             MinionCellItem minionCellItem = notification.Body as MinionCellItem;
                             OneCardAllInfo oneCardAllInfo = UIControllerLIst.GetViewByName<OneCardAllInfo>(UIViewName.OneCardAllInfo);
-                            if (oneCardAllInfo.cardEntryShow.uuid == minionCellItem.cardEntry.uuid) {
-                                oneCardAllInfo.LoadingAllInfoByMinionCellItem(minionCellItem);
+                            if (oneCardAllInfo != null) {
+                                if (oneCardAllInfo.cardEntryShow.uuid == minionCellItem.cardEntry.uuid)
+                                {
+                                    oneCardAllInfo.LoadingAllInfoByMinionCellItem(minionCellItem);
+                                }
                             }
                             break;
                     }

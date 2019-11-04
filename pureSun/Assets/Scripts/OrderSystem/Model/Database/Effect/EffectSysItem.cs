@@ -2,6 +2,7 @@
 
 using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Model.Common;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS;
@@ -67,13 +68,17 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     {
                         for (int n = 0; n < minionCellItemList.Count; n++)
                         {
-                            if (effect.effectiveTime == "Continued") {
-                                minionCellItemList[n].effectBuffInfoList.Add(effect);
-                                minionCellItemList[n].ttBuffChange();
+                            if (!effect.isReverse) {
+                                if (effect.effectiveTime.ContinuousStage != "Moment" && effect.effectiveTime.ContinuousStage != "Permanent")
+                                {
+                                    minionCellItemList[n].effectBuffInfoList.Add(effect);
+                                    minionCellItemList[n].ttBuffChange();
+                                }
                             }
+                           
                             for (int m = 0; m < effect.impactTargets.Length; m++)
                             {
-                                ChangeMinion(effect.impactTargets[m], effect.impactContents[m], minionCellItemList[n]);
+                                ChangeMinion(effect.impactTargets[m], effect.impactContents[m], minionCellItemList[n], effect.isReverse);
                             }
                         }
                     };
@@ -97,16 +102,17 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
            
 
         }
-        void ChangeMinion(string impactTarget, string impactContent, MinionCellItem minionCellItem)
+        void ChangeMinion(string impactTarget, string impactContent, MinionCellItem minionCellItem, bool isReverse)
         {
+           
             switch (impactTarget)
             {
                 case "ATK":
-                    minionCellItem.atkNow = minionCellItem.atkNow + Convert.ToInt32(impactContent);
+                    minionCellItem.minionVariableAttributeMap.ChangeValueByCodeAndTypeAndIsReverse("Atk", Convert.ToInt32(impactContent), isReverse);
                     minionCellItem.ttAtkChange(Convert.ToInt32(impactContent));
                     break;
                 case "DEF":
-                    minionCellItem.defNow = minionCellItem.defNow + Convert.ToInt32(impactContent);
+                    minionCellItem.minionVariableAttributeMap.ChangeValueByCodeAndTypeAndIsReverse("Def", Convert.ToInt32(impactContent), isReverse);
                     minionCellItem.ttDefChange(Convert.ToInt32(impactContent));
                     break;
                 case "Attack":
