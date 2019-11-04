@@ -11,6 +11,7 @@
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Newtonsoft.Json;
+using OrderSystem;
 using PureMVC.Patterns.Proxy;
 using System.Collections.Generic;
 using System.IO;
@@ -35,7 +36,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.GameModelInfo
         public void setGameModelNow (string name){
             //先默认是安多尔模式
             gameModelNow = this.gameModelInfoMap[name];
-            UtilityLog.Log("当前游戏模式：" + gameModelNow.name);
+            UtilityLog.Log("当前游戏模式：" + gameModelNow.name,LogUtType.Other);
 
             //地图模式
             string arrayMode = gameModelNow.arrayMode;
@@ -44,6 +45,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.GameModelInfo
             int width = gameModelNow.width;
 
             hexModelInfoNow = new HexModelInfo(width, height, arrayMode, HexModelType.Source);
+            SendNotification(OrderSystemEvent.CLINET_SYS, hexModelInfoNow, OrderSystemEvent.CLINET_SYS_GMAE_MODEL_SET);
         }
 
         public GameModelProxy() : base(NAME)

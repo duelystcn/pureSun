@@ -103,28 +103,14 @@ namespace Assets.Scripts.OrderSystem.Util
             }
             
         }
-        //根据下标和模式，获取在坐标系里的坐标
 
-        public static HexCoordinates FromIndexAndMode(int index, HexModelInfo modelInfo) {
-
-            return new HexCoordinates(0, 0);
-
+        //根据当前单元格，和向量单元格，计算出目标单元格
+        public static HexCoordinates GetTargetHexCoordinatesByStartPointAndVector(HexCoordinates startPointHexCoordinates, HexCoordinates vectorHexCoordinates) {
+            HexCoordinates targetHexCoordinates = new HexCoordinates(startPointHexCoordinates.X + vectorHexCoordinates.X, startPointHexCoordinates.Z + vectorHexCoordinates.Z);
+            return targetHexCoordinates;
         }
-        //根据模式和坐标，获取下标
-        public static int GetIndexFromModeAndHex(HexModelInfo modelInfo, HexCoordinates coordinates) {
-            int index = 0;
-            if (modelInfo.arrayMode == HexMetrics.MODE_ERECT)
-            {
-                index = coordinates.X + coordinates.Z * modelInfo.width + coordinates.Z / 2;
-            }
-            else
-            {
-                //偏差值，X增长时，Z轴会向上偏移
-                int deviation = coordinates.X / 2;
-                index = coordinates.X + (coordinates.Z + deviation) * modelInfo.width;
-            }
-            return index;
-        }
+       
+        
        
     }
 }

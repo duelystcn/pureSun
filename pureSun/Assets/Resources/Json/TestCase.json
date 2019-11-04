@@ -51,6 +51,11 @@
           "code": "ImperialRecruit",
           "x": 1,
           "z": 1
+        },
+        {
+          "code": "ImperialSoldier",
+          "x": 3,
+          "z": 0
         }
       ]
     },
@@ -67,6 +72,11 @@
           "code": "ImperialRecruit",
           "x": 1,
           "z": 2
+        },
+        {
+          "code": "ImperialSoldier",
+          "x": 3,
+          "z": 1
         }
       ]
     }

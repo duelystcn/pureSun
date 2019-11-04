@@ -44,6 +44,9 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //分数？生命
         public int score = 0;
 
+        //游戏模式中的玩家设定
+        public GM_PlayerSite playerSiteOne;
+
         //添加在玩家身上的限制
         //每回合可以使用的资源牌的最大数
         public int canUseResourceMaxNumOneTurn = 1;
@@ -110,6 +113,12 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             }
           
         }
+        //读取游戏模式设定中的玩家设定
+        public void LoadingGameModelPlayerSet(GM_PlayerSite playerSiteOne) {
+            this.playerSiteOne = playerSiteOne;
+            CreateCanCallHex(playerSiteOne);
+        }
+
         //判断一个格子是否在可召唤区域内
         public bool CheckOneCellCanCall(HexCoordinates hexCoordinates) {
             bool canCall = false;

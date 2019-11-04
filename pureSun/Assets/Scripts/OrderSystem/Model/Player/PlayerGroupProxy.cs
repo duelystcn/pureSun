@@ -51,13 +51,13 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             {
                 SendNotification(UIViewSystemEvent.UI_VIEW_ZF_HAND_CHANGE, handCellItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_DRAW_ONE_CARD,playerItem.playerCode));
                 SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, handCellItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD, playerItem.playerCode));
-                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
+                SendNotification(OperateSystemEvent.OPERATE_SYS, playerItem.playerCode, OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE);
 
             };
             //判断手牌是否可用
             playerItem.ttPlayerHandCanUseJudge = () =>
             {
-                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
+                SendNotification(OperateSystemEvent.OPERATE_SYS, playerItem.playerCode, OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE);
             };
             //使用一张牌
             playerItem.ttPlayerUseACard = (HandCellItem handCellItem) =>
@@ -68,26 +68,29 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             playerItem.ttPlayerRemoveACard = (HandCellItem handCellItem) =>
             {
                 SendNotification(HandSystemEvent.HAND_CHANGE, handCellItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_REMOVE_ONE_CARD, playerItem.playerCode));
-                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
+                SendNotification(OperateSystemEvent.OPERATE_SYS, playerItem.playerCode, OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE);
             };
 
             //费用上限变化
             playerItem.ttManaCostLimitChange = (int changeNum ) =>
             {
                 SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, changeNum, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_LIMIT_CHANGE, playerItem.playerCode));
-                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
+                SendNotification(OperateSystemEvent.OPERATE_SYS, playerItem.playerCode, OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE);
+
             };
             //费用变化
             playerItem.ttManaCostUsableChange = (int changeNum) =>
             {
                 SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, changeNum, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_USABLE_CHANGE, playerItem.playerCode));
-                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
+                SendNotification(OperateSystemEvent.OPERATE_SYS, playerItem.playerCode, OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE);
+
             };
             //增加科技
             playerItem.ttAddTraitType = (TraitType traitType) =>
             {
                 SendNotification(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS, traitType, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS_ADD, playerItem.playerCode));
-                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem.playerCode, TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE);
+                SendNotification(OperateSystemEvent.OPERATE_SYS, playerItem.playerCode, OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE);
+
             };
             //分数变化
             playerItem.ttScoreChange = (int changeNum) =>

@@ -3,14 +3,18 @@
 using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS;
+using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.OperateSystem;
 using Assets.Scripts.OrderSystem.Model.Player;
+using Assets.Scripts.OrderSystem.Util;
 using Assets.Scripts.OrderSystem.View.UIView;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Command;
+using RiderEditor;
 using System.Collections.Generic;
 
 namespace Assets.Scripts.OrderSystem.Controller
@@ -25,6 +29,10 @@ namespace Assets.Scripts.OrderSystem.Controller
                 Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
             OperateSystemProxy operateSystemProxy =
                 Facade.RetrieveProxy(OperateSystemProxy.NAME) as OperateSystemProxy;
+            QuestStageCircuitProxy questStageCircuitProxy =
+                Facade.RetrieveProxy(QuestStageCircuitProxy.NAME) as QuestStageCircuitProxy;
+            MinionGridProxy minionGridProxy =
+                Facade.RetrieveProxy(MinionGridProxy.NAME) as MinionGridProxy;
             //待执行的卡牌
             CardEntry exeEffectCard = null;
             //提取待执行的卡牌效果
@@ -65,6 +73,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                 //执行一张已经触发效果的卡
                 case EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_TRIGGERED_CARD:
                     exeEffectCard = notification.Body as CardEntry;
+
                     effectInfos.Add(exeEffectCard.triggeredEffectInfo);
                     effectInfoProxy.IntoModeCardSettle(exeEffectCard, effectInfos);
                     break;
@@ -82,9 +91,10 @@ namespace Assets.Scripts.OrderSystem.Controller
                     for (int n = 0; n < effectInfoProxy.effectSysItem.effectInfos.Count; n++)
                     {
                         EffectInfo effect = effectInfoProxy.effectSysItem.effectInfos[n];
+                        UtilityLog.Log("效果【" + effect.description + "】开始寻找目标",LogUtType.Effect);
                         if (effect.effectInfoStage == EffectInfoStage.UnStart)
                         {
-                            ExecutionEffectFindTarget(effect, playerGroupProxy);
+                            ExecutionEffectFindTarget(effect, playerGroupProxy, questStageCircuitProxy, minionGridProxy);
                             //插入了用户操作
                             if (effect.effectInfoStage == EffectInfoStage.Confirming)
                             {
@@ -119,7 +129,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                         if (effectInfoProxy.effectSysItem.cardEntryQueue.Count == 0)
                         {
                             if (effectInfoProxy.effectSysItem.showEffectNum == 0) {
-                                UtilityLog.Log("所有效果展示完毕" + System.Guid.NewGuid().ToString("N"), LogColor.GREEN);
+                                UtilityLog.Log("所有效果展示完毕" + System.Guid.NewGuid().ToString("N"), LogUtType.Effect);
                                 //通知回合控制器当前堆叠已经全部执行完毕
                                 SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_NEED_CHECK_END_STAGE_STATE);
                             }
@@ -175,15 +185,37 @@ namespace Assets.Scripts.OrderSystem.Controller
                                 }
                             }
                         }
-                       
                         //执行下一组效果
                         effectInfoProxy.effectSysItem.effectSysItemStage = EffectSysItemStage.UnStart;
+                        //通知时点触发器这一组效果执行完毕了
+                        SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, null, TimeTriggerEvent.TIME_TRIGGER_EXE_NEXT_DELAY_NOTIFICATION);
                         effectInfoProxy.ExeEffectQueue();
                     }
                     else
                     {
                         UtilityLog.LogError("效果执行失败");
                     }
+                    break;
+                case EffectExecutionEvent.EFFECT_EXECUTION_SYS_LAUNCH_AN_ATTACK:
+                    MinionCellItem attackMinionCellItem = notification.Body as MinionCellItem;
+                    PlayerItem playerItemAttack = playerGroupProxy.getPlayerByPlayerCode(attackMinionCellItem.playerCode);
+                    HexCoordinates vectorHexCoordinates = new HexCoordinates(playerItemAttack.playerSiteOne.attackDefaultDirection.x, playerItemAttack.playerSiteOne.attackDefaultDirection.z);
+                    HexCoordinates targetHexCoordinates = HexUtil.GetTargetHexCoordinatesByStartPointAndVector(attackMinionCellItem.index,vectorHexCoordinates);
+                    //判断目标单元格上有没有生物
+                    if (minionGridProxy.minionGridItem.minionCells.ContainsKey(targetHexCoordinates)) {
+                        //如果有生物，需要再判断是自己的生物还是对手的生物
+                        MinionCellItem defensiveMinionCellItem = minionGridProxy.minionGridItem.minionCells[targetHexCoordinates];
+                        if (defensiveMinionCellItem.playerCode != attackMinionCellItem.playerCode) {
+                            UtilityLog.Log("【" + attackMinionCellItem.cardEntry.name + "】进行攻击", LogUtType.Attack);
+                            //攻击
+                            effectInfoProxy.effectSysItem.showEffectNum++;
+                            attackMinionCellItem.AttackTargetMinion(defensiveMinionCellItem);
+                            //反击
+                            effectInfoProxy.effectSysItem.showEffectNum++;
+                            defensiveMinionCellItem.CounterAttackTargetMinion(attackMinionCellItem);
+                        }
+                    }
+
                     break;
             }
         }
@@ -229,7 +261,10 @@ namespace Assets.Scripts.OrderSystem.Controller
 
 
         //为效果选择目标
-        public void ExecutionEffectFindTarget(EffectInfo effectInfo, PlayerGroupProxy playerGroupProxy)
+        public void ExecutionEffectFindTarget(  EffectInfo effectInfo, 
+                                                PlayerGroupProxy playerGroupProxy, 
+                                                QuestStageCircuitProxy questStageCircuitProxy,
+                                                MinionGridProxy minionGridProxy)
         {
             effectInfo.effectInfoStage = EffectInfoStage.Confirming;
             foreach (TargetSet targetSet in effectInfo.targetSetList)
@@ -261,7 +296,36 @@ namespace Assets.Scripts.OrderSystem.Controller
                 switch (targetSet.target)
                 {
                     case "Minion":
-
+                        List<MinionCellItem> minionCellItems = new List<MinionCellItem>();
+                        foreach (MinionCellItem minionCellItem in minionGridProxy.GetMinionCellItemListByPlayerCode(playerGroupProxy.getPlayerByPlayerCode(questStageCircuitProxy.GetNowPlayerCode())))
+                        {
+                            for (int n = 0; n < targetClaims.Length; n++)
+                            {
+                                //判断所有权
+                                if (targetClaims[n] == "Owner")
+                                {
+                                    //是自己选
+                                    if (targetClaimsContents[n] == "Myself")
+                                    {
+                                        if (minionCellItem.playerCode == effectInfo.player.playerCode)
+                                        {
+                                            minionCellItems.Add(minionCellItem);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (minionCellItems.Count < targetSet.targetClaimsNums)
+                        {
+                            //符合数量限制
+                            targetSet.hasTarget = true;
+                            targetSet.targetMinionCellItems = minionCellItems;
+                        }
+                        else {
+                            //超出目标上限，需要用户选择
+                            UtilityLog.LogError("超出目标上限");
+                        }
+                        
                         break;
                     //效果选择
                     case "ChooseEffect":
@@ -342,6 +406,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                 }
             }
             if (hasTargetOver) {
+                UtilityLog.Log("【" + effectInfo.description + "】目标确认完毕",LogUtType.Effect);
                 effectInfo.effectInfoStage = EffectInfoStage.ConfirmedTarget;
             }
 

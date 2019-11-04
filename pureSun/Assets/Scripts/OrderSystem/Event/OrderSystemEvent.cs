@@ -57,6 +57,11 @@ namespace OrderSystem
         /// 客户端所属权
         /// </summary>
         public const string CLINET_SYS_OWNER_CHANGE = "clientSysOwnerChange";
+        /// <summary>
+        /// 给所有窗口分发游戏模式信息
+        /// </summary>
+        public const string CLINET_SYS_GMAE_MODEL_SET = "clientSysGmaeModelSet";
+
 
 
     }

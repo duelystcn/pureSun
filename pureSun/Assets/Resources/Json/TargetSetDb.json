@@ -22,6 +22,14 @@
     "targetClaimsContents": [ "Myself" ],
     "targetClaimsNums": 1,
     "description": "选择己方玩家"
+  },
+  "AllMyselfMinion": {
+    "name": "AllMyselfMinion",
+    "target": "Minion",
+    "targetClaims": [ "Owner" ],
+    "targetClaimsContents": [ "Myself" ],
+    "targetClaimsNums": 999,
+    "description": "选择所有己方生物"
   }
 
 }

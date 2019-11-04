@@ -12,10 +12,7 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 监听器相关，监听到了手牌变化
         /// </summary>
         public const string TIME_TRIGGER_SYS_DRAW_A_CARD = "TimeTriggerSysDrawACard";
-        /// <summary>
-        /// 监听器相关，需要重新渲染手牌可用，暂时放在这里
-        /// </summary>
-        public const string TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE = "TimeTriggerSysHandCanUseJudge";
+      
         /// <summary>
         /// 监听器相关，分数变化
         /// </summary>
@@ -42,6 +39,11 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string TIME_TRIGGER_SYS_ONE_STAGE_EXECUTION = "TimeTriggerSysOneStageExecution";
 
+
+        /// <summary>
+        /// 执行下一个被延迟处理的时点
+        /// </summary>
+        public const string TIME_TRIGGER_EXE_NEXT_DELAY_NOTIFICATION = "TimeTriggerExeNextDelayNotification";
 
     }
 }

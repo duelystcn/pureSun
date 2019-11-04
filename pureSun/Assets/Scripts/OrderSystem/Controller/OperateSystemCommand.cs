@@ -45,6 +45,14 @@ namespace Assets.Scripts.OrderSystem.Controller
             HandCellItem chooseHand = operateSystemProxy.operateSystemItem.onChooseHandCellItem;
 
             switch (notification.Type) {
+
+                //判断手牌是否可用
+                case OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE:
+                    string playerCodeHandCanUseJudge = notification.Body as string;
+                    PlayerItem playerItemHandCanUseJudge = playerGroupProxy.playerGroup.playerItems[playerCodeHandCanUseJudge];
+                    playerItemHandCanUseJudge.ChangeHandCardCanUse();
+                    SendNotification(HandSystemEvent.HAND_CHANGE, playerItem.handGridItem.handCells, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_CAN_USE_JUDGE, playerCode));
+                    break;
                 //选中手牌
                 case OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE:
                     HandCellItem handCellItem = notification.Body as HandCellItem;
@@ -70,15 +78,15 @@ namespace Assets.Scripts.OrderSystem.Controller
                 //划线结束选择了战场
                 case OperateSystemEvent.OPERATE_SYS_DRAW_END_HEX:
                     HexCellItem hexCellItem = notification.Body as HexCellItem;
-                    int index = HexUtil.GetIndexFromModeAndHex(gameModelProxy.hexModelInfoNow, hexCellItem.coordinates);
-                    UtilityLog.Log("玩家" + playerCode + "尝试操作手牌，手牌种类为：" + chooseHand.cardEntry.WhichCard,LogColor.BLUE);
+                    HexCoordinates index = hexCellItem.coordinates;
+                    UtilityLog.Log("玩家【" + playerCode + "】尝试操作手牌，手牌种类为【" + chooseHand.cardEntry.WhichCard + "】", LogUtType.Operate);
                     //判断状态
                     switch (operateSystemProxy.operateSystemItem.operateModeType) {
                         //手牌使用状态
                         case OperateSystemItem.OperateType.HandUse:
                             switch (chooseHand.cardEntry.WhichCard) {
                                 case CardEntry.CardType.ResourceCard:
-                                    UtilityLog.Log("玩家" + playerCode + "进行操作手牌，手牌种类为：" + chooseHand.cardEntry.WhichCard, LogColor.BLUE);
+                                    UtilityLog.Log("玩家【" + playerCode + "】进行操作手牌，手牌种类为【" + chooseHand.cardEntry.WhichCard + "】", LogUtType.Operate);
                                     chooseHand.cardEntry.player = playerItem;
                                     //执行卡牌
                                     SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, chooseHand.cardEntry, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_CARD);

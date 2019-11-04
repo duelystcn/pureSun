@@ -12,8 +12,8 @@ namespace Assets.Scripts.OrderSystem.Model.Database.GameModelInfo
 {
     public class GM_PlayerSite
     {
-        //攻击方向
-        public string attackDirection { get; set; }
+        //攻击方向,使用坐标表示
+        public GM_CellCoordinate attackDefaultDirection { get; set; }
         //默认可召唤区域
         public string[] canCallRegionCodes { get; set; }
         //可召唤区域

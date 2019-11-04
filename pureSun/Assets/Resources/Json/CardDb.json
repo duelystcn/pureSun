@@ -15,7 +15,7 @@
     "name": "µÛ¹úÊ¿±ø",
     "type": "Minion",
     "atk": "3",
-    "def": "3",
+    "def": "5",
     "cost": "3",
     "trait": [ "supremcy" ],
     "traitdemand": [ "supremcy" ],

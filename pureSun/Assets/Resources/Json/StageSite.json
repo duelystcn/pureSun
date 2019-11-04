@@ -1,9 +1,13 @@
 {
   "StartOfTrun": {
     "code": "StartOfTrun",
-    "name": "开始阶段",
+    "name": "准备阶段",
     "automatic": "Y",
-    "effectNeedExeList": [ "DrawCardToMyselfWhenStartOfTrun", "RestoreToTheUpperLimitWhenStartOfTrun", "RestoreCanUseResourceNumMaxWhenStartOfTrun" ]
+    "effectNeedExeList": [
+      "DrawCardToMyselfWhenStartOfTrunExecution",
+      "RestoreToTheUpperLimitWhenStartOfTrunExecution",
+      "RestoreCanUseResourceNumMaxWhenStartOfTrunExecution"
+    ]
   },
   "ActivePhase": {
     "code": "ActivePhase",
@@ -27,6 +31,6 @@
     "code": "StartOfBattle",
     "name": "战斗阶段",
     "automatic": "Y",
-    "effectNeedExeList": []
+    "effectNeedExeList": [ "MyselfMinionAttackSpecifiedDirectionWhenStartOfBattleExecution" ]
   }
 }

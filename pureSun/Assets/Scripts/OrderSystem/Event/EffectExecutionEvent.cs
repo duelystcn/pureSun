@@ -25,5 +25,8 @@ namespace Assets.Scripts.OrderSystem.Event
         //展示完毕
         public const string EFFECT_EXECUTION_SYS_EFFECT_SHOW_OVER = "EffectExecutionSysShowOver";
 
+        //生物发起一次攻击，暂时先写在这里
+        public const string EFFECT_EXECUTION_SYS_LAUNCH_AN_ATTACK = "EffectExecutionSysLaunchAnAttack";
+
     }
 }

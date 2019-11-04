@@ -194,7 +194,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView
         public virtual void UpdateView()
         {
             dirty = false;
-            UtilityLog.Log(string.Format("Update View -> {0}, {1}", config.viewName, this.GetInstanceID()));
+            UtilityLog.Log(string.Format("Update View -> {0}, {1}", config.viewName, this.GetInstanceID()), LogUtType.Other);
         }
 
 

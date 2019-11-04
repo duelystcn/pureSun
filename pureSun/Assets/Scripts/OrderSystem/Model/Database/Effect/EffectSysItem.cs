@@ -8,6 +8,7 @@ using Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.SpecialOperate.ChooseOperate;
+using PureMVC.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -41,8 +42,9 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public List<EffectInfo> effectInfos;
 
 
-        //正在结算的效果
-        public EffectInfo effectInfo;
+  
+        //如果正在结算的效果是同步结算，那么应该把这期间所触发的时点全部延后处理
+        public Queue<INotification> delayNotifications = new Queue<INotification>();
 
         //结算卡队列
         public Queue<CardEntry> cardEntryQueue = new Queue<CardEntry>();
@@ -51,6 +53,8 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 
         //发送到前台进行展示的效果个数
         public int showEffectNum = 0;
+
+       
 
 
         public void EffectActionReady(EffectInfo effect) {
@@ -63,8 +67,10 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     {
                         for (int n = 0; n < minionCellItemList.Count; n++)
                         {
-                            minionCellItemList[n].effectBuffInfoList.Add(effect);
-                            minionCellItemList[n].ttBuffChange();
+                            if (effect.effectiveTime == "Continued") {
+                                minionCellItemList[n].effectBuffInfoList.Add(effect);
+                                minionCellItemList[n].ttBuffChange();
+                            }
                             for (int m = 0; m < effect.impactTargets.Length; m++)
                             {
                                 ChangeMinion(effect.impactTargets[m], effect.impactContents[m], minionCellItemList[n]);
@@ -78,7 +84,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     {
                         for (int n = 0; n < playerItemList.Count; n++)
                         {
-                            UtilityLog.Log("目标玩家：" + playerItemList[n].playerCode + "生效效果:" + effect.description, LogColor.GREEN);
+                            UtilityLog.Log("目标玩家【" + playerItemList[n].playerCode + "】生效效果【" + effect.description + "】", LogUtType.Effect);
                             for (int m = 0; m < effect.impactTargets.Length; m++)
                             {
                                 ChangePlayer(effect.impactTargets[m], effect.impactContents[m], playerItemList[n]);
@@ -103,7 +109,9 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     minionCellItem.defNow = minionCellItem.defNow + Convert.ToInt32(impactContent);
                     minionCellItem.ttDefChange(Convert.ToInt32(impactContent));
                     break;
-
+                case "Attack":
+                    minionCellItem.ttLaunchAnAttack();
+                    break;
             }
         }
         void ChangePlayer(string impactTarget, string impactContent, PlayerItem playerItem)

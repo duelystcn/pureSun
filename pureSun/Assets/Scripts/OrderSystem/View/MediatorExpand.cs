@@ -1,6 +1,7 @@
 ﻿
 
 using Assets.Scripts.OrderSystem.Common;
+using Assets.Scripts.OrderSystem.Model.Hex;
 using OrderSystem;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Mediator;
@@ -19,6 +20,8 @@ namespace Assets.Scripts.OrderSystem.View
         public bool myself = false;
         //type参数
         public Dictionary<string, string> parameterMap;
+        //设置地图模式
+        public HexModelInfo hexModelInfo;
 
         public MediatorExpand(string mediatorName, object viewComponent = null) : base(mediatorName, viewComponent)
         {
@@ -42,6 +45,9 @@ namespace Assets.Scripts.OrderSystem.View
                     {
                         case OrderSystemEvent.CLINET_SYS_OWNER_CHANGE:
                             playerCode  = (string)notification.Body;
+                            break;
+                        case OrderSystemEvent.CLINET_SYS_GMAE_MODEL_SET:
+                            hexModelInfo = (HexModelInfo)notification.Body;
                             break;
                     }
                     break;

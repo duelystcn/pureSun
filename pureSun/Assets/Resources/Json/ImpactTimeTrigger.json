@@ -9,8 +9,15 @@
   },
   "StartOfTrunExecution": {
     "name": "StartOfTrunExecution",
-    "description": "在己方回合开始时",
+    "description": "在己方回合开始阶段执行时",
     "impactTimeTriggertMonitor": "StartOfTrunExecution",
+    "impactTimeTriggertClaims": [ "Owner" ],
+    "impactTimeTriggertClaimsContents": [ "Myself" ]
+  },
+  "StartOfBattleExecution": {
+    "name": "StartOfBattleExecution",
+    "description": "在己方战斗开始阶段执行时",
+    "impactTimeTriggertMonitor": "StartOfBattleExecution",
     "impactTimeTriggertClaims": [ "Owner" ],
     "impactTimeTriggertClaimsContents": [ "Myself" ]
   }

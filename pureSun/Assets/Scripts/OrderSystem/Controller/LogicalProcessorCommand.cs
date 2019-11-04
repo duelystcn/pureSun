@@ -90,7 +90,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                     //AI玩家
                     else if (playerItem.playerType == PlayerType.AIPlayer)
                     {
-                        UtilityLog.Log("AI玩家" + playerItem.playerCode + "开始选择卡牌效果");
+                        UtilityLog.Log("AI玩家【" + playerItem.playerCode + "】开始选择卡牌效果",LogUtType.Operate);
                         //先直接选择第一种
                         EffectInfo oneEffectInfo = effectInfoProxy.effectSysItem.effectInfoMap[effectInfo.chooseEffectList[0]];
                         CardEntry oneCardEntry = new CardEntry();
@@ -107,14 +107,14 @@ namespace Assets.Scripts.OrderSystem.Controller
                     //获取当前进行游戏的玩家进行接管
                     string playerCodeNow = circuitProxy.GetNowPlayerCode();
                     PlayerItem playerItemNow = playerGroupProxy.getPlayerByPlayerCode(playerCodeNow);
-                    UtilityLog.Log("AI玩家" + playerCodeNow + "开始操作：");
+                    UtilityLog.Log("AI玩家" + playerCodeNow + "开始操作：", LogUtType.Operate);
                     //无法操作了结束回合
                     bool canContinueOperation = true;
 
                     //判断是否使用过资源牌
                     if (playerItemNow.CheckResourceCardCanUse())
                     {
-                        UtilityLog.Log("AI玩家" + playerCodeNow + "可以使用资源牌：");
+                        UtilityLog.Log("AI玩家" + playerCodeNow + "可以使用资源牌：", LogUtType.Operate);
                         HandCellItem getHand = playerItemNow.GetOneCardTypeCard(CardType.ResourceCard);
                         //检查手牌里是否存在资源牌
                         if (getHand != null)
@@ -131,7 +131,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                         }
                     }
                     else {
-                        UtilityLog.Log("AI玩家" + playerCodeNow + "不可以使用资源牌：");
+                        UtilityLog.Log("AI玩家" + playerCodeNow + "不可以使用资源牌：", LogUtType.Operate);
                         canContinueOperation = false;
                     }
 

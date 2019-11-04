@@ -56,7 +56,6 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
             };
             this.StartTestMapUnityAction += () =>
             {
-                UtilityLog.Log("开始测试地图");
                 mediator.SendNotification(UIViewSystemEvent.UI_VIEW_CURRENT, UIViewConfig.getNameStrByUIViewName(UIViewName.StartMain), UIViewSystemEvent.UI_VIEW_CURRENT_CLOSE_ONE_VIEW);
                 mediator.SendNotification(OrderSystemEvent.START_CIRCUIT, null, OrderSystemEvent.START_CIRCUIT_TEST_MAP);
             };

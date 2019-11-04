@@ -28,7 +28,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
     {
         //名称
         public string name { get; set; }
-        //名称
+        //代码
         public string code { get; set; }
         //描述
         public string description { get; set; }
@@ -36,23 +36,14 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public string[] targetSet { get; set; }
         //实例化目标集
         public List<TargetSet> targetSetList = new List<TargetSet>();
-
         //选择效果列表
         public string[] chooseEffectList { get; set; }
         //复合效果列表
         public string[] complexEffectList { get; set; }
-
         //是否需要展示
         public string whetherToshow { get; set; }
-
         //持续时间
         public string effectiveTime{ get; set; }
-
-
-
-
-
-
         //影响类别
         //瞬间MOMENT，持续CONTINUE
         public string impactType { get; set; }
@@ -60,9 +51,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public string[] impactTimeTriggers { get; set; }
         //实例化的触发器避免重复获取
         public List<ImpactTimeTrigger> impactTimeTriggerList = new List<ImpactTimeTrigger>();
-
         //影响目标
-        //数组，生命DEF,攻击ATK
         public string[] impactTargets { get; set; }
         //影响内容
         //数组 和目标一一对应

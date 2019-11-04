@@ -18,23 +18,39 @@ namespace Assets.Scripts.OrderSystem.Controller
         public override void Execute(INotification notification)
         {
             string playerCodeNotification = StringUtil.GetValueForNotificationTypeByKey(notification.Type, "PlayerCode");
-            notification.Type = StringUtil.GetValueForNotificationTypeByKey(notification.Type, "NotificationType");
+            string notificationType = StringUtil.GetValueForNotificationTypeByKey(notification.Type, "NotificationType");
 
             PlayerGroupProxy playerGroupProxy = Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
             QuestStageCircuitProxy circuitProxy = Facade.RetrieveProxy(QuestStageCircuitProxy.NAME) as QuestStageCircuitProxy;
-            switch (notification.Type)
+
+            EffectInfoProxy effectInfoProxy =
+              Facade.RetrieveProxy(EffectInfoProxy.NAME) as EffectInfoProxy;
+            //一组效果执行完毕
+            if (notification.Type == TimeTriggerEvent.TIME_TRIGGER_EXE_NEXT_DELAY_NOTIFICATION) {
+                if (effectInfoProxy.effectSysItem.delayNotifications.Count > 0)
+                {
+                    notification = effectInfoProxy.effectSysItem.delayNotifications.Dequeue();
+                    playerCodeNotification = StringUtil.GetValueForNotificationTypeByKey(notification.Type, "PlayerCode");
+                    notificationType = StringUtil.GetValueForNotificationTypeByKey(notification.Type, "NotificationType");
+                }
+                else {
+                    return;
+                }
+            }
+
+            //判断是否在一组效果的执行中
+            if (effectInfoProxy.effectSysItem.effectSysItemStage == EffectSysItemStage.Executing) {
+                effectInfoProxy.effectSysItem.delayNotifications.Enqueue(notification);
+                return;
+            }
+
+            switch (notificationType)
             {
-                //判断手牌是否可用
-                case TimeTriggerEvent.TIME_TRIGGER_SYS_HAND_CAN_USE_JUDGE:
-                    string playerCode = notification.Body as string;
-                    PlayerItem playerItem = playerGroupProxy.playerGroup.playerItems[playerCode];
-                    playerItem.ChangeHandCardCanUse();
-                    SendNotification(HandSystemEvent.HAND_CHANGE, playerItem.handGridItem.handCells, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_CAN_USE_JUDGE, playerCode));
-                    break;
+              
                 //抽了一张牌
                 case TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD:
                     if (circuitProxy.circuitItem.activeEffectInfoMap.ContainsKey(TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD)) {
-                        SelectEffectAfterTrigger(circuitProxy.circuitItem.activeEffectInfoMap[TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD], playerCodeNotification, notification.Type);
+                        SelectEffectAfterTrigger(circuitProxy.circuitItem.activeEffectInfoMap[TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD], playerCodeNotification, notificationType);
                     }
                     break;
                 //一个阶段的执行
@@ -56,15 +72,21 @@ namespace Assets.Scripts.OrderSystem.Controller
                     }
                     break;
             }
+            //判断还有没有需要继续触发的时点信息
+            if (effectInfoProxy.effectSysItem.delayNotifications.Count > 0) {
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, null, TimeTriggerEvent.TIME_TRIGGER_EXE_NEXT_DELAY_NOTIFICATION);
+            }
         }
         //触发后判断效果是否可以执行
         public void SelectEffectAfterTrigger(List<EffectInfo> effectInfos, string playerCodeNotification, string notificationType) {
             foreach (EffectInfo effectInfo in effectInfos)
             {
+               
                 //如果是规则效果，那么需要将效果所有者设置成当前玩家
                 if (effectInfo.impactType == "GameModelRule") {
                     effectInfo.player.playerCode = playerCodeNotification;
                 }
+                UtilityLog.Log("【" + effectInfo.player.playerCode + "】拥有的效果【" + effectInfo.description + "】,触发者【" + playerCodeNotification + "】检测是否可以触发成功", LogUtType.Effect);
                 foreach (ImpactTimeTrigger impactTimeTrigger in effectInfo.impactTimeTriggerList)
                 {
                     if (impactTimeTrigger.impactTimeTriggertMonitor == notificationType)
@@ -85,6 +107,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                                         //设置状态
                                         effectInfo.effectInfoStage = EffectInfoStage.UnStart;
                                         effectInfo.cardEntry.triggeredEffectInfo = effectInfo;
+                                        UtilityLog.Log("效果【" + effectInfo.description + "】被【"+ playerCodeNotification + "】触发", LogUtType.Effect);
                                         SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, effectInfo.cardEntry, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_TRIGGERED_CARD);
                                     }
                                 }

@@ -40,5 +40,10 @@ namespace Assets.Scripts.OrderSystem.Event
         //选择了一个效果
         public const string OPERATE_SYS_CHOOSE_ONE_EFFECT = "OperateSysChooseOneEffect";
 
+        /// <summary>
+        /// 监听器相关，需要重新渲染手牌可用，暂时放在这里
+        /// </summary>
+        public const string OPERATE_SYS_HAND_CAN_USE_JUDGE = "OperateSysHandCanUseJudge";
+
     }
 }

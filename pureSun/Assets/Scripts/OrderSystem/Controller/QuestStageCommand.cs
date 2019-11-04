@@ -95,13 +95,11 @@ namespace Assets.Scripts.OrderSystem.Controller
 
                         //生物渲染？
                         foreach (PI_Minion pI_Minion in pI_Player.minionList) {
-                            HexCoordinates hexCoordinates = new HexCoordinates(pI_Minion.x, pI_Minion.z);
-                            int index = HexUtil.GetIndexFromModeAndHex(gameModelProxy.hexModelInfoNow, hexCoordinates);
+                            HexCoordinates index =new HexCoordinates(pI_Minion.x, pI_Minion.z);
                             CardEntry cardEntry = new CardEntry();
                             cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode(pI_Minion.code));
                             cardEntry.player = playerItem;
                             minionGridProxy.AddOneMinionByCard(index, cardEntry);
-                            UtilityLog.Log("读取一个生物：" + cardEntry.cardInfo.name);
 
                         }
                       
@@ -224,7 +222,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                                 UIViewConfig.getNameStrByUIViewName(UIViewName.NextTurnButton)
                                 )
                             );
-                    UtilityLog.Log("测试准备完成" );
+                    UtilityLog.Log("测试准备完成" ,LogUtType.Other);
                     SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_START_OF_TRUN);
                     break;
             }
@@ -245,7 +243,7 @@ namespace Assets.Scripts.OrderSystem.Controller
             foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
             {
                 GM_PlayerSite playerSiteOne = gameModelProxy.gameModelNow.playerSiteList[number];
-                playerItem.CreateCanCallHex(playerSiteOne);
+                playerItem.LoadingGameModelPlayerSet(playerSiteOne);
                 number++;
             }
             //初始化流程信息

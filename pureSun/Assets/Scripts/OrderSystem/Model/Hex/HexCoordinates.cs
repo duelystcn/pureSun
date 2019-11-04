@@ -46,6 +46,19 @@ public struct HexCoordinates
         }
        
     }
+    public static HexCoordinates ReverseFromOffsetCoordinates(int x, int z, string arrayMode)
+    {
+        if (arrayMode == HexMetrics.MODE_ERECT)
+        {
+            return new HexCoordinates(x + z / 2, z);
+        }
+        else
+        {
+            return new HexCoordinates(x, z + x / 2);
+        }
+
+    }
+
     public override string ToString()
     {
         //return "(" + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";

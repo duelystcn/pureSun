@@ -63,6 +63,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
             if (effectSysItem.effectSysItemStage == EffectSysItemStage.UnStart) {
                 if (effectSysItem.cardEntryQueue.Count > 0)
                 {
+
                     effectSysItem.effectSysItemStage = EffectSysItemStage.Executing;
                     effectSysItem.effectInfos = effectSysItem.effectInfosQueue.Dequeue();
                     effectSysItem.cardEntry = effectSysItem.cardEntryQueue.Dequeue();

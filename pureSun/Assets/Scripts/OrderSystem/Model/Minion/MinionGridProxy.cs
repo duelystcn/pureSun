@@ -24,7 +24,7 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             minionGridItem.Create();
             base.Data = minionGridItem;
         }
-        public MinionCellItem GetMinionCellItemByIndex(int index) {
+        public MinionCellItem GetMinionCellItemByIndex(HexCoordinates index) {
             if (minionGridItem.minionCells.ContainsKey(index))
             {
                 return minionGridItem.minionCells[index];
@@ -34,12 +34,12 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             }
         }
         //根据手牌添加生物
-        public void AddOneMinionByHand(int index, HandCellItem chooseHand)
+        public void AddOneMinionByHand(HexCoordinates index, HandCellItem chooseHand)
         {
             AddOneMinionByCard(index,chooseHand.cardEntry);
         }
         //根据指定牌添加生物
-        public void AddOneMinionByCard(int index, CardEntry cardEntry)
+        public void AddOneMinionByCard(HexCoordinates index, CardEntry cardEntry)
         {
             //判断这个坐标上是否已经有生物存在
             if (minionGridItem.minionCells.ContainsKey(index)) {
@@ -48,6 +48,7 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             }
             MinionCellItem minionCellItem = new MinionCellItem();
             minionCellItem.cardEntry = cardEntry;
+            //设置所有者
             minionCellItem.playerCode = cardEntry.player.playerCode;
             minionCellItem.color = Color.red;
             minionCellItem.IsEffectTarget = false;
@@ -73,12 +74,22 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             {
                 SendNotification(UIViewSystemEvent.UI_ONE_CARD_ALL_INFO, minionCellItem, UIViewSystemEvent.UI_ONE_CARD_ALL_INFO_BUFF_CHANGE);
             };
+            //生物准备发起一次攻击
+            minionCellItem.ttLaunchAnAttack = () =>{
+                UtilityLog.Log("玩家【" + minionCellItem .playerCode + "】的生物【" + minionCellItem.cardEntry.name + "】发起一次攻击", LogUtType.Attack);
+                SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, minionCellItem, EffectExecutionEvent.EFFECT_EXECUTION_SYS_LAUNCH_AN_ATTACK);
+            };
+            //生物进行一次攻击
+            minionCellItem.ttExecuteAnAttack = () =>
+            {
+                SendNotification(MinionSystemEvent.MINION_VIEW, minionCellItem, MinionSystemEvent.MINION_VIEW_ATTACK_TARGET_MINION);
+            };
         }
         //根据玩家code获取该玩家的所有生物
         public List<MinionCellItem> GetMinionCellItemListByPlayerCode(PlayerItem playerItem) {
             List<MinionCellItem> minionCellItems = new List<MinionCellItem>();
-            Dictionary<int, MinionCellItem>.KeyCollection keyCol = minionGridItem.minionCells.Keys;
-            foreach (int key in keyCol)
+            Dictionary<HexCoordinates, MinionCellItem>.KeyCollection keyCol = minionGridItem.minionCells.Keys;
+            foreach (HexCoordinates key in keyCol)
             {
                 MinionCellItem minionCellItem = minionGridItem.minionCells[key];
                 if (minionCellItem.cardEntry.player.playerCode == playerItem.playerCode) {

@@ -21,15 +21,44 @@ namespace Assets.Scripts.OrderSystem.Common.UnityExpand
         YELLOW,
         PURPLE,
     }
+    public enum LogUtType
+    {
+        Effect,
+        Stage,
+        Attack,
+        Other,
+        Operate
+    }
+
     class UtilityLog
     {
         //普通打印
-        public static void Log(object msg, LogColor color = LogColor.BLACK)
+        public static void Log(object msg, LogUtType logType, LogColor color = LogColor.BLACK)
         {
+            if (logType == LogUtType.Effect) {
+                color = LogColor.GREEN;
+            }
+            else if(logType == LogUtType.Attack){
+                color = LogColor.PURPLE;
+            }
+            else if (logType == LogUtType.Operate)
+            {
+                color = LogColor.BLUE;
+            }
+            else if (logType == LogUtType.Stage)
+            {
+                color = LogColor.YELLOW;
+            }
             if (color == LogColor.BLACK)
+            {
                 Debug.Log(msg);
-            else
-                Debug.Log(string.Format(GetColor(color), msg.ToString()));
+            }
+            else {
+                if (logType == LogUtType.Attack) {
+                    Debug.Log(string.Format(GetColor(color), msg.ToString()));
+                }
+            }
+               
         }
         //获取颜色
         private static string GetColor(LogColor color)
