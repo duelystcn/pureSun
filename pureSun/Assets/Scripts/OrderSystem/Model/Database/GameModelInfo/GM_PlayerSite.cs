@@ -14,9 +14,13 @@ namespace Assets.Scripts.OrderSystem.Model.Database.GameModelInfo
     {
         //攻击方向,使用坐标表示
         public GM_CellCoordinate attackDefaultDirection { get; set; }
+        //移动方向
+        public GM_CellCoordinate moveDefaultDirection { get; set; }
         //默认可召唤区域
         public string[] canCallRegionCodes { get; set; }
-        //可召唤区域
+        //区域信息
         public GM_CellRegion[] cellRegionList { get; set; }
+        //可移动区域
+        public string[]  canMoveRegionCodes { get; set; }
     }
 }

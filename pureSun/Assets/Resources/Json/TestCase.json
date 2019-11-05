@@ -35,7 +35,7 @@
   },
   "TestMinionombat": {
     "name": "TestMinionombat",
-    "description": "测试生物战斗",
+    "description": "测试生物战斗和buff",
     "gameModelName": "Andor",
     "startStage": "ActivePhase",
     "myselfPlayer": {
@@ -44,7 +44,7 @@
       "manaUpperLimit": 2,
       "manaUsable": 2,
       "shipCardCode": "FindWay",
-      "handCard": [ "Adrenaline", "Adrenaline", "ImperialRecruit" ],
+      "handCard": [ "Adrenaline", "Dazzling", "ImperialRecruit" ],
       "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
       "minionList": [
         {
@@ -65,7 +65,7 @@
       "manaUpperLimit": 2,
       "manaUsable": 2,
       "shipCardCode": "FindWay",
-      "handCard": [ "Adrenaline", "Adrenaline", "ImperialRecruit" ],
+      "handCard": [ "Adrenaline", "Dazzling", "ImperialRecruit" ],
       "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
       "minionList": [
         {
@@ -81,9 +81,9 @@
       ]
     }
   },
-  "TestTacticsDebuff": {
-    "name": "TestTacticsDebuff",
-    "description": "测试生物Debuff",
+  "TestMinionMove": {
+    "name": "TestMinionMove",
+    "description": "测试生物移动",
     "gameModelName": "Andor",
     "startStage": "ActivePhase",
     "myselfPlayer": {
@@ -98,12 +98,12 @@
         {
           "code": "ImperialRecruit",
           "x": 1,
-          "z": 1
+          "z": 0
         },
         {
           "code": "ImperialSoldier",
           "x": 4,
-          "z": -1
+          "z": -2
         }
       ]
     },
@@ -119,12 +119,12 @@
         {
           "code": "ImperialRecruit",
           "x": 1,
-          "z": 2
+          "z": 3
         },
         {
           "code": "ImperialSoldier",
           "x": 4,
-          "z": 0
+          "z": 1
         }
       ]
     }

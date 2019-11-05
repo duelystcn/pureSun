@@ -21,7 +21,12 @@
           "x": 0,
           "z": 1
         },
+        "moveDefaultDirection": {
+          "x": 0,
+          "z": 1
+        },
         "canCallRegionCodes": [ "Defense" ],
+        "canMoveRegionCodes": [ "Defense", "Front" ],
         "cellRegionList": [
           {
             "code": "Defense",
@@ -52,6 +57,36 @@
                 "z": -2
               }
             ]
+          },
+          {
+            "code": "Front",
+            "name": "前线",
+            "regionCellList": [
+              {
+                "x": 0,
+                "z": 1
+              },
+              {
+                "x": 1,
+                "z": 1
+              },
+              {
+                "x": 2,
+                "z": 0
+              },
+              {
+                "x": 3,
+                "z": 0
+              },
+              {
+                "x": 4,
+                "z": -1
+              },
+              {
+                "x": 5,
+                "z": -1
+              }
+            ]
           }
         ]
       },
@@ -60,7 +95,12 @@
           "x": 0,
           "z": -1
         },
+        "moveDefaultDirection": {
+          "x": 0,
+          "z": -1
+        },
         "canCallRegionCodes": [ "Defense" ],
+        "canMoveRegionCodes": [ "Defense", "Front" ],
         "cellRegionList": [
           {
             "code": "Defense",
@@ -89,6 +129,36 @@
               {
                 "x": 5,
                 "z": 1
+              }
+            ]
+          },
+          {
+            "code": "Front",
+            "name": "前线",
+            "regionCellList": [
+              {
+                "x": 0,
+                "z": 2
+              },
+              {
+                "x": 1,
+                "z": 2
+              },
+              {
+                "x": 2,
+                "z": 1
+              },
+              {
+                "x": 3,
+                "z": 1
+              },
+              {
+                "x": 4,
+                "z": 0
+              },
+              {
+                "x": 5,
+                "z": 0
               }
             ]
           }

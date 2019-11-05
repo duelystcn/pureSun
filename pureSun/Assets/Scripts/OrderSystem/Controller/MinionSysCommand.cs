@@ -44,6 +44,11 @@ namespace Assets.Scripts.OrderSystem.Controller
                     //通知生物层发生变更重新渲染部分生物
                     SendNotification(MinionSystemEvent.MINION_VIEW, mListClose, MinionSystemEvent.MINION_VIEW_MINIONS_CHANGE);
                     break;
+                //生物死亡
+                case MinionSystemEvent.MINION_SYS_ONE_MINION_IS_DEAD:
+                    MinionCellItem minionCellItemIsDead = notification.Body as MinionCellItem;
+                    minionGridProxy.minionGridItem.minionCells.Remove(minionCellItemIsDead.index);
+                    break;
 
             }
         }

@@ -171,7 +171,20 @@
     "impactTargets": [ "Attack" ],
     "impactContents": [ "1" ],
     "whetherToshow": "N"
-
+  },
+  "MyselfMinionMoveSpecifiedDirectionWhenStartOfBattleExecution": {
+    "code": "MyselfMinionMoveSpecifiedDirectionWhenStartOfBattleExecution",
+    "description": "在己方战斗阶段执行，己方所有生物向指定方向移动",
+    "targetSet": [ "AllMyselfMinion" ],
+    "impactType": "GameModelRule",
+    "effectiveTime": {
+      "ContinuousRound": 9999,
+      "ContinuousStage": "Permanent"
+    },
+    "impactTimeTriggers": [ "StartOfTrunExecution" ],
+    "impactTargets": [ "Move" ],
+    "impactContents": [ "1" ],
+    "whetherToshow": "N"
   }
 
 }

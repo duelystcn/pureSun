@@ -24,6 +24,9 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
         //所在位置
         // public int index;
         public HexCoordinates index;
+        //原始所在位置，演算移动动画时需要用到
+        public HexCoordinates lastIndex;
+
         //当前攻击
         //public int atkNow;
         //当前生命
@@ -54,6 +57,16 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
         //生物进行攻击
         public TTExecuteAnAttack ttExecuteAnAttack;
 
+        //生物发起移动
+        public TTLaunchAnMove ttLaunchAnMove;
+        //生物进行移动
+        public TTExecuteAnMove ttExecuteAnMove;
+
+        //生物死亡
+        public TTMinionIsDead ttMinionIsDead;
+
+
+
 
         //持续buff，放在一个list里
         public List<EffectInfo> effectBuffInfoList = new List<EffectInfo>();
@@ -63,7 +76,16 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
 
             minionVariableAttributeMap.ChangeValueByCodeAndType("Def", VATtrtype.CurrentValue, -damageNum);
             ttDefChange(damageNum);
+            CheckMinionIsDead();
         }
+        //检查生物是否死亡
+        public void CheckMinionIsDead() {
+            if (minionVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CurrentValue) <= 0) {
+                ttMinionIsDead();
+            }
+        
+        }
+
         //生物攻击某一个生物
         public void AttackTargetMinion(MinionCellItem defensiveMinionCellItem)
         {
@@ -77,6 +99,7 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             ttExecuteAnAttack();
             attackMinionCellItem.SufferDamage(minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CurrentValue));
         }
+      
 
         //检查是否需要清除buff
         public void CheckNeedChangeEffectBuffInfo(string timeTrigger) {

@@ -94,10 +94,42 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         public TTAddTraitType ttAddTraitType;
 
         //固定可召唤区域
-        public List<HexCoordinates> fixedCanCellHexList = new List<HexCoordinates>();
+        public List<HexCoordinates> fixedCanCallHexList = new List<HexCoordinates>();
         //变动可召唤区域
 
         //禁止召唤区域
+
+
+        //固定可移动区域
+        public List<HexCoordinates> fixedCanMoveHexList = new List<HexCoordinates>();
+
+        //制造可移动区域
+        public void CreateCanMoveHex(GM_PlayerSite playerSiteOne)
+        {
+            foreach (string canCallRegionCode in playerSiteOne.canMoveRegionCodes)
+            {
+                foreach (GM_CellRegion gmCellRegion in playerSiteOne.cellRegionList)
+                {
+                    if (gmCellRegion.code == canCallRegionCode)
+                    {
+                        foreach (GM_CellCoordinate gMCell in gmCellRegion.regionCellList)
+                        {
+                            fixedCanMoveHexList.Add(new HexCoordinates(gMCell.x, gMCell.z));
+                        }
+                    }
+                }
+            }
+        }
+        //判断一个格子是否在移动范围内
+        public bool CheckOneHexCanMove(HexCoordinates hexCoordinates) {
+            foreach (HexCoordinates canMoveHex in fixedCanMoveHexList) {
+                if (canMoveHex.X == hexCoordinates.X && canMoveHex.Y == hexCoordinates.Y) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
 
         //制造可召唤区域列表
         public void CreateCanCallHex(GM_PlayerSite playerSiteOne) {
@@ -106,7 +138,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player
                 {
                     if (gmCellRegion.code == canCallRegionCode) {
                         foreach (GM_CellCoordinate gMCell in gmCellRegion.regionCellList) {
-                            fixedCanCellHexList.Add(new HexCoordinates(gMCell.x, gMCell.z));
+                            fixedCanCallHexList.Add(new HexCoordinates(gMCell.x, gMCell.z));
                         }
                     }
                 }
@@ -117,12 +149,13 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         public void LoadingGameModelPlayerSet(GM_PlayerSite playerSiteOne) {
             this.playerSiteOne = playerSiteOne;
             CreateCanCallHex(playerSiteOne);
+            CreateCanMoveHex(playerSiteOne);
         }
 
         //判断一个格子是否在可召唤区域内
         public bool CheckOneCellCanCall(HexCoordinates hexCoordinates) {
             bool canCall = false;
-            foreach (HexCoordinates oneHexCoordinates in fixedCanCellHexList) {
+            foreach (HexCoordinates oneHexCoordinates in fixedCanCallHexList) {
                 if (hexCoordinates.X == oneHexCoordinates.X && hexCoordinates.Z == oneHexCoordinates.Z) {
                     canCall = true;
                 }

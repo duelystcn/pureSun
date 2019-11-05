@@ -22,11 +22,16 @@ namespace Assets.Scripts.OrderSystem.Event
         //执行效果
         public const string EFFECT_EXECUTION_SYS_EXE_EFFECT = "EffectExecutionSysExeEffect";
 
+        //一个效果执行完毕，用来执行动画
+
         //展示完毕
         public const string EFFECT_EXECUTION_SYS_EFFECT_SHOW_OVER = "EffectExecutionSysShowOver";
 
         //生物发起一次攻击，暂时先写在这里
         public const string EFFECT_EXECUTION_SYS_LAUNCH_AN_ATTACK = "EffectExecutionSysLaunchAnAttack";
+
+        //生物发起一次移动，暂时先写在这里
+        public const string EFFECT_EXECUTION_SYS_LAUNCH_AN_MOVE = "EffectExecutionSysLaunchAnMove";
 
         //生物的buff需要被移除
         public const string EFFECT_EXECUTION_SYS_MINION_BUFF_NEED_REMOVE = "EffectExecutionSysMinionBuffNeedRemove";

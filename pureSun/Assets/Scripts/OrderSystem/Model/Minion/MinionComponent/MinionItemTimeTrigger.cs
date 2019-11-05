@@ -26,5 +26,16 @@ namespace Assets.Scripts.OrderSystem.Model.Minion.MinionComponent
 
         //生物的buff需要被移除
         public delegate void TTBuffNeedRemove();
+
+        //生物发起一次移动
+        public delegate void TTLaunchAnMove();
+
+        //生物进行一次移动
+        public delegate void TTExecuteAnMove();
+
+        //生物死亡
+        public delegate void TTMinionIsDead();
+
     }
+
 }

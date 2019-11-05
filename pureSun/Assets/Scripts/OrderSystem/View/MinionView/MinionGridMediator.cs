@@ -74,6 +74,7 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
                 SendNotification(MinionSystemEvent.MINION_VIEW, null, MinionSystemEvent.MINION_VIEW_ANIMATION_START);
 
             };
+            UnityAction callBackSP = () => { };
             bool callBackDelay = false;
 
             List<MinionCellItem> mList = new List<MinionCellItem>();
@@ -116,6 +117,19 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
                             };
                             minionGridView.MinionAttackTargetIndex(minionCellItemAttack, hexModelInfo, callBack);
                             break;
+                        case MinionSystemEvent.MINION_VIEW_MOVE_TARGET_HEX_CELL:
+                            MinionCellItem minionCellItemMove = notification.Body as MinionCellItem;
+                            callBackSP = () =>
+                            {
+                                SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EFFECT_SHOW_OVER);
+                            };
+                            minionGridView.MinionMoveTargetHexCell(minionCellItemMove, hexModelInfo, callBackSP);
+                            break;
+                        case MinionSystemEvent.MINION_VIEW_ONE_MINION_IS_DEAD:
+                            MinionCellItem minionCellItemIsDead = notification.Body as MinionCellItem;
+                            minionGridView.MinionIsDeadNeedRemove(minionCellItemIsDead);
+                            break;
+
                     }
                     break;
                

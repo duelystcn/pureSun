@@ -118,6 +118,9 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                 case "Attack":
                     minionCellItem.ttLaunchAnAttack();
                     break;
+                case "Move":
+                    minionCellItem.ttLaunchAnMove();
+                    break;
             }
         }
         void ChangePlayer(string impactTarget, string impactContent, PlayerItem playerItem)

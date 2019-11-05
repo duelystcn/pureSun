@@ -33,7 +33,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                     //传递的参数中有生物信息
                     OperateSystemItem operateSystemItem = notification.Body as OperateSystemItem;
                     //获取当前玩家固定可召唤区域
-                    List<HexCoordinates> fixedCanCellHexList = operateSystemItem.playerItem.fixedCanCellHexList;
+                    List<HexCoordinates> fixedCanCellHexList = operateSystemItem.playerItem.fixedCanCallHexList;
                     
                     //遍历渲染
                     foreach (HexCellItem hexCellItem in hexGridProxy.HexGrid.cells) {

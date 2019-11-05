@@ -5,7 +5,13 @@
     "impactTimeTriggertMonitor": "TimeTriggerSysDrawACard",
     "impactTimeTriggertClaims": [ "Owner" ],
     "impactTimeTriggertClaimsContents": [ "Myself" ]
-
+  },
+  "OneMinionIsDead": {
+    "name": "OneMinionIsDead",
+    "description": "每当一个生物死亡时",
+    "impactTimeTriggertMonitor": "TimeTriggerOneMinionIsDead",
+    "impactTimeTriggertClaims": [],
+    "impactTimeTriggertClaimsContents": []
   },
   "StartOfTrunExecution": {
     "name": "StartOfTrunExecution",

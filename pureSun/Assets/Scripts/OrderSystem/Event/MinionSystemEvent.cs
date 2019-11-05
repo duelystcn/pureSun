@@ -26,6 +26,11 @@
         //生物进行了攻击
         public const string MINION_VIEW_ATTACK_TARGET_MINION = "MinionViewAttackTargetMinion";
 
+        //生物进行了移动
+        public const string MINION_VIEW_MOVE_TARGET_HEX_CELL = "MinionViewMoveTargetHexCell";
+        //生物死亡
+        public const string MINION_VIEW_ONE_MINION_IS_DEAD = "MinionViewOneMinionIsDead";
+
 
 
         //逻辑处理
@@ -34,5 +39,10 @@
         public const string MINION_SYS_EFFECT_HIGHLIGHT = "MinionSysEffectHighlight";
 
         public const string MINION_SYS_EFFECT_HIGHLIGHT_CLOSE = "MinionSysEffectHighlightClose";
+        //生物死亡
+        public const string MINION_SYS_ONE_MINION_IS_DEAD = "MinionSysOneMinionIsDead";
+
+
+
     }
 }

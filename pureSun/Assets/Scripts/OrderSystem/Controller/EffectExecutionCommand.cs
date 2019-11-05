@@ -239,7 +239,21 @@ namespace Assets.Scripts.OrderSystem.Controller
                             defensiveMinionCellItem.CounterAttackTargetMinion(attackMinionCellItem);
                         }
                     }
-
+                    break;
+                case EffectExecutionEvent.EFFECT_EXECUTION_SYS_LAUNCH_AN_MOVE:
+                    MinionCellItem moveMinionCellItem = notification.Body as MinionCellItem;
+                    PlayerItem playerItemMove = playerGroupProxy.getPlayerByPlayerCode(moveMinionCellItem.playerCode);
+                    HexCoordinates vectorHexCoordinatesMove = new HexCoordinates(playerItemMove.playerSiteOne.attackDefaultDirection.x, playerItemMove.playerSiteOne.attackDefaultDirection.z);
+                    HexCoordinates targetMoveHexCoordinates = HexUtil.GetTargetHexCoordinatesByStartPointAndVector(moveMinionCellItem.index, vectorHexCoordinatesMove);
+                    //判断目标单元格是否在可移动范围内
+                    if (playerItemMove.CheckOneHexCanMove(targetMoveHexCoordinates)) {
+                        //判断目标单元格上有没有生物,没有生物才能移动
+                        if (!minionGridProxy.minionGridItem.minionCells.ContainsKey(targetMoveHexCoordinates))
+                        {
+                            effectInfoProxy.effectSysItem.showEffectNum++;
+                            minionGridProxy.MoveToTargetHexCoordinates(moveMinionCellItem, targetMoveHexCoordinates);
+                        }
+                    }
                     break;
             }
         }
@@ -278,8 +292,9 @@ namespace Assets.Scripts.OrderSystem.Controller
                         effectInfoProxy.effectSysItem.showEffectNum++;
                         SendNotification(UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS, oneCardEntry, UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_PUT_ONE_EFFECT);
                     }
+                    //进行效果执行完之后的检查
+                    //SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_PUT_ONE_EFFECT);
                 }
-
             }
         }
 

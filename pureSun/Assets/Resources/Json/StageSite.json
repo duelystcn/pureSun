@@ -6,7 +6,8 @@
     "effectNeedExeList": [
       "DrawCardToMyselfWhenStartOfTrunExecution",
       "RestoreToTheUpperLimitWhenStartOfTrunExecution",
-      "RestoreCanUseResourceNumMaxWhenStartOfTrunExecution"
+      "RestoreCanUseResourceNumMaxWhenStartOfTrunExecution",
+      "MyselfMinionMoveSpecifiedDirectionWhenStartOfBattleExecution"
     ]
   },
   "ActivePhase": {

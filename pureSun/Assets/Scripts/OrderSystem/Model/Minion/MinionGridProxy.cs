@@ -90,6 +90,23 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             {
                 SendNotification(MinionSystemEvent.MINION_VIEW, minionCellItem, MinionSystemEvent.MINION_VIEW_ATTACK_TARGET_MINION);
             };
+            //生物发起一次移动
+            minionCellItem.ttLaunchAnMove = () =>
+            {
+                UtilityLog.Log("玩家【" + minionCellItem.playerCode + "】的生物【" + minionCellItem.cardEntry.name + "】发起一次移动", LogUtType.Attack);
+                SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, minionCellItem, EffectExecutionEvent.EFFECT_EXECUTION_SYS_LAUNCH_AN_MOVE);
+            };
+            //生物进行一次移动
+            minionCellItem.ttExecuteAnMove = () =>
+            {
+                SendNotification(MinionSystemEvent.MINION_VIEW, minionCellItem, MinionSystemEvent.MINION_VIEW_MOVE_TARGET_HEX_CELL);
+            };
+            //生物死亡
+            minionCellItem.ttMinionIsDead = () =>
+            {
+                SendNotification(MinionSystemEvent.MINION_VIEW, minionCellItem, MinionSystemEvent.MINION_VIEW_ONE_MINION_IS_DEAD);
+                SendNotification(MinionSystemEvent.MINION_SYS, minionCellItem, MinionSystemEvent.MINION_SYS_ONE_MINION_IS_DEAD);
+            };
         }
         //根据玩家code获取该玩家的所有生物
         public List<MinionCellItem> GetMinionCellItemListByPlayerCode(PlayerItem playerItem) {
@@ -104,6 +121,16 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             }
             return minionCellItems;
         }
+
+        //生物移动到指定地点
+        public void MoveToTargetHexCoordinates(MinionCellItem minionCellItem, HexCoordinates targetMoveHexCoordinates) { 
+            minionCellItem.lastIndex = minionCellItem.index;
+            minionCellItem.index = targetMoveHexCoordinates;
+            minionGridItem.minionCells.Add(targetMoveHexCoordinates, minionCellItem);
+            minionGridItem.minionCells.Remove(minionCellItem.lastIndex);
+            minionCellItem.ttExecuteAnMove();
+        }
+        
 
     }
 }
