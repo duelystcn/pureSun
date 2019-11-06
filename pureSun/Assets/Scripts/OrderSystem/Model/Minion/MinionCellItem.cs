@@ -9,6 +9,7 @@ using static Assets.Scripts.OrderSystem.Model.Minion.MinionComponent.MinionItemT
 
 namespace Assets.Scripts.OrderSystem.Model.Minion
 {
+    public enum MinionComeFrom { Hand, Graveyard, Effect };
     public class MinionCellItem
     {
         //颜色
@@ -34,6 +35,9 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
 
         //费用，攻击，生命等可变属性保存
         public VariableAttributeMap minionVariableAttributeMap = new VariableAttributeMap();
+
+        //生物产生途径？
+        public MinionComeFrom minionComeFrom;
 
 
 
@@ -64,6 +68,11 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
 
         //生物死亡
         public TTMinionIsDead ttMinionIsDead;
+
+        //生物进入战场
+        public TTMinionIntoBattlefield ttMinionIntoBattlefield;
+
+
 
 
 

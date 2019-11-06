@@ -121,9 +121,6 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
                        endPosition,
                        showHexCoordinates.X,
                        showHexCoordinates.Z, hexModelInfo.arrayMode);
-                    UtilityLog.Log("startPosition:" + startPosition, LogUtType.Special);
-                    UtilityLog.Log("endPosition:" + endPosition, LogUtType.Special);
-                    UtilityLog.Log("minionCellItemNew.index:" + minionCellItemNew.index.ToString(), LogUtType.Special);
                     StartCoroutine(MoveMinionCellShowMove(minCellView, callBack, startPosition, endPosition));
 
                 }

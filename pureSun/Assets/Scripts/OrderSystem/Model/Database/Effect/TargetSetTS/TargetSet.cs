@@ -18,6 +18,8 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS
 
         public string target { get; set; }
 
+        public string targetSource { get; set; }
+
         //目标要求
         //所有者
         //目标数量

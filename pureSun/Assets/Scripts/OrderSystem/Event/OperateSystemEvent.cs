@@ -45,5 +45,11 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string OPERATE_SYS_HAND_CAN_USE_JUDGE = "OperateSysHandCanUseJudge";
 
+
+        /// <summary>
+        /// 墓地列表打开
+        /// </summary>
+        public const string OPERATE_SYS_GRAVEYARD_LIST_LOAD = "OperateSysGraveyardListLoad";
+
     }
 }

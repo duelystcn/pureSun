@@ -86,6 +86,25 @@ namespace Assets.Scripts.OrderSystem.Common
             TestMap.Add("UIViewName", UIViewName);
             return JsonConvert.SerializeObject(TestMap);
         }
+        //传入一个notificationType,UIViewName,MaskLayer返回一个map的json
+        public static string GetNTByNotificationTypeAndUIViewNameAndMaskLayer(string notificationType, string UIViewName, string MaskLayer)
+        {
+            Dictionary<string, string> TestMap = new Dictionary<string, string>();
+            TestMap.Add("NotificationType", notificationType);
+            TestMap.Add("UIViewName", UIViewName);
+            TestMap.Add("OpenMaskLayer", MaskLayer);
+            return JsonConvert.SerializeObject(TestMap);
+        }
+        //传入一个notificationType,UIViewName,PlayerCode,MaskLayer返回一个map的json
+        public static string GetNTByNotificationTypeAndUIViewNameAndMaskLayerAndPlayerCode(string notificationType, string UIViewName, string playerCode, string MaskLayer)
+        {
+            Dictionary<string, string> TestMap = new Dictionary<string, string>();
+            TestMap.Add("NotificationType", notificationType);
+            TestMap.Add("UIViewName", UIViewName);
+            TestMap.Add("OpenMaskLayer", MaskLayer);
+            TestMap.Add("PlayerCode", playerCode);
+            return JsonConvert.SerializeObject(TestMap);
+        }
         //传入一个notificationType,UIViewName,OtherType返回一个map的json
         public static string GetNTByNotificationTypeAndUIViewNameAndOtherType(string notificationType, string UIViewName, string otherType)
         {

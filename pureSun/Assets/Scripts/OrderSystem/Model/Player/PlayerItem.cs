@@ -31,6 +31,9 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //牌组
         public CardDeck cardDeck ;
 
+        //墓地
+        public CardDeck cardGraveyard = new CardDeck();
+
 
         //起始点，虚拟坐标，用于确认召唤范围？
         public HexCoordinates hexCoordinates;
@@ -73,6 +76,9 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //时点触发器
         //抽一张牌
         public TTPlayerDrawACard ttPlayerDrawACard;
+        //获得了一张牌
+        public TTPlayerGetACard ttPlayerGetACard;
+
         //移除一张牌
         public TTPlayerRemoveACard ttPlayerRemoveACard;
         //使用一张牌
@@ -271,6 +277,12 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             HandCellItem handcellItem = this.handGridItem.CreateCell(card);
 
         }
+        //获得一张固定的手牌
+        public void AddCardToHand(CardEntry card)
+        {
+            HandCellItem handcellItem = this.handGridItem.CreateCell(card);
+            ttPlayerGetACard(handcellItem);
+        }
 
         //方法抽一张牌
         public void DrawCard(int num) {
@@ -279,6 +291,12 @@ namespace Assets.Scripts.OrderSystem.Model.Player
                 ttPlayerDrawACard(handcellItem);
             }
         }
+        //将一张牌放入墓地
+        public void AddOneCardToGraveyard(CardEntry cardEntry) {
+            UtilityLog.Log("放入墓地：" + cardEntry.cardInfo.name,LogUtType.Special);
+            this.cardGraveyard.PutOneCard(cardEntry);
+        }
+
         //因为使用而失去一张手牌
         public void RemoveOneCardByUse(HandCellItem handCellItem)
         {

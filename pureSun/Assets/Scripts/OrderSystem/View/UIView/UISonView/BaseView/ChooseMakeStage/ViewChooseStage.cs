@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.OrderSystem.Model.Database.Card;
+﻿using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent;
 using System.Collections.Generic;
 
@@ -66,7 +67,34 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.ChooseMakeSt
                 cardIntactViews.Add(cardIntactView);
             }
         }
+        public override void InitViewForParameter(UIControllerListMediator mediator, object body, Dictionary<string, string> parameterMap)
+        {
+            List<CardEntry> cardEntries = body as List<CardEntry>;
+            //载入卡牌列表
+            this.LoadCardEntryList(cardEntries);
+            //载入完成后绑定事件
+            foreach (CardIntactView cardIntactView in this.cardIntactViews)
+            {
+                //如果是自己的命令则绑定上点击事件
+                if (mediator.playerCode == parameterMap["PlayerCode"])
+                {
+                    cardIntactView.OnClick = () =>
+                    {
+                        mediator.SendNotification(OperateSystemEvent.OPERATE_SYS, cardIntactView.card, OperateSystemEvent.OPERATE_SYS_CHOOSE_ONE_EFFECT);
+                    };
+                }
+                else
+                {
+                    //设置为空
+                    cardIntactView.OnClick = () =>
+                    {
 
+                    };
+                }
+
+            }
+
+        }
 
 
 

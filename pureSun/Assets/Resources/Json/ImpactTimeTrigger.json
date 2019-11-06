@@ -26,5 +26,12 @@
     "impactTimeTriggertMonitor": "StartOfBattleExecution",
     "impactTimeTriggertClaims": [ "Owner" ],
     "impactTimeTriggertClaimsContents": [ "Myself" ]
+  },
+  "MyselfEnterTheBattlefield": {
+    "name": "MyselfEnterTheBattlefield",
+    "description": "在此永久物进入战场时",
+    "impactTimeTriggertMonitor": "MyselfEnterTheBattlefield",
+    "impactTimeTriggertClaims": [ "Owner" ],
+    "impactTimeTriggertClaimsContents": [ "Myself" ]
   }
 }

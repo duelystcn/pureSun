@@ -56,8 +56,10 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             minionCellItem.index = index;
             minionCellItem.minionVariableAttributeMap.CreateVariableAttributeByOriginalValueAndCodeAndBetterAndAutoRestore("Atk", cardEntry.atk, true, true);
             minionCellItem.minionVariableAttributeMap.CreateVariableAttributeByOriginalValueAndCodeAndBetterAndAutoRestore("Def", cardEntry.def, true, false);
+            minionCellItem.minionComeFrom = MinionComeFrom.Hand;
             AddTimeTrigger(minionCellItem);
             minionGridItem.minionCells.Add(index, minionCellItem);
+            minionCellItem.ttMinionIntoBattlefield();
             SendNotification(MinionSystemEvent.MINION_VIEW, minionCellItem, MinionSystemEvent.MINION_VIEW_ADD_ONE_MINION);
         }
         //添加信号发射
@@ -106,6 +108,11 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             {
                 SendNotification(MinionSystemEvent.MINION_VIEW, minionCellItem, MinionSystemEvent.MINION_VIEW_ONE_MINION_IS_DEAD);
                 SendNotification(MinionSystemEvent.MINION_SYS, minionCellItem, MinionSystemEvent.MINION_SYS_ONE_MINION_IS_DEAD);
+            };
+            //生物进入战场
+            minionCellItem.ttMinionIntoBattlefield = () => {
+                SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, minionCellItem, EffectExecutionEvent.EFFECT_EXECUTION_SYS_MINION_ENTER_THE_BATTLEFIELD);
+
             };
         }
         //根据玩家code获取该玩家的所有生物

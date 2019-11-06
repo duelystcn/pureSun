@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ManaInfoView
   m_EditorClassIdentifier: 
   unique: 1
-  viewLayer: 2
+  viewLayer: 1
   viewName: 6
   cacheScheme: 0
   assetName: ManaInfoView

@@ -3,6 +3,7 @@
     "code": "TargetMinionGetAtk1_Def1",
     "description": "目标生物+1/+1",
     "targetSet": [ "OneMyselfMinion" ],
+    "objectSet": [],
     "impactType": "Moment",
     "effectiveTime": {
       "ContinuousRound": 9999,
@@ -16,6 +17,7 @@
     "code": "TargetMinionGetAtk1_Def1_Until_0_EndOfTurn",
     "description": "目标生物+1/+1直到回合结束",
     "targetSet": [ "OneMyselfMinion" ],
+    "objectSet": [],
     "impactType": "Moment",
     "effectiveTime": {
       "ContinuousRound": 0,
@@ -29,6 +31,7 @@
     "code": "TargetMinionGetAtk1_DefF1_UntiFl_0_EndOfTurn",
     "description": "目标生物-1/-1直到回合结束",
     "targetSet": [ "OneMyselfMinion" ],
+    "objectSet": [],
     "impactType": "Moment",
     "effectiveTime": {
       "ContinuousRound": 0,
@@ -48,12 +51,14 @@
       "ContinuousStage": "Moment"
     },
     "targetSet": [ "MyselfChooseEffect" ],
+    "objectSet": [],
     "whetherToshow": "N"
   },
   "AddManaUpOneToMyself": {
     "code": "AddManaUpOneToMyself",
     "description": "己方玩家增加一点费用上限",
     "targetSet": [ "MyselfPlayer" ],
+    "objectSet": [],
     "impactType": "Moment",
     "effectiveTime": {
       "ContinuousRound": 9999,
@@ -67,6 +72,7 @@
     "code": "GetManaOneToMyself",
     "description": "己方玩家获得①",
     "targetSet": [ "MyselfPlayer" ],
+    "objectSet": [],
     "impactType": "Moment",
     "effectiveTime": {
       "ContinuousRound": 9999,
@@ -80,6 +86,7 @@
     "code": "DrawCardToMyself",
     "description": "己方玩家抽一张牌",
     "targetSet": [ "MyselfPlayer" ],
+    "objectSet": [],
     "impactType": "Moment",
     "effectiveTime": {
       "ContinuousRound": 9999,
@@ -93,6 +100,7 @@
     "code": "AddSupremcyTraitOneToMyself",
     "description": "己方玩家增加一点至高等级",
     "targetSet": [ "MyselfPlayer" ],
+    "objectSet": [],
     "impactType": "Moment",
     "effectiveTime": {
       "ContinuousRound": 9999,
@@ -106,6 +114,7 @@
     "code": "SelfDrawOneCardThenGetOneScore",
     "description": "每当你抽一张牌时，获得1分",
     "targetSet": [ "MyselfPlayer" ],
+    "objectSet": [],
     "impactType": "Continue",
     "effectiveTime": {
       "ContinuousRound": 9999,
@@ -120,6 +129,7 @@
     "code": "DrawCardToMyselfWhenStartOfTrunExecution",
     "description": "在己方开始阶段执行，己方玩家抽一张牌",
     "targetSet": [ "MyselfPlayer" ],
+    "objectSet": [],
     "impactType": "GameModelRule",
     "effectiveTime": {
       "ContinuousRound": 9999,
@@ -134,6 +144,7 @@
     "code": "RestoreToTheUpperLimitWhenStartOfTrunExecution",
     "description": "在己方开始阶段执行，可用费用恢复至上限",
     "targetSet": [ "MyselfPlayer" ],
+    "objectSet": [],
     "impactType": "GameModelRule",
     "effectiveTime": {
       "ContinuousRound": 9999,
@@ -148,6 +159,7 @@
     "code": "RestoreCanUseResourceNumMaxWhenStartOfTrunExecution",
     "description": "在己方开始阶段执行，可使用资源牌的次数恢复至上限",
     "targetSet": [ "MyselfPlayer" ],
+    "objectSet": [],
     "impactType": "GameModelRule",
     "effectiveTime": {
       "ContinuousRound": 9999,
@@ -162,6 +174,7 @@
     "code": "MyselfMinionAttackSpecifiedDirectionWhenStartOfBattleExecution",
     "description": "在己方战斗阶段执行，己方所有生物向指定方向战斗",
     "targetSet": [ "AllMyselfMinion" ],
+    "objectSet": [],
     "impactType": "GameModelRule",
     "effectiveTime": {
       "ContinuousRound": 9999,
@@ -176,6 +189,7 @@
     "code": "MyselfMinionMoveSpecifiedDirectionWhenStartOfBattleExecution",
     "description": "在己方战斗阶段执行，己方所有生物向指定方向移动",
     "targetSet": [ "AllMyselfMinion" ],
+    "objectSet": [],
     "impactType": "GameModelRule",
     "effectiveTime": {
       "ContinuousRound": 9999,
@@ -185,6 +199,20 @@
     "impactTargets": [ "Move" ],
     "impactContents": [ "1" ],
     "whetherToshow": "N"
+  },
+  "AddOneStarChainInfantryFromMyselfDeckWhenEnterTheBattlefield": {
+    "code": "AddOneStarChainInfantryFromMyselfDeckWhenEnterTheBattlefield",
+    "description": "当星链军团步兵进入战场时，从你的牌库中抽取1张星链军团步兵",
+    "targetSet": [ "MyselfPlayer" ],
+    "objectSet": [ "OneStarChainInfantryCardFormCardDeck" ],
+    "impactType": "Moment",
+    "effectiveTime": {
+      "ContinuousRound": 0,
+      "ContinuousStage": "Moment"
+    },
+    "impactTimeTriggers": [ "MyselfEnterTheBattlefield" ],
+    "impactTargets": [ "Hand" ],
+    "impactContents": [ "Add" ],
+    "whetherToshow": "Y"
   }
-
 }

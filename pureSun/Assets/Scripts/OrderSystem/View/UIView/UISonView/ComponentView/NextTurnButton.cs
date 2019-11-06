@@ -25,7 +25,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView
 
             Vector3 postion = new Vector3();
             postion.x = 500;
-            postion.y = -280;
+            postion.y = 280;
             postion.z = 0;
             this.transform.localPosition = postion;
             nextButtonImg.gameObject.SetActive(false);

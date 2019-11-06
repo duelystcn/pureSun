@@ -2,14 +2,16 @@
   "OneMyselfMinion": {
     "name": "OneMyselfMinion",
     "target": "Minion",
+    "targetSource": "Battlefield",
     "targetClaims": [ "Owner" ],
     "targetClaimsContents": [ "Myself" ],
     "targetClaimsNums": 1,
-    "description": "选择一个己方生物"
+    "description": "选择一个战场上的己方生物"
   },
   "MyselfChooseEffect": {
     "name": "MyselfChooseEffect",
     "target": "ChooseEffect",
+    "targetSource": "ChooseStageView",
     "targetClaims": [ "Owner" ],
     "targetClaimsContents": [ "Myself" ],
     "targetClaimsNums": 1,
@@ -18,6 +20,7 @@
   "MyselfPlayer": {
     "name": "MyselfPlayer",
     "target": "Player",
+    "targetSource": "Battlefield",
     "targetClaims": [ "Owner" ],
     "targetClaimsContents": [ "Myself" ],
     "targetClaimsNums": 1,
@@ -26,10 +29,20 @@
   "AllMyselfMinion": {
     "name": "AllMyselfMinion",
     "target": "Minion",
+    "targetSource": "Battlefield",
     "targetClaims": [ "Owner" ],
     "targetClaimsContents": [ "Myself" ],
     "targetClaimsNums": 999,
     "description": "选择所有己方生物"
+  },
+  "OneStarChainInfantryCardFormCardDeck": {
+    "name": "OneStarChainInfantryCardFormCardDeck",
+    "target": "Card",
+    "targetSource": "CardDeck",
+    "targetClaims": [ "Code" ],
+    "targetClaimsContents": [ "StarChainInfantry" ],
+    "targetClaimsNums": 1,
+    "description": "选择牌库里一张星链军团步兵"
   }
 
 }

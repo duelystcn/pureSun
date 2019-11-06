@@ -132,14 +132,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                         SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, manaItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_INIT, playerItem.playerCode));
                         SendNotification(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS, playerItem.traitCombination.traitTypes, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS_INIT, playerItem.playerCode));
                     }
-                    SendNotification(
-                             UIViewSystemEvent.UI_VIEW_CURRENT,
-                             null,
-                             StringUtil.GetNTByNotificationTypeAndUIViewName(
-                                 UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW,
-                                 UIViewConfig.getNameStrByUIViewName(UIViewName.NextTurnButton)
-                                 )
-                             );
+                    ShowSomeInCommonUseUIView();
                     SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_ASSIGN_START_OF_TRUN);
 
                     break;
@@ -214,19 +207,42 @@ namespace Assets.Scripts.OrderSystem.Controller
                         //手牌渲染
                         //SendNotification(HandSystemEvent.HAND_CHANGE, playerItem.handGridItem, StringUtil.NotificationTypeAddPlayerCode(HandSystemEvent.HAND_CHANGE_AFFLUX, playerItem.playerCode));
                     }
-                    SendNotification(
-                            UIViewSystemEvent.UI_VIEW_CURRENT,
-                            null,
-                            StringUtil.GetNTByNotificationTypeAndUIViewName(
-                                UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW,
-                                UIViewConfig.getNameStrByUIViewName(UIViewName.NextTurnButton)
-                                )
-                            );
+                    ShowSomeInCommonUseUIView();
                     UtilityLog.Log("测试准备完成" ,LogUtType.Other);
                     SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_START_OF_TRUN);
                     break;
             }
         }
+        //打开一些通用界面
+        public void ShowSomeInCommonUseUIView() {
+            SendNotification(
+                             UIViewSystemEvent.UI_VIEW_CURRENT,
+                             null,
+                             StringUtil.GetNTByNotificationTypeAndUIViewName(
+                                 UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW,
+                                 UIViewConfig.getNameStrByUIViewName(UIViewName.GraveyardButton)
+                                 )
+                             );
+            SendNotification(
+                              UIViewSystemEvent.UI_VIEW_CURRENT,
+                              null,
+                              StringUtil.GetNTByNotificationTypeAndUIViewName(
+                                  UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW,
+                                  UIViewConfig.getNameStrByUIViewName(UIViewName.NextTurnButton)
+                                  )
+                              );
+            //发送打开效果展示列表的消息
+            SendNotification(
+                 UIViewSystemEvent.UI_VIEW_CURRENT,
+                 null,
+                 StringUtil.GetNTByNotificationTypeAndUIViewName(
+                     UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW,
+                     UIViewConfig.getNameStrByUIViewName(UIViewName.EffectDisplayView)
+                     )
+                 );
+        }
+
+
         //读取模式并做出一定的设置
         public void GameInterfacePreparationByGameModel(GameModelProxy gameModelProxy,
                                                         PlayerGroupProxy playerGroupProxy,

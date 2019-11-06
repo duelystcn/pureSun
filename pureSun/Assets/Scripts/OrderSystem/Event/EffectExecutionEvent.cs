@@ -16,7 +16,10 @@ namespace Assets.Scripts.OrderSystem.Event
         //已被触发，执行一个效果
         public const string EFFECT_EXECUTION_SYS_EXE_TRIGGERED_CARD = "EffectExecutionSysExeTriggeredCard";
 
-        //执行效果寻找目标
+        //执行效果寻找宾语目标
+        public const string EFFECT_EXECUTION_SYS_FIND_OBJECT = "EffectExecutionSysFindObejct";
+
+        //执行效果寻找主语目标
         public const string EFFECT_EXECUTION_SYS_FIND_TARGET = "EffectExecutionSysFindTarget";
 
         //执行效果
@@ -35,6 +38,9 @@ namespace Assets.Scripts.OrderSystem.Event
 
         //生物的buff需要被移除
         public const string EFFECT_EXECUTION_SYS_MINION_BUFF_NEED_REMOVE = "EffectExecutionSysMinionBuffNeedRemove";
+
+        //生物进入战场，检查是否有效果需要触发
+        public const string EFFECT_EXECUTION_SYS_MINION_ENTER_THE_BATTLEFIELD = "EffectExecutionSysMinionEnterTheBattlefield";
 
     }
 }

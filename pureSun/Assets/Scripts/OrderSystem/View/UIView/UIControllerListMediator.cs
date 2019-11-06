@@ -151,6 +151,14 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                     switch (notification.Type)
                     {
                         case UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW:
+                            //是否需要打开遮罩层
+                            if (parameterMap.ContainsKey("OpenMaskLayer")) {
+                                string OpenMaskLayer = parameterMap["OpenMaskLayer"];
+                                if ("Y" == OpenMaskLayer) {
+                                    UIViewName uiMaskLayeView = UIViewConfig.getUIViewNameByNameStr("UIMaskLayeView");
+                                    UIControllerLIst.ShowView(uiMaskLayeView);
+                                }
+                            }
                             UIViewName viewNameOpen = UIViewConfig.getUIViewNameByNameStr(parameterMap["UIViewName"]);
                             UIControllerLIst.ShowView(viewNameOpen);
                             //初始化页面
@@ -188,6 +196,16 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                         case UIViewSystemEvent.UI_VIEW_CURRENT_CLOSE_ONE_VIEW:
                             UIViewName viewNameClose = UIViewConfig.getUIViewNameByNameStr(notification.Body as string);
                             UIControllerLIst.HideView(viewNameClose);
+                            //是否需要关闭遮罩层
+                            if (parameterMap.ContainsKey("OpenMaskLayer"))
+                            {
+                                string OpenMaskLayer = parameterMap["OpenMaskLayer"];
+                                if ("N" == OpenMaskLayer)
+                                {
+                                    UIViewName uiMaskLayeView = UIViewConfig.getUIViewNameByNameStr("UIMaskLayeView");
+                                    UIControllerLIst.HideView(uiMaskLayeView);
+                                }
+                            }
                             break;
                     }
                     break;
@@ -305,40 +323,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                             }
                             break;
                     }
-                    break;
-                case UIViewSystemEvent.UI_USER_OPERAT:
-                    switch (notification.Type)
-                    {
-                        case UIViewSystemEvent.UI_USER_OPERAT_CHOOSE_EFFECT:
-                            List<CardEntry> cardEntries = notification.Body as List<CardEntry>;
-                            UIControllerLIst.ShowView(UIViewName.ChooseStage);
-                            viewChooseStage = UIControllerLIst.GetViewByName<ViewChooseStage>(UIViewName.ChooseStage);
-                            //载入卡牌列表
-                            viewChooseStage.LoadCardEntryList(cardEntries);
-                            //载入完成后绑定事件
-                            foreach (CardIntactView cardIntactView in viewChooseStage.cardIntactViews)
-                            {
-                                //如果是自己的命令则绑定上点击事件
-                                if (playerCode == playerCodeNotification)
-                                {
-                                    cardIntactView.OnClick = () =>
-                                    {
-                                        SendNotification(OperateSystemEvent.OPERATE_SYS, cardIntactView.card, OperateSystemEvent.OPERATE_SYS_CHOOSE_ONE_EFFECT);
-                                    };
-                                }
-                                else
-                                {
-                                    //设置为空
-                                    cardIntactView.OnClick = () =>
-                                    {
-
-                                    };
-                                }
-
-                            }
-                            break;
-                    }
-                    break;
+                    break;  
                 //费用控制组件
                 case UIViewSystemEvent.UI_MANA_INFA_SYS:
                     int changeNum = 0;

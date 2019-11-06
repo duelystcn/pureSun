@@ -59,23 +59,29 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 
 
         public void EffectActionReady(EffectInfo effect) {
+            foreach (string objectSet in effect.objectSet) {
+                TargetSet objectSetDto = TransExpV2<TargetSet, TargetSet>.Trans(targetSetMap[objectSet]);
+                effect.objectSetList.Add(objectSetDto);
+            }
+            
             foreach (string targetSet in effect.targetSet) {
                 TargetSet targetSetDto = TransExpV2<TargetSet, TargetSet>.Trans(targetSetMap[targetSet]);
                 effect.targetSetList.Add(targetSetDto);
                 if (targetSetDto.target == "Minion")
                 {
-                    effect.TargetMinionList = (List<MinionCellItem> minionCellItemList) =>
+                    effect.TargetMinionList = (List<MinionCellItem> minionCellItemList, TargetSet objectSet) =>
                     {
                         for (int n = 0; n < minionCellItemList.Count; n++)
                         {
-                            if (!effect.isReverse) {
+                            if (!effect.isReverse)
+                            {
                                 if (effect.effectiveTime.ContinuousStage != "Moment" && effect.effectiveTime.ContinuousStage != "Permanent")
                                 {
                                     minionCellItemList[n].effectBuffInfoList.Add(effect);
                                     minionCellItemList[n].ttBuffChange();
                                 }
                             }
-                           
+
                             for (int m = 0; m < effect.impactTargets.Length; m++)
                             {
                                 ChangeMinion(effect.impactTargets[m], effect.impactContents[m], minionCellItemList[n], effect.isReverse);
@@ -85,16 +91,23 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                 }
                 else if (targetSetDto.target == "Player")
                 {
-                    effect.TargetPlayerList = (List<PlayerItem> playerItemList) =>
+                    effect.TargetPlayerList = (List<PlayerItem> playerItemList, TargetSet objectSet) =>
                     {
                         for (int n = 0; n < playerItemList.Count; n++)
                         {
                             UtilityLog.Log("目标玩家【" + playerItemList[n].playerCode + "】生效效果【" + effect.description + "】", LogUtType.Effect);
                             for (int m = 0; m < effect.impactTargets.Length; m++)
                             {
-                                ChangePlayer(effect.impactTargets[m], effect.impactContents[m], playerItemList[n]);
+                                ChangePlayer(effect.impactTargets[m], effect.impactContents[m], playerItemList[n], objectSet);
                             }
                         }
+                    };
+                }
+                else if (targetSetDto.target == "Card") 
+                {
+                    effect.TargetCardEntryList = (List<CardEntry> cardEntryList, TargetSet objectSet) =>
+                    {
+                       
                     };
                 }
 
@@ -123,12 +136,21 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     break;
             }
         }
-        void ChangePlayer(string impactTarget, string impactContent, PlayerItem playerItem)
+        void ChangePlayer(string impactTarget, string impactContent, PlayerItem playerItem, TargetSet objectSet)
         {
             switch (impactTarget)
             {
                 case "Hand":
-                    playerItem.DrawCard(Convert.ToInt32(impactContent));
+                    if (impactContent == "Add")
+                    {
+                        //获取宾语目标
+                        foreach (CardEntry cardEntry in objectSet.targetCardEntries) {
+                            playerItem.AddCardToHand(cardEntry);
+                        }
+                    }
+                    else {
+                        playerItem.DrawCard(Convert.ToInt32(impactContent));
+                    }
                     break;
                 //资源上限
                 case "ManaUpperLimit":

@@ -77,32 +77,59 @@ namespace Assets.Scripts.OrderSystem.Controller
                     effectInfos.Add(exeEffectCard.triggeredEffectInfo);
                     effectInfoProxy.IntoModeCardSettle(exeEffectCard, effectInfos);
                     break;
-                case EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_TARGET:
-                    //发送打开效果展示列表的消息
-                    SendNotification(
-                         UIViewSystemEvent.UI_VIEW_CURRENT,
-                         null,
-                         StringUtil.GetNTByNotificationTypeAndUIViewName(
-                             UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW,
-                             UIViewConfig.getNameStrByUIViewName(UIViewName.EffectDisplayView)
-                             )
-                         );
-
+                case EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_OBJECT:
                     for (int n = 0; n < effectInfoProxy.effectSysItem.effectInfos.Count; n++)
                     {
                         EffectInfo effect = effectInfoProxy.effectSysItem.effectInfos[n];
-                        UtilityLog.Log("效果【" + effect.description + "】开始寻找目标",LogUtType.Effect);
+                        UtilityLog.Log("效果【" + effect.code + "】开始寻找宾语目标", LogUtType.Effect);
                         if (effect.effectInfoStage == EffectInfoStage.UnStart)
                         {
-                            ExecutionEffectFindTarget(effect, playerGroupProxy, questStageCircuitProxy, minionGridProxy);
+                            ExecutionEffectFindObejct(effect, playerGroupProxy, questStageCircuitProxy, minionGridProxy);
                             //插入了用户操作
-                            if (effect.effectInfoStage == EffectInfoStage.Confirming)
+                            if (effect.effectInfoStage == EffectInfoStage.ConfirmingObject)
                             {
                                 break;
                             }
                         }
                         //如果是正在选择，逻辑上不存在这种情况
-                        else if (effect.effectInfoStage == EffectInfoStage.Confirming)
+                        else if (effect.effectInfoStage == EffectInfoStage.ConfirmingObject)
+                        {
+                            UtilityLog.LogError("Should not exist Confirming EffectInfoStage");
+                        }
+                    }
+                    //判断是否所有效果都存在了宾语目标
+                    bool allEffectHasObejct = true;
+                    for (int n = 0; n < effectInfoProxy.effectSysItem.effectInfos.Count; n++)
+                    {
+                        if (effectInfoProxy.effectSysItem.effectInfos[n].effectInfoStage == EffectInfoStage.UnStart
+                            || effectInfoProxy.effectSysItem.effectInfos[n].effectInfoStage == EffectInfoStage.ConfirmingObject
+                            )
+                        {
+                            allEffectHasObejct = false;
+                        }
+                    }
+                    //开始执行效果
+                    if (allEffectHasObejct)
+                    {
+                        SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_TARGET);
+                    }
+                    break;
+                case EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_TARGET:
+                    for (int n = 0; n < effectInfoProxy.effectSysItem.effectInfos.Count; n++)
+                    {
+                        EffectInfo effect = effectInfoProxy.effectSysItem.effectInfos[n];
+                        UtilityLog.Log("效果【" + effect.code + "】开始寻找主语目标",LogUtType.Effect);
+                        if (effect.effectInfoStage == EffectInfoStage.ConfirmedObject)
+                        {
+                            ExecutionEffectFindTarget(effect, playerGroupProxy, questStageCircuitProxy, minionGridProxy);
+                            //插入了用户操作
+                            if (effect.effectInfoStage == EffectInfoStage.ConfirmingTarget)
+                            {
+                                break;
+                            }
+                        }
+                        //如果是正在选择，逻辑上不存在这种情况
+                        else if (effect.effectInfoStage == EffectInfoStage.ConfirmingTarget)
                         {
                             UtilityLog.LogError("Should not exist Confirming EffectInfoStage");
                         }
@@ -255,6 +282,35 @@ namespace Assets.Scripts.OrderSystem.Controller
                         }
                     }
                     break;
+                case EffectExecutionEvent.EFFECT_EXECUTION_SYS_MINION_ENTER_THE_BATTLEFIELD:
+                    MinionCellItem enterTBFMinionCellItem = notification.Body as MinionCellItem;
+                    exeEffectCard = enterTBFMinionCellItem.cardEntry;
+                    //遍历卡牌的效果
+                    foreach (string effectCode in exeEffectCard.effectCodeList)
+                    {
+                        EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectCode);
+                        bool canExe = false;
+                        foreach (string impactTimeTrigger in oneEffectInfo.impactTimeTriggers) {
+                            if (impactTimeTrigger == "MyselfEnterTheBattlefield") {
+                                canExe = true;
+                                break;
+                            }
+                        }
+                        if (canExe) {
+                            //设置状态
+                            oneEffectInfo.effectInfoStage = EffectInfoStage.UnStart;
+                            //设置所有者,手牌操作模式，所有者是当前玩家
+                            oneEffectInfo.player = exeEffectCard.player;
+                            //设置所属卡牌
+                            oneEffectInfo.cardEntry = exeEffectCard;
+                            
+                            effectInfos.Add(oneEffectInfo);
+                        }
+                        
+                    }
+                    //存入效果，进行结算
+                    effectInfoProxy.IntoModeCardSettle(exeEffectCard, effectInfos);
+                    break;
             }
         }
         //执行效果
@@ -263,9 +319,15 @@ namespace Assets.Scripts.OrderSystem.Controller
             for (int n = 0; n < effectInfoProxy.effectSysItem.effectInfos.Count; n++)
             {
                 EffectInfo effectInfo = effectInfoProxy.effectSysItem.effectInfos[n];
+                UtilityLog.Log("开始执行效果【" + effectInfo.description + "】", LogUtType.Effect);
                 effectInfo.effectInfoStage = EffectInfoStage.Executing;
                 if (effectInfo.targetSetList.Count == 1)
                 {
+                    TargetSet objectSet = new TargetSet();
+                    //判断是否有宾语目标
+                    if (effectInfo.objectSetList.Count == 1) {
+                        objectSet = effectInfo.objectSetList[0];
+                    }
                     switch (effectInfo.targetSetList[0].target)
                     {
                         //效果选择
@@ -275,10 +337,13 @@ namespace Assets.Scripts.OrderSystem.Controller
                             break;
                         //玩家
                         case "Player":
-                            effectInfo.TargetPlayerList(effectInfo.targetSetList[0].targetPlayerItems);
+                            effectInfo.TargetPlayerList(effectInfo.targetSetList[0].targetPlayerItems, objectSet);
                             break;
                         case "Minion":
-                            effectInfo.TargetMinionList(effectInfo.targetSetList[0].targetMinionCellItems);
+                            effectInfo.TargetMinionList(effectInfo.targetSetList[0].targetMinionCellItems, objectSet);
+                            break;
+                        case "Card":
+                            effectInfo.TargetCardEntryList(effectInfo.targetSetList[0].targetCardEntries, objectSet);
                             break;
 
                     }
@@ -297,145 +362,41 @@ namespace Assets.Scripts.OrderSystem.Controller
                 }
             }
         }
-
-
-        //为效果选择目标
-        public void ExecutionEffectFindTarget(  EffectInfo effectInfo, 
-                                                PlayerGroupProxy playerGroupProxy, 
+        //为效果选择宾语目标
+        public void ExecutionEffectFindObejct(EffectInfo effectInfo,
+                                                PlayerGroupProxy playerGroupProxy,
                                                 QuestStageCircuitProxy questStageCircuitProxy,
                                                 MinionGridProxy minionGridProxy)
         {
-            effectInfo.effectInfoStage = EffectInfoStage.Confirming;
+            effectInfo.effectInfoStage = EffectInfoStage.ConfirmingObject;
+            foreach (TargetSet targetSet in effectInfo.objectSetList)
+            {
+                FindTargetOrObejct(effectInfo, targetSet, playerGroupProxy, questStageCircuitProxy, minionGridProxy);
+            }
+            bool hasTargetOver = true;
+            foreach (TargetSet targetSet in effectInfo.objectSetList)
+            {
+                if (!targetSet.hasTarget)
+                {
+                    hasTargetOver = false;
+                }
+            }
+            if (hasTargetOver)
+            {
+                UtilityLog.Log("【" + effectInfo.code + "】宾语目标确认完毕", LogUtType.Effect);
+                effectInfo.effectInfoStage = EffectInfoStage.ConfirmedObject;
+            }
+        }
+        //为效果选择主语目标
+        public void ExecutionEffectFindTarget(  EffectInfo effectInfo, 
+                                            PlayerGroupProxy playerGroupProxy, 
+                                            QuestStageCircuitProxy questStageCircuitProxy,
+                                            MinionGridProxy minionGridProxy)
+        {
+            effectInfo.effectInfoStage = EffectInfoStage.ConfirmingTarget;
             foreach (TargetSet targetSet in effectInfo.targetSetList)
             {
-                bool designationTargetOver = false;
-                //先判断是否已经指定了目标
-                switch (targetSet.target)
-                {
-                    case "Minion":
-                        if (targetSet.targetMinionCellItems.Count == targetSet.targetClaimsNums) {
-                            designationTargetOver = true;
-                        }
-                        break;
-                }
-                if (designationTargetOver)
-                {
-                    effectInfo.effectInfoStage = EffectInfoStage.ConfirmedTarget;
-                    continue;
-                }
-
-
-                //条件
-                string[] targetClaims = targetSet.targetClaims;
-                //条件内容
-                string[] targetClaimsContents = targetSet.targetClaimsContents;
-                //目标玩家
-                PlayerItem targetPlayer = null;
-                //类型
-                switch (targetSet.target)
-                {
-                    case "Minion":
-                        List<MinionCellItem> minionCellItems = new List<MinionCellItem>();
-                        foreach (MinionCellItem minionCellItem in minionGridProxy.GetMinionCellItemListByPlayerCode(playerGroupProxy.getPlayerByPlayerCode(questStageCircuitProxy.GetNowPlayerCode())))
-                        {
-                            for (int n = 0; n < targetClaims.Length; n++)
-                            {
-                                //判断所有权
-                                if (targetClaims[n] == "Owner")
-                                {
-                                    //是自己选
-                                    if (targetClaimsContents[n] == "Myself")
-                                    {
-                                        if (minionCellItem.playerCode == effectInfo.player.playerCode)
-                                        {
-                                            minionCellItems.Add(minionCellItem);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (minionCellItems.Count < targetSet.targetClaimsNums)
-                        {
-                            //符合数量限制
-                            targetSet.hasTarget = true;
-                            targetSet.targetMinionCellItems = minionCellItems;
-                        }
-                        else {
-                            //超出目标上限，需要用户选择
-                            UtilityLog.LogError("超出目标上限");
-                        }
-                        
-                        break;
-                    //效果选择
-                    case "ChooseEffect":
-                        //获取玩家，根据条件筛选出复合条件的释放者和选择者
-                        //筛选结果
-                        foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
-                        {
-                            for (int n = 0; n < targetClaims.Length; n++)
-                            {
-                                //判断所有权
-                                if (targetClaims[n] == "Owner")
-                                {
-                                    //是自己选
-                                    if (targetClaimsContents[n] == "Myself")
-                                    {
-                                        if (playerItem.playerCode == effectInfo.player.playerCode)
-                                        {
-                                            targetPlayer = playerItem;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (targetPlayer != null)
-                        {
-                            effectInfo.chooseByPlayer = targetPlayer;
-                            //发布用户需要选择信号
-                            SendNotification(LogicalSysEvent.LOGICAL_SYS, effectInfo, LogicalSysEvent.LOGICAL_SYS_CHOOSE_EFFECT);
-                            //
-                        }
-                        else
-                        {
-                            UtilityLog.LogError("no player can ChooseEffect");
-                        }
-
-                        break;
-                    //玩家
-                    case "Player":
-                        //获取玩家，根据条件筛选出复合条件的释放者和选择者
-                        //筛选结果
-                        foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
-                        {
-                            for (int n = 0; n < targetClaims.Length; n++)
-                            {
-                                //判断所有权
-                                if (targetClaims[n] == "Owner")
-                                {
-                                    //是自己选
-                                    if (targetClaimsContents[n] == "Myself")
-                                    {
-                                        if (playerItem.playerCode == effectInfo.player.playerCode)
-                                        {
-                                            targetPlayer = playerItem;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (targetPlayer != null)
-                        {
-                            //玩家确认
-                            targetSet.targetPlayerItems.Add(targetPlayer);
-                            targetSet.hasTarget = true;
-                        }
-                        else
-                        {
-                            UtilityLog.LogError("no player can add TargetPlayerItems");
-                        }
-                        break;
-
-                }
+                FindTargetOrObejct(effectInfo, targetSet, playerGroupProxy, questStageCircuitProxy , minionGridProxy);
             }
             bool hasTargetOver = true;
             foreach (TargetSet targetSet in effectInfo.targetSetList)
@@ -445,11 +406,178 @@ namespace Assets.Scripts.OrderSystem.Controller
                 }
             }
             if (hasTargetOver) {
-                UtilityLog.Log("【" + effectInfo.description + "】目标确认完毕",LogUtType.Effect);
+                UtilityLog.Log("【" + effectInfo.description + "】主语目标确认完毕",LogUtType.Effect);
                 effectInfo.effectInfoStage = EffectInfoStage.ConfirmedTarget;
             }
 
 
+        }
+        public void FindTargetOrObejct(EffectInfo effectInfo,TargetSet targetSet,
+                                           PlayerGroupProxy playerGroupProxy,
+                                           QuestStageCircuitProxy questStageCircuitProxy,
+                                           MinionGridProxy minionGridProxy)
+        {
+            bool designationTargetOver = false;
+            //先判断是否已经指定了目标
+            switch (targetSet.target)
+            {
+                case "Minion":
+                    if (targetSet.targetMinionCellItems.Count == targetSet.targetClaimsNums)
+                    {
+                        designationTargetOver = true;
+                    }
+                    break;
+            }
+            if (designationTargetOver)
+            {
+                targetSet.hasTarget = true;
+                return;
+            }
+            //条件
+            string[] targetClaims = targetSet.targetClaims;
+            //条件内容
+            string[] targetClaimsContents = targetSet.targetClaimsContents;
+            //目标玩家
+            PlayerItem targetPlayer = null;
+            //类型
+            switch (targetSet.target)
+            {
+                case "Card":
+                    List<CardEntry> cardEntries = new List<CardEntry>();
+                    //判断来源
+                    switch (targetSet.targetSource)
+                    {
+                        case "CardDeck":
+                            foreach (CardEntry cardEntry in effectInfo.player.cardDeck.cardEntryList)
+                            {
+                                for (int n = 0; n < targetClaims.Length; n++)
+                                {
+                                    //判断所有权
+                                    if (targetClaims[n] == "Code")
+                                    {
+                                        //是自己选
+                                        if (targetClaimsContents[n] == cardEntry.cardInfo.code)
+                                        {
+                                            cardEntries.Add(cardEntry);
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+
+                    }
+                    if (cardEntries.Count > 0)
+                    {
+                        if (targetSet.targetClaimsNums == 1)
+                        {
+                            targetSet.hasTarget = true;
+                            targetSet.targetCardEntries.Add(cardEntries[0]);
+                        }
+                    }
+                    break;
+                case "Minion":
+                    List<MinionCellItem> minionCellItems = new List<MinionCellItem>();
+                    foreach (MinionCellItem minionCellItem in minionGridProxy.GetMinionCellItemListByPlayerCode(playerGroupProxy.getPlayerByPlayerCode(questStageCircuitProxy.GetNowPlayerCode())))
+                    {
+                        for (int n = 0; n < targetClaims.Length; n++)
+                        {
+                            //判断所有权
+                            if (targetClaims[n] == "Owner")
+                            {
+                                //是自己选
+                                if (targetClaimsContents[n] == "Myself")
+                                {
+                                    if (minionCellItem.playerCode == effectInfo.player.playerCode)
+                                    {
+                                        minionCellItems.Add(minionCellItem);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (minionCellItems.Count < targetSet.targetClaimsNums)
+                    {
+                        //符合数量限制
+                        targetSet.hasTarget = true;
+                        targetSet.targetMinionCellItems = minionCellItems;
+                    }
+                    else
+                    {
+                        //超出目标上限，需要用户选择
+                        UtilityLog.LogError("超出目标上限");
+                    }
+
+                    break;
+                //效果选择
+                case "ChooseEffect":
+                    //获取玩家，根据条件筛选出复合条件的释放者和选择者
+                    //筛选结果
+                    foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
+                    {
+                        for (int n = 0; n < targetClaims.Length; n++)
+                        {
+                            //判断所有权
+                            if (targetClaims[n] == "Owner")
+                            {
+                                //是自己选
+                                if (targetClaimsContents[n] == "Myself")
+                                {
+                                    if (playerItem.playerCode == effectInfo.player.playerCode)
+                                    {
+                                        targetPlayer = playerItem;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (targetPlayer != null)
+                    {
+                        effectInfo.chooseByPlayer = targetPlayer;
+                        //发布用户需要选择信号
+                        SendNotification(LogicalSysEvent.LOGICAL_SYS, effectInfo, LogicalSysEvent.LOGICAL_SYS_CHOOSE_EFFECT);
+                        //
+                    }
+                    else
+                    {
+                        UtilityLog.LogError("no player can ChooseEffect");
+                    }
+
+                    break;
+                //玩家
+                case "Player":
+                    //获取玩家，根据条件筛选出复合条件的释放者和选择者
+                    //筛选结果
+                    foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
+                    {
+                        for (int n = 0; n < targetClaims.Length; n++)
+                        {
+                            //判断所有权
+                            if (targetClaims[n] == "Owner")
+                            {
+                                //是自己选
+                                if (targetClaimsContents[n] == "Myself")
+                                {
+                                    if (playerItem.playerCode == effectInfo.player.playerCode)
+                                    {
+                                        targetPlayer = playerItem;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (targetPlayer != null)
+                    {
+                        //玩家确认
+                        targetSet.targetPlayerItems.Add(targetPlayer);
+                        targetSet.hasTarget = true;
+                    }
+                    else
+                    {
+                        UtilityLog.LogError("no player can add TargetPlayerItems");
+                    }
+                    break;
+
+            }
         }
     }
 }

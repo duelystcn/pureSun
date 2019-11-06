@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TraitCombinationView
   m_EditorClassIdentifier: 
   unique: 1
-  viewLayer: 2
+  viewLayer: 1
   viewName: 7
   cacheScheme: 0
   assetName: TraitCombinationView

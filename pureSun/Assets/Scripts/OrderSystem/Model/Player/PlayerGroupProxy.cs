@@ -49,8 +49,13 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             //抽一张牌
             playerItem.ttPlayerDrawACard = (HandCellItem handCellItem) =>
             {
-                SendNotification(UIViewSystemEvent.UI_VIEW_ZF_HAND_CHANGE, handCellItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_DRAW_ONE_CARD,playerItem.playerCode));
                 SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, handCellItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD, playerItem.playerCode));
+                playerItem.ttPlayerGetACard(handCellItem);
+            };
+            //获得一张牌
+            playerItem.ttPlayerGetACard = (HandCellItem handCellItem) =>
+            {
+                SendNotification(UIViewSystemEvent.UI_VIEW_ZF_HAND_CHANGE, handCellItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_DRAW_ONE_CARD, playerItem.playerCode));
                 SendNotification(OperateSystemEvent.OPERATE_SYS, playerItem.playerCode, OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE);
 
             };

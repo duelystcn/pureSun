@@ -36,6 +36,9 @@ namespace Assets.Scripts.OrderSystem.Model.Minion.MinionComponent
         //生物死亡
         public delegate void TTMinionIsDead();
 
+        //生物进入战场
+        public delegate void TTMinionIntoBattlefield();
+
     }
 
 }

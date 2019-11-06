@@ -295,12 +295,27 @@ namespace Assets.Scripts.OrderSystem.Event
         /// <summary>
         /// 测试案例相关
         /// </summary>
-        public const string UI_TEST_CASE_SYS = "UITestCase";
+        public const string UI_TEST_CASE_SYS = "UITestCaseSys";
         /// <summary>
         /// 测试案例选择窗口打开
         /// </summary>
         public const string UI_TEST_CASE_VIEW_OPEN = "UITestCaseViewOpen";
-        
+
+        /// <summary>
+        /// 墓地详细显示相关
+        /// </summary>
+        public const string UI_GRAVEYARD_LIST_VIEW = "UIGraveyardListView";
+        /// <summary>
+        /// 测试案例选择窗口打开
+        /// </summary>
+        public const string UI_GRAVEYARD_LIST_VIEW_OPEN = "UIGraveyardListViewOpen";
+
+
+
+
+
+
+
 
     }
 }

@@ -35,7 +35,7 @@
   },
   "TestMinionombat": {
     "name": "TestMinionombat",
-    "description": "测试生物战斗和buff",
+    "description": "测试生物入场效果",
     "gameModelName": "Andor",
     "startStage": "ActivePhase",
     "myselfPlayer": {
@@ -44,18 +44,13 @@
       "manaUpperLimit": 2,
       "manaUsable": 2,
       "shipCardCode": "FindWay",
-      "handCard": [ "Adrenaline", "Dazzling", "ImperialRecruit" ],
-      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
+      "handCard": [ "StarChainInfantry", "Dazzling", "TaxCar" ],
+      "deckCard": [ "StarChainInfantry", "StarChainInfantry", "FortifiedAgent", "FortifiedAgent" ],
       "minionList": [
         {
           "code": "ImperialRecruit",
           "x": 1,
           "z": 1
-        },
-        {
-          "code": "ImperialSoldier",
-          "x": 4,
-          "z": -1
         }
       ]
     },
@@ -96,14 +91,14 @@
       "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
       "minionList": [
         {
-          "code": "ImperialRecruit",
+          "code": "ImperialSoldier",
           "x": 1,
-          "z": 0
+          "z": 1
         },
         {
-          "code": "ImperialSoldier",
+          "code": "ImperialRecruit",
           "x": 4,
-          "z": -2
+          "z": -1
         }
       ]
     },

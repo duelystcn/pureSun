@@ -98,10 +98,10 @@ namespace Assets.Scripts.OrderSystem.Controller
                                     //检查所选格子是否可用召唤
                                     if (canUse && canCall)
                                     {
-                                        minionGridProxy.AddOneMinionByHand(index, chooseHand);
                                         //通知战场层去除渲染
                                         SendNotification(HexSystemEvent.HEX_VIEW_SYS, null, HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL_CANCEL);
                                         SendNotification(OperateSystemEvent.OPERATE_SYS, null, OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE_EXE_OVER);
+                                        minionGridProxy.AddOneMinionByHand(index, chooseHand);
                                     }
                                     else {
                                         SendNotification(OperateSystemEvent.OPERATE_SYS, null, OperateSystemEvent.OPERATE_SYS_DRAW_END_NULL);
@@ -159,6 +159,11 @@ namespace Assets.Scripts.OrderSystem.Controller
                     }
                     break;
                 case OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE_EXE_OVER:
+                    //如果是战术，资源牌，放入墓地
+                    if (chooseHand.cardEntry.WhichCard == CardEntry.CardType.ResourceCard || chooseHand.cardEntry.WhichCard == CardEntry.CardType.TacticsCard) {
+                        //在墓地添加手牌
+                        playerItem.AddOneCardToGraveyard(chooseHand.cardEntry);
+                    }
                     //减少费用
                     playerItem.ChangeManaUsableByUseHand(chooseHand);
                     //移除手牌
@@ -207,7 +212,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                     for (int n = 0; n < effectInfoProxy.effectSysItem.effectInfos.Count; n++)
                     {
                         EffectInfo effect = effectInfoProxy.effectSysItem.effectInfos[n];
-                        if (effect.effectInfoStage == EffectInfoStage.Confirming)
+                        if (effect.effectInfoStage == EffectInfoStage.ConfirmingTarget)
                         {
                             if (effect.targetSetList[0].target == "ChooseEffect")
                             {
@@ -225,9 +230,19 @@ namespace Assets.Scripts.OrderSystem.Controller
                                 //将这个效果添加到队列中
                                 effectInfoProxy.effectSysItem.effectInfos.Add(chooseEffect);
                                 //返回一个选择完毕的信号
-                                SendNotification(UIViewSystemEvent.UI_VIEW_CURRENT, UIViewConfig.getNameStrByUIViewName(UIViewName.ChooseStage), UIViewSystemEvent.UI_VIEW_CURRENT_CLOSE_ONE_VIEW);
+                                SendNotification(
+                                    UIViewSystemEvent.UI_VIEW_CURRENT,
+                                    UIViewConfig.getNameStrByUIViewName(UIViewName.ChooseStage),
+                                    StringUtil.GetNTByNotificationTypeAndUIViewNameAndMaskLayer(
+                                        UIViewSystemEvent.UI_VIEW_CURRENT_CLOSE_ONE_VIEW,
+                                        UIViewConfig.getNameStrByUIViewName(UIViewName.ChooseStage),
+                                        "N"
+                                    )
+                                );
+
+
                                 //返回继续执行效果选择的信号
-                                SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_TARGET);
+                                SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_OBJECT);
                             }
                             else {
                                 UtilityLog.LogError("this effectType is not ChooseEffect");
@@ -235,6 +250,22 @@ namespace Assets.Scripts.OrderSystem.Controller
                            
                         }
                     }
+                    break;
+                //打开了墓地
+                case OperateSystemEvent.OPERATE_SYS_GRAVEYARD_LIST_LOAD:
+                    string playerCodeOpenGraveyard = notification.Body as string;
+                    PlayerItem playerItemOpenGraveyard = playerGroupProxy.getPlayerByPlayerCode(playerCodeOpenGraveyard);
+                    //获取墓地的牌，并发送给前台
+                    SendNotification(
+                            UIViewSystemEvent.UI_VIEW_CURRENT,
+                            playerItemOpenGraveyard.cardGraveyard,
+                            StringUtil.GetNTByNotificationTypeAndUIViewNameAndMaskLayer(
+                                UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW,
+                                UIViewConfig.getNameStrByUIViewName(UIViewName.GraveyardListView),
+                                "Y"
+                                )
+                            );
+
                     break;
             }
         }

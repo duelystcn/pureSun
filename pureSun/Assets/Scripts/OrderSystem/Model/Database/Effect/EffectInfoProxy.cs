@@ -67,7 +67,8 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     effectSysItem.effectSysItemStage = EffectSysItemStage.Executing;
                     effectSysItem.effectInfos = effectSysItem.effectInfosQueue.Dequeue();
                     effectSysItem.cardEntry = effectSysItem.cardEntryQueue.Dequeue();
-                    SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_TARGET);
+                    SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_OBJECT);
+                    //SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_TARGET);
                 }
                 else {
                     //UtilityLog.Log("当前没有需要结算的效果");

@@ -63,6 +63,14 @@ namespace Assets.Scripts.OrderSystem.View.UIView
         //测试列表
         TestCaseView,
 
+        //墓地按钮
+        GraveyardButton,
+        //墓地详细显示
+        GraveyardListView,
+
+        //遮罩层
+        UIMaskLayeView
+
     }
     //UIView名字的比较器
     public class EnumUIViewNameComparer

@@ -11,6 +11,7 @@ using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.OperateSystem;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
+using Assets.Scripts.OrderSystem.View.UIView;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Command;
 using System.Collections;
@@ -82,8 +83,18 @@ namespace Assets.Scripts.OrderSystem.Controller
                             oneCardEntry.InitializeByEffectInfo(oneEffectInfo);
                             cardEntries.Add(oneCardEntry);
                         }
-                        SendNotification(UIViewSystemEvent.UI_USER_OPERAT, cardEntries,
-                                          StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_USER_OPERAT_CHOOSE_EFFECT, playerItem.playerCode));
+                     
+                        //获取墓地的牌，并发送给前台
+                        SendNotification(
+                                UIViewSystemEvent.UI_VIEW_CURRENT,
+                                cardEntries,
+                                StringUtil.GetNTByNotificationTypeAndUIViewNameAndMaskLayerAndPlayerCode(
+                                    UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW,
+                                    UIViewConfig.getNameStrByUIViewName(UIViewName.ChooseStage),
+                                    playerItem.playerCode,
+                                    "Y"
+                                    )
+                                );
 
 
                     }

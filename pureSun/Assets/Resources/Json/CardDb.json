@@ -8,6 +8,7 @@
     "cost": "1",
     "trait": [ "supremcy" ],
     "traitdemand": [ "supremcy" ],
+    "effectCodeList": [],
     "quantity": "4"
   },
   "ImperialSoldier": {
@@ -19,6 +20,20 @@
     "cost": "3",
     "trait": [ "supremcy" ],
     "traitdemand": [ "supremcy" ],
+    "effectCodeList": [  ],
+    "quantity": "3"
+  },
+  "StarChainInfantry": {
+    "code": "StarChainInfantry",
+    "name": "星链军团步兵",
+    "type": "Minion",
+    "atk": "1",
+    "def": "2",
+    "cost": "1",
+    "trait": [ "supremcy" ],
+    "traitdemand": [ "supremcy" ],
+    "effectCodeList": [ "AddOneStarChainInfantryFromMyselfDeckWhenEnterTheBattlefield" ],
+    "description": "当星链军团步兵进入战场时，从你的牌库中抽取1张星链军团步兵",
     "quantity": "3"
   },
   "BaseSniper": {

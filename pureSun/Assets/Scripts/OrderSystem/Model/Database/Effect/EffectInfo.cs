@@ -4,6 +4,7 @@ using Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
 using System.Collections.Generic;
+using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetCardEntry;
 using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetChoose;
 using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetMinion;
 using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetPlayer;
@@ -14,8 +15,12 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
     {
         //未开始
         UnStart,
+        //选择宾语目标中
+        ConfirmingObject,
+        //已选择宾语目标
+        ConfirmedObject,
         //选择目标中
-        Confirming,
+        ConfirmingTarget,
         //已选择目标
         ConfirmedTarget,
         //执行中
@@ -36,6 +41,11 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public string[] targetSet { get; set; }
         //实例化目标集
         public List<TargetSet> targetSetList = new List<TargetSet>();
+        //宾物体集合
+        public string[] objectSet { get; set; }
+        //实例化宾物体集合
+        public List<TargetSet> objectSetList = new List<TargetSet>();
+
         //选择效果列表
         public string[] chooseEffectList { get; set; }
         //复合效果列表
@@ -58,13 +68,14 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public string[] impactContents { get; set; }
         
 
-        //指定一个生物
+        //指定生物
         public EATargetMinionList TargetMinionList = null;
-        //进行选择
+        //进行选择的效果
         public EATargetChooseGrid TargetChooseGrid = null;
-        //指定一个玩家
+        //指定玩家
         public EATargetPlayerList TargetPlayerList = null;
-
+        //指定了某一张牌
+        public EATargetCardEntryList TargetCardEntryList = null;
 
 
         //游戏运行中所需要进行的判断？

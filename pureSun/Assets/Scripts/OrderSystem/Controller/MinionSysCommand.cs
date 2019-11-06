@@ -4,6 +4,7 @@ using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
 using Assets.Scripts.OrderSystem.Model.Minion;
+using Assets.Scripts.OrderSystem.Model.Player;
 using PureMVC.Interfaces;
 using PureMVC.Patterns.Command;
 using System.Collections.Generic;
@@ -17,6 +18,8 @@ namespace Assets.Scripts.OrderSystem.Controller
         {
             MinionGridProxy minionGridProxy =
                Facade.RetrieveProxy(MinionGridProxy.NAME) as MinionGridProxy;
+            PlayerGroupProxy playerGroupProxy =
+              Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
             switch (notification.Type)
             {
                 //根据效果渲染高亮
@@ -48,6 +51,8 @@ namespace Assets.Scripts.OrderSystem.Controller
                 case MinionSystemEvent.MINION_SYS_ONE_MINION_IS_DEAD:
                     MinionCellItem minionCellItemIsDead = notification.Body as MinionCellItem;
                     minionGridProxy.minionGridItem.minionCells.Remove(minionCellItemIsDead.index);
+                    //放入墓地
+                    playerGroupProxy.getPlayerByPlayerCode(minionCellItemIsDead.playerCode).AddOneCardToGraveyard(minionCellItemIsDead.cardEntry);
                     break;
 
             }
