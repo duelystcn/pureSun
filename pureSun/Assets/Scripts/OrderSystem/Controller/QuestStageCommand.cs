@@ -6,6 +6,7 @@ using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
+using Assets.Scripts.OrderSystem.Model.Database.GameContainer;
 using Assets.Scripts.OrderSystem.Model.Database.GameModelInfo;
 using Assets.Scripts.OrderSystem.Model.Database.Persistence;
 using Assets.Scripts.OrderSystem.Model.Database.TestCase;
@@ -38,6 +39,10 @@ namespace Assets.Scripts.OrderSystem.Controller
 
             QuestStageCircuitProxy questStageCircuitProxy = Facade.RetrieveProxy(QuestStageCircuitProxy.NAME) as QuestStageCircuitProxy;
 
+            GameContainerProxy gameContainerProxy = Facade.RetrieveProxy(GameContainerProxy.NAME) as GameContainerProxy;
+
+
+
             switch (notification.Type)
             {
                 case UIViewSystemEvent.UI_QUEST_STAGE_START_SPECIAL:
@@ -47,11 +52,13 @@ namespace Assets.Scripts.OrderSystem.Controller
                                                         playerGroupProxy, 
                                                         questStageCircuitProxy,
                                                         effectInfoProxy,
+                                                        gameContainerProxy,
                                                         chooseOneTestCase.gameModelName);
 
                     //读取存储json文件
                     foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
                     {
+
                         PI_Player pI_Player = new PI_Player();
                         if (playerItem.playerCode == "TEST1")
                         {
@@ -61,27 +68,18 @@ namespace Assets.Scripts.OrderSystem.Controller
                         {
                             pI_Player = chooseOneTestCase.enemyPlayer;
                         }
-                        //创建牌库
-                        playerItem.cardDeck = new CardDeck();
-                        foreach (string cardName in pI_Player.deckCard)
-                        {
-                            CardEntry cardEntry = new CardEntry();
-                            cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode(cardName));
-                            cardEntry.player = playerItem;
-                            playerItem.cardDeck.cardEntryList.Add(cardEntry);
+                        foreach (PI_GameContainer pI_GameContainer in pI_Player.gameContainerList) {
+                            List<CardEntry> cardEntries = new List<CardEntry>();
+                            foreach (string cardCode in pI_GameContainer.gameContainerContent) {
+                                CardEntry cardEntry = cardDbProxy.GetCardEntryByCode(cardCode);
+                                cardEntry.controllerPlayerItem = playerItem;
+                                cardEntries.Add(cardEntry);
+                            }
+                            gameContainerProxy.AddCardListByPlayerItemAndGameContainerType(playerItem, pI_GameContainer.gameContainerType,cardEntries);
                         }
-                        CardEntry shipCard = new CardEntry();
-                        shipCard.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode(pI_Player.shipCardCode));
-                        playerItem.shipCard = shipCard;
-                        //手牌
-                        foreach (string cardName in pI_Player.handCard)
-                        {
-                            CardEntry cardEntry = new CardEntry();
-                            cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode(cardName));
-                            cardEntry.player = playerItem;
-                            playerItem.AddCardToHandAndNoTT(cardEntry);
 
-                        }
+                        CardEntry shipCard = cardDbProxy.GetCardEntryByCode(pI_Player.shipCardCode);
+                        playerItem.shipCard = shipCard;
                         //费用上限和可用费用
                         playerItem.manaItem.manaUpperLimit = pI_Player.manaUpperLimit;
                         playerItem.manaItem.manaUsable = pI_Player.manaUpperLimit;
@@ -90,15 +88,11 @@ namespace Assets.Scripts.OrderSystem.Controller
                         {
                             playerItem.traitCombination.AddTraitType(trait);
                         }
-                        //刷新手牌是否可用
-                        playerItem.ChangeHandCardCanUse();
-
                         //生物渲染？
                         foreach (PI_Minion pI_Minion in pI_Player.minionList) {
                             HexCoordinates index =new HexCoordinates(pI_Minion.x, pI_Minion.z);
-                            CardEntry cardEntry = new CardEntry();
-                            cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode(pI_Minion.code));
-                            cardEntry.player = playerItem;
+                            CardEntry cardEntry = cardDbProxy.GetCardEntryByCode(pI_Minion.code);
+                            cardEntry.controllerPlayerItem = playerItem;
                             minionGridProxy.AddOneMinionByCard(index, cardEntry);
 
                         }
@@ -107,11 +101,13 @@ namespace Assets.Scripts.OrderSystem.Controller
                     questStageCircuitProxy.CircuitStart(playerGroupProxy.playerGroup.playerItems);
                     foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
                     {
-
+                        //刷新手牌是否可用
+                        GameContainerItem gameContainerItem = gameContainerProxy.GetGameContainerItemByPlayerItemAndGameContainerType(playerItem, "CardHand");
+                        gameContainerItem.ChangeHandCardCanUse();
                         //先开启手牌栏
                         SendNotification(HandSystemEvent.HAND_VIEW_SYS, null, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_VIEW_SYS_INIT_PLAYER_CODE, playerItem.playerCode));
                         //手牌渲染
-                        SendNotification(HandSystemEvent.HAND_CHANGE, playerItem.handGridItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_AFFLUX, playerItem.playerCode));
+                        SendNotification(HandSystemEvent.HAND_CHANGE, gameContainerItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_AFFLUX, playerItem.playerCode));
                         //获取船只的效果，如果是持续效果则添加到全局监听中
                         foreach (string effectCode in playerItem.shipCard.effectCodeList)
                         {
@@ -142,13 +138,13 @@ namespace Assets.Scripts.OrderSystem.Controller
                                                         playerGroupProxy, 
                                                         questStageCircuitProxy,
                                                         effectInfoProxy,
+                                                        gameContainerProxy,
                                                         "Andor");
 
                     questStageCircuitProxy.CircuitStart(playerGroupProxy.playerGroup.playerItems);
                     foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
                     {
                         //创建牌库
-                        playerItem.cardDeck = new CardDeck();
                         List<CardEntry> cardEntryList = new List<CardEntry>();
                         for (int i = 0; i < 20; i++)
                         {
@@ -156,24 +152,23 @@ namespace Assets.Scripts.OrderSystem.Controller
                             if (i % 3 == 0)
                             {
                                 //生物
-                                cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode("ImperialRecruit"));
+                                cardEntry = cardDbProxy.GetCardEntryByCode("ImperialRecruit");
                             }
                             else if (i % 3 == 1)
                             {
                                 //事件
-                                cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode("FortifiedAgent"));
+                                cardEntry = cardDbProxy.GetCardEntryByCode("FortifiedAgent");
                             }
                             else
                             {
                                 //资源
-                                cardEntry.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode("TaxCar"));
+                                cardEntry = cardDbProxy.GetCardEntryByCode("TaxCar");
                             }
-                            cardEntry.player = playerItem;
+                            cardEntry.controllerPlayerItem = playerItem;
                             cardEntryList.Add(cardEntry);
                         }
-                        playerItem.cardDeck.cardEntryList = cardEntryList;
-                        CardEntry shipCard = new CardEntry();
-                        shipCard.InitializeByCardInfo(cardDbProxy.GetCardInfoByCode("FindWay"));
+                        gameContainerProxy.AddCardListByPlayerItemAndGameContainerType(playerItem, "CardDeck", cardEntryList);
+                        CardEntry shipCard = cardDbProxy.GetCardEntryByCode("FindWay");
                         playerItem.shipCard = shipCard;
                     }
                     foreach (PlayerItem playerItem in playerGroupProxy.playerGroup.playerItems.Values)
@@ -248,6 +243,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                                                         PlayerGroupProxy playerGroupProxy,
                                                         QuestStageCircuitProxy questStageCircuitProxy,
                                                         EffectInfoProxy effectInfoProxy,
+                                                        GameContainerProxy gameContainerProxy,
                                                         string gameModelName)
         {
             gameModelProxy.setGameModelNow(gameModelName);
@@ -260,6 +256,7 @@ namespace Assets.Scripts.OrderSystem.Controller
             {
                 GM_PlayerSite playerSiteOne = gameModelProxy.gameModelNow.playerSiteList[number];
                 playerItem.LoadingGameModelPlayerSet(playerSiteOne);
+                gameContainerProxy.CreateNecessaryContainer(playerItem, gameModelProxy.gameModelNow.gameContainerTypeList);
                 number++;
             }
             //初始化流程信息

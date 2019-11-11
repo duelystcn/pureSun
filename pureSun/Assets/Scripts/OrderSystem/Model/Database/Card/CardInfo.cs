@@ -28,7 +28,7 @@
         public int quantity { get; set; }
 
         //是否需要指定对象
-        public string targetEffectInfo { get; set; }
+        public string[] targetSetToChooseList { get; set; }
 
     }
 }

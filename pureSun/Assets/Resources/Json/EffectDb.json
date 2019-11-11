@@ -1,218 +1,415 @@
 {
   "TargetMinionGetAtk1_Def1": {
     "code": "TargetMinionGetAtk1_Def1",
-    "description": "目标生物+1/+1",
-    "targetSet": [ "OneMyselfMinion" ],
-    "objectSet": [],
+    "effectType": "Independent",
+    "description": "目标己方生物+1/+1",
+    "operationalTarget": {
+      "whoOperate": "MyselfPlayer",
+      "selectTarget": [ "OneMyselfMinion" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "ATK", "DEF" ],
+      "impactContents": [ "1", "1" ]
+    },
     "impactType": "Moment",
     "effectiveTime": {
       "ContinuousRound": 9999,
       "ContinuousStage": "Continued"
     },
-    "impactTargets": [ "ATK", "DEF" ],
-    "impactContents": [ "1", "1" ],
     "whetherToshow": "Y"
   },
   "TargetMinionGetAtk1_Def1_Until_0_EndOfTurn": {
     "code": "TargetMinionGetAtk1_Def1_Until_0_EndOfTurn",
+    "effectType": "Independent",
     "description": "目标生物+1/+1直到回合结束",
-    "targetSet": [ "OneMyselfMinion" ],
-    "objectSet": [],
+    "operationalTarget": {
+      "whoOperate": "MyselfPlayer",
+      "selectTarget": [ "OneMyselfMinion" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "ATK", "DEF" ],
+      "impactContents": [ "1", "1" ]
+    },
     "impactType": "Moment",
     "effectiveTime": {
-      "ContinuousRound": 0,
+      "ContinuousRound": 1,
       "ContinuousStage": "EndOfTurn"
     },
-    "impactTargets": [ "ATK", "DEF" ],
-    "impactContents": [ "1", "1" ],
     "whetherToshow": "Y"
   },
-  "TargetMinionGetAtk1_DefF1_UntiFl_0_EndOfTurn": {
-    "code": "TargetMinionGetAtk1_DefF1_UntiFl_0_EndOfTurn",
-    "description": "目标生物-1/-1直到回合结束",
-    "targetSet": [ "OneMyselfMinion" ],
-    "objectSet": [],
+  "SelfDrawOneCardThenGetOneScore": {
+    "code": "SelfDrawOneCardThenGetOneScore",
+    "effectType": "Independent",
+    "description": "每当你抽一张牌时，获得1分",
+    "impactTimeTriggers": [ "SysSelfDrawACard" ],
+    "operationalTarget": {
+      "whoOperate": "System",
+      "selectTarget": [ "MyselfPlayer" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "Score" ],
+      "impactContents": [ "1" ]
+    },
+    "impactType": "Continue",
+    "effectiveTime": {
+      "ContinuousRound": 9999,
+      "ContinuousStage": "Permanent"
+    },
+    "whetherToshow": "Y"
+  },
+  "DrawCardToMyselfWhenStartOfTrunExecution": {
+    "code": "DrawCardToMyselfWhenStartOfTrunExecution",
+    "effectType": "Independent",
+    "description": "在己方开始阶段执行，己方玩家抽一张牌",
+    "impactTimeTriggers": [ "StartOfTrunExecution" ],
+    "operationalTarget": {
+      "whoOperate": "System",
+      "selectTarget": [ "MyselfPlayer" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "Hand" ],
+      "impactContents": [ "1" ]
+    },
+    "impactType": "GameModelRule",
+    "effectiveTime": {
+      "ContinuousRound": 9999,
+      "ContinuousStage": "Permanent"
+    },
+    "whetherToshow": "N"
+  },
+  "RestoreToTheUpperLimitWhenStartOfTrunExecution": {
+    "code": "RestoreToTheUpperLimitWhenStartOfTrunExecution",
+    "effectType": "Independent",
+    "description": "在己方开始阶段执行，可用费用恢复至上限",
+    "impactTimeTriggers": [ "StartOfTrunExecution" ],
+    "operationalTarget": {
+      "whoOperate": "System",
+      "selectTarget": [ "MyselfPlayer" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "ManaUsable" ],
+      "impactContents": [ "Max" ]
+    },
+    "impactType": "GameModelRule",
+    "effectiveTime": {
+      "ContinuousRound": 9999,
+      "ContinuousStage": "Permanent"
+    },
+    "whetherToshow": "N"
+  },
+  "RestoreCanUseResourceNumMaxWhenStartOfTrunExecution": {
+    "code": "RestoreCanUseResourceNumMaxWhenStartOfTrunExecution",
+    "effectType": "Independent",
+    "description": "在己方开始阶段执行，可使用资源牌的次数恢复至上限",
+    "impactTimeTriggers": [ "StartOfTrunExecution" ],
+    "operationalTarget": {
+      "whoOperate": "System",
+      "selectTarget": [ "MyselfPlayer" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "CanUseResourceNum" ],
+      "impactContents": [ "Max" ]
+    },
+    "impactType": "GameModelRule",
+    "effectiveTime": {
+      "ContinuousRound": 9999,
+      "ContinuousStage": "Permanent"
+    },
+    "whetherToshow": "N"
+  },
+  "MyselfMinionMoveSpecifiedDirectionWhenStartOfTrunExecution": {
+    "code": "MyselfMinionMoveSpecifiedDirectionWhenStartOfTrunExecution",
+    "effectType": "Independent",
+    "description": "在己方战斗阶段执行，己方所有生物向指定方向移动",
+    "impactTimeTriggers": [ "StartOfTrunExecution" ],
+    "operationalTarget": {
+      "whoOperate": "System",
+      "selectTarget": [ "AllMyselfMinion" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "Move" ],
+      "impactContents": [ "1" ]
+    },
+    "impactType": "GameModelRule",
+    "effectiveTime": {
+      "ContinuousRound": 9999,
+      "ContinuousStage": "Permanent"
+    },
+    "whetherToshow": "N"
+  },
+  "MyselfMinionAttackSpecifiedDirectionWhenStartOfBattleExecution": {
+    "code": "MyselfMinionAttackSpecifiedDirectionWhenStartOfBattleExecution",
+    "effectType": "Independent",
+    "description": "在己方战斗阶段执行，己方所有生物向指定方向战斗",
+    "impactTimeTriggers": [ "StartOfBattleExecution" ],
+    "operationalTarget": {
+      "whoOperate": "System",
+      "selectTarget": [ "AllMyselfMinion" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "Attack" ],
+      "impactContents": [ "1" ]
+    },
+    "impactType": "GameModelRule",
+    "effectiveTime": {
+      "ContinuousRound": 9999,
+      "ContinuousStage": "Permanent"
+    },
+    "whetherToshow": "N"
+  },
+  "DrawCardToMyself": {
+    "code": "DrawCardToMyself",
+    "effectType": "Independent",
+    "description": "己方玩家抽一张牌",
+    "operationalTarget": {
+      "whoOperate": "System",
+      "selectTarget": [ "OneCardFormCardDeckIsTop" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "GameContainerType" ],
+      "impactContents": [ "CardHand" ]
+    },
     "impactType": "Moment",
     "effectiveTime": {
-      "ContinuousRound": 0,
+      "ContinuousRound": 9999,
+      "ContinuousStage": "Permanent"
+    },
+    "whetherToshow": "Y"
+  },
+  "TargetMinionGetAtkF1_DefF1_Until_0_EndOfTurn": {
+    "code": "TargetMinionGetAtkF1_DefF1_Until_0_EndOfTurn",
+    "effectType": "Independent",
+    "description": "目标生物-1/-1直到回合结束",
+    "operationalTarget": {
+      "whoOperate": "MyselfPlayer",
+      "selectTarget": [ "OneMyselfMinion" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "ATK", "DEF" ],
+      "impactContents": [ "-1", "-1" ]
+    },
+    "impactType": "Moment",
+    "effectiveTime": {
+      "ContinuousRound": 1,
       "ContinuousStage": "EndOfTurn"
     },
-    "impactTargets": [ "ATK", "DEF" ],
-    "impactContents": [ "-1", "-1" ],
     "whetherToshow": "Y"
   },
   "ChooseOneAddManaUpOneORDrawCardOrAddSupremcyTraitOneToMyself": {
     "code": "ChooseOneAddManaUpOneORDrawCardOrAddSupremcyTraitOneToMyself",
+    "effectType": "Independent",
     "description": "选择一项：\n●获得一点资源上限；\n●抽一张牌；\n●增加一点至高等级",
+    "operationalTarget": {
+      "whoOperate": "MyselfPlayer",
+      "selectTarget": [ "MyselfChooseEffect" ]
+    },
     "chooseEffectList": [ "AddManaUpOneToMyself", "DrawCardToMyself", "AddSupremcyTraitOneToMyself" ],
     "impactType": "Moment",
     "effectiveTime": {
       "ContinuousRound": 0,
       "ContinuousStage": "Moment"
     },
-    "targetSet": [ "MyselfChooseEffect" ],
-    "objectSet": [],
     "whetherToshow": "N"
   },
   "AddManaUpOneToMyself": {
     "code": "AddManaUpOneToMyself",
+    "effectType": "Independent",
     "description": "己方玩家增加一点费用上限",
-    "targetSet": [ "MyselfPlayer" ],
-    "objectSet": [],
+    "operationalTarget": {
+      "whoOperate": "System",
+      "selectTarget": [ "MyselfPlayer" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "ManaUpperLimit" ],
+      "impactContents": [ "1" ]
+    },
     "impactType": "Moment",
     "effectiveTime": {
       "ContinuousRound": 9999,
       "ContinuousStage": "Permanent"
     },
-    "impactTargets": [ "ManaUpperLimit" ],
-    "impactContents": [ "1" ],
     "whetherToshow": "Y"
   },
   "GetManaOneToMyself": {
     "code": "GetManaOneToMyself",
+    "effectType": "Independent",
     "description": "己方玩家获得①",
-    "targetSet": [ "MyselfPlayer" ],
-    "objectSet": [],
+    "operationalTarget": {
+      "whoOperate": "System",
+      "selectTarget": [ "MyselfPlayer" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "ManaUsable" ],
+      "impactContents": [ "1" ]
+    },
     "impactType": "Moment",
     "effectiveTime": {
       "ContinuousRound": 9999,
       "ContinuousStage": "Permanent"
     },
-    "impactTargets": [ "ManaUsable" ],
-    "impactContents": [ "1" ],
-    "whetherToshow": "Y"
-  },
-  "DrawCardToMyself": {
-    "code": "DrawCardToMyself",
-    "description": "己方玩家抽一张牌",
-    "targetSet": [ "MyselfPlayer" ],
-    "objectSet": [],
-    "impactType": "Moment",
-    "effectiveTime": {
-      "ContinuousRound": 9999,
-      "ContinuousStage": "Permanent"
-    },
-    "impactTargets": [ "Hand" ],
-    "impactContents": [ "1" ],
     "whetherToshow": "Y"
   },
   "AddSupremcyTraitOneToMyself": {
     "code": "AddSupremcyTraitOneToMyself",
+    "effectType": "Independent",
     "description": "己方玩家增加一点至高等级",
-    "targetSet": [ "MyselfPlayer" ],
-    "objectSet": [],
+    "operationalTarget": {
+      "whoOperate": "System",
+      "selectTarget": [ "MyselfPlayer" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "TraitAddOne" ],
+      "impactContents": [ "supremcy" ]
+    },
     "impactType": "Moment",
     "effectiveTime": {
       "ContinuousRound": 9999,
       "ContinuousStage": "Permanent"
     },
-    "impactTargets": [ "TraitAddOne" ],
-    "impactContents": [ "supremcy" ],
     "whetherToshow": "Y"
-  },
-  "SelfDrawOneCardThenGetOneScore": {
-    "code": "SelfDrawOneCardThenGetOneScore",
-    "description": "每当你抽一张牌时，获得1分",
-    "targetSet": [ "MyselfPlayer" ],
-    "objectSet": [],
-    "impactType": "Continue",
-    "effectiveTime": {
-      "ContinuousRound": 9999,
-      "ContinuousStage": "Permanent"
-    },
-    "impactTimeTriggers": [ "SysSelfDrawACard" ],
-    "impactTargets": [ "Score" ],
-    "impactContents": [ "1" ],
-    "whetherToshow": "Y"
-  },
-  "DrawCardToMyselfWhenStartOfTrunExecution": {
-    "code": "DrawCardToMyselfWhenStartOfTrunExecution",
-    "description": "在己方开始阶段执行，己方玩家抽一张牌",
-    "targetSet": [ "MyselfPlayer" ],
-    "objectSet": [],
-    "impactType": "GameModelRule",
-    "effectiveTime": {
-      "ContinuousRound": 9999,
-      "ContinuousStage": "Permanent"
-    },
-    "impactTimeTriggers": [ "StartOfTrunExecution" ],
-    "impactTargets": [ "Hand" ],
-    "impactContents": [ "1" ],
-    "whetherToshow": "N"
-  },
-  "RestoreToTheUpperLimitWhenStartOfTrunExecution": {
-    "code": "RestoreToTheUpperLimitWhenStartOfTrunExecution",
-    "description": "在己方开始阶段执行，可用费用恢复至上限",
-    "targetSet": [ "MyselfPlayer" ],
-    "objectSet": [],
-    "impactType": "GameModelRule",
-    "effectiveTime": {
-      "ContinuousRound": 9999,
-      "ContinuousStage": "Permanent"
-    },
-    "impactTimeTriggers": [ "StartOfTrunExecution" ],
-    "impactTargets": [ "ManaUsable" ],
-    "impactContents": [ "Max" ],
-    "whetherToshow": "N"
-  },
-  "RestoreCanUseResourceNumMaxWhenStartOfTrunExecution": {
-    "code": "RestoreCanUseResourceNumMaxWhenStartOfTrunExecution",
-    "description": "在己方开始阶段执行，可使用资源牌的次数恢复至上限",
-    "targetSet": [ "MyselfPlayer" ],
-    "objectSet": [],
-    "impactType": "GameModelRule",
-    "effectiveTime": {
-      "ContinuousRound": 9999,
-      "ContinuousStage": "Permanent"
-    },
-    "impactTimeTriggers": [ "StartOfTrunExecution" ],
-    "impactTargets": [ "CanUseResourceNum" ],
-    "impactContents": [ "Max" ],
-    "whetherToshow": "N"
-  },
-  "MyselfMinionAttackSpecifiedDirectionWhenStartOfBattleExecution": {
-    "code": "MyselfMinionAttackSpecifiedDirectionWhenStartOfBattleExecution",
-    "description": "在己方战斗阶段执行，己方所有生物向指定方向战斗",
-    "targetSet": [ "AllMyselfMinion" ],
-    "objectSet": [],
-    "impactType": "GameModelRule",
-    "effectiveTime": {
-      "ContinuousRound": 9999,
-      "ContinuousStage": "Permanent"
-    },
-    "impactTimeTriggers": [ "StartOfBattleExecution" ],
-    "impactTargets": [ "Attack" ],
-    "impactContents": [ "1" ],
-    "whetherToshow": "N"
-  },
-  "MyselfMinionMoveSpecifiedDirectionWhenStartOfBattleExecution": {
-    "code": "MyselfMinionMoveSpecifiedDirectionWhenStartOfBattleExecution",
-    "description": "在己方战斗阶段执行，己方所有生物向指定方向移动",
-    "targetSet": [ "AllMyselfMinion" ],
-    "objectSet": [],
-    "impactType": "GameModelRule",
-    "effectiveTime": {
-      "ContinuousRound": 9999,
-      "ContinuousStage": "Permanent"
-    },
-    "impactTimeTriggers": [ "StartOfTrunExecution" ],
-    "impactTargets": [ "Move" ],
-    "impactContents": [ "1" ],
-    "whetherToshow": "N"
   },
   "AddOneStarChainInfantryFromMyselfDeckWhenEnterTheBattlefield": {
     "code": "AddOneStarChainInfantryFromMyselfDeckWhenEnterTheBattlefield",
+    "effectType": "Independent",
     "description": "当星链军团步兵进入战场时，从你的牌库中抽取1张星链军团步兵",
-    "targetSet": [ "MyselfPlayer" ],
-    "objectSet": [ "OneStarChainInfantryCardFormCardDeck" ],
+    "operationalTarget": {
+      "whoOperate": "System",
+      "selectTarget": [ "OneStarChainInfantryCardFormCardDeck" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "Location" ],
+      "impactContents": [ "Hand" ]
+    },
+    "impactType": "Moment",
+    "effectiveTime": {
+      "ContinuousRound": 9999,
+      "ContinuousStage": "Permanent"
+    },
+    "whetherToshow": "Y"
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  "DoNothing": {
+    "code": "DoNothing",
+    "effectType": "Independent",
+    "description": "不执行任何效果",
+    "targetSet": [],
+    "objectSet": [],
     "impactType": "Moment",
     "effectiveTime": {
       "ContinuousRound": 0,
       "ContinuousStage": "Moment"
     },
+    "impactTimeTriggers": [],
+    "impactTargets": [],
+    "impactContents": [],
+    "whetherToshow": "N"
+  },
+  "LoseManaOneToMyselfThenDrawCardToMyself": {
+    "code": "LoseManaOneToMyselfThenDrawCardToMyself",
+    "effectType": "BeforeAndAfter",
+    "description": "支付①然后抽一张牌",
+    "impactType": "Moment",
+    "effectiveTime": {
+      "ContinuousRound": 0,
+      "ContinuousStage": "Moment"
+    },
+    "targetSet": [ "MyselfPlayer" ],
+    "preEffectList": [ "PayManaOneToMyself" ],
+    "postEffectList": [ "DrawCardToMyself" ],
+    "objectSet": [],
     "impactTimeTriggers": [ "MyselfEnterTheBattlefield" ],
-    "impactTargets": [ "Hand" ],
-    "impactContents": [ "Add" ],
     "whetherToshow": "Y"
-  }
+  },
+  "SacrificeTargetMyselfMinionToDestoryTargetEnemyMinion": {
+    "code": "SacrificeTargetMyselfMinionToDestoryTargetEnemyMinion",
+    "effectType": "BeforeAndAfter",
+    "description": "牺牲一个己方生物然后消灭目标敌方生物",
+    "impactType": "Moment",
+    "effectiveTime": {
+      "ContinuousRound": 0,
+      "ContinuousStage": "Moment"
+    },
+    "targetSet": [ "MyselfPlayer" ],
+    "preEffectList": [ "SacrificeTargetMyselfMinion" ],
+    "postEffectList": [ "DrawCardToMyself" ],
+    "objectSet": [],
+    "impactTimeTriggers": [ "MyselfEnterTheBattlefield" ],
+    "whetherToshow": "Y"
+  },
+  "PayManaOneToMyself": {
+    "code": "PayManaOneToMyself",
+    "effectType": "Independent",
+    "description": "支付①",
+    "mustBeLaunched": "N",
+    "targetSet": [ "MyselfPlayer" ],
+    "objectSet": [],
+    "impactType": "Moment",
+    "effectiveTime": {
+      "ContinuousRound": 9999,
+      "ContinuousStage": "Permanent"
+    },
+    "impactTargets": [ "ManaUsable" ],
+    "impactContents": [ "-1" ],
+    "whetherToshow": "N"
+  },
+  "SacrificeTargetMyselfMinion": {
+    "code": "SacrificeTargetMyselfMinion",
+    "effectType": "Independent",
+    "description": "牺牲一个己方生物",
+    "mustBeLaunched": "N",
+    "targetSet": [ "OneMyselfMinion" ],
+    "objectSet": [],
+    "impactType": "Moment",
+    "effectiveTime": {
+      "ContinuousRound": 0,
+      "ContinuousStage": "Moment"
+    },
+    "impactTargets": [ "Life" ],
+    "impactContents": [ "Sacrifice" ],
+    "whetherToshow": "N"
+  },
+
 }

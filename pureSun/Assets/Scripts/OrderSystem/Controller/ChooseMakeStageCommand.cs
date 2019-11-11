@@ -4,6 +4,7 @@ using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Database.GameContainer;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.View.UIView;
 using PureMVC.Interfaces;
@@ -19,6 +20,7 @@ namespace Assets.Scripts.OrderSystem.Controller
             PlayerGroupProxy playerGroupProxy = Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
             ChooseStageCircuitProxy chooseStageCircuitProxy = Facade.RetrieveProxy(ChooseStageCircuitProxy.NAME) as ChooseStageCircuitProxy;
             CardDbProxy cardDbProxy = Facade.RetrieveProxy(CardDbProxy.NAME) as CardDbProxy;
+            GameContainerProxy gameContainerProxy = Facade.RetrieveProxy(GameContainerProxy.NAME) as GameContainerProxy;
             switch (notification.Type)
             {
                 case UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE_ONE_CARD:
@@ -29,7 +31,8 @@ namespace Assets.Scripts.OrderSystem.Controller
                     if (playerItemNow.shipCard.cost >= card.cost)
                     {
                         //添加到卡组
-                        playerItemNow.cardDeck.PutOneCard(card);
+                        gameContainerProxy.AddCardByPlayerItemAndGameContainerType(playerItemNow, "CardDeck", card);
+                      
                         // cardDbProxy.RemoveOneCardEntry(card);
                         playerItemNow.shipCard.cost -= card.cost;
                         SendNotification(UIViewSystemEvent.UI_CARD_DECK_LIST, playerItemNow, UIViewSystemEvent.UI_CARD_DECK_LIST_LOAD);

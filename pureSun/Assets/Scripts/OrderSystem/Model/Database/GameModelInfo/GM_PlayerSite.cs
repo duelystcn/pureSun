@@ -22,5 +22,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.GameModelInfo
         public GM_CellRegion[] cellRegionList { get; set; }
         //可移动区域
         public string[]  canMoveRegionCodes { get; set; }
+      
+
     }
 }

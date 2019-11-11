@@ -1,4 +1,6 @@
 ﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Database.GameContainer;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using OrderSystem;
 using System.Collections;
@@ -30,16 +32,16 @@ namespace Assets.Scripts.OrderSystem.View.HandView
             handCellViews = new List<HandCellView>();
         }
 
-        public void AchieveHandGrid(HandGridItem handGridItem, bool myself) {
+        public void AchieveHandGrid(GameContainerItem handGridItem, bool myself) {
             //清除
             foreach (HandCellView handCellView in handCellViews)
             {
                 handCellPool.Push(handCellView);
             }
             //重新
-            for (int i = 0; i < handGridItem.handCells.Count(); i++)
+            for (int i = 0; i < handGridItem.cardEntryList.Count(); i++)
             {
-                HandCellItem handCellItem = handGridItem.handCells[i];
+                CardEntry handCellItem = handGridItem.cardEntryList[i];
                 Vector3 position = new Vector3();
                 //position = HandMetrics.erectPosition(position, handCellItem.X);
                 //创建一个格子实例
@@ -60,7 +62,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
         
 
         //鼠标移入了某一张卡牌
-        public void OneCardMousenPointerEnter(HandCellItem handCellItem) {
+        public void OneCardMousenPointerEnter(CardEntry handCellItem) {
             foreach (HandCellView handCellView in handCellViews)
             {
                 if (handCellView.handCellItem.uuid == handCellItem.uuid)
@@ -70,7 +72,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
             }
         }
         //鼠标移出了某一张卡牌
-        public void OneCardMousenPointerExit(HandCellItem handCellItem){
+        public void OneCardMousenPointerExit(CardEntry handCellItem){
             foreach (HandCellView handCellView in handCellViews)
             {
                 if (handCellView.handCellItem.uuid == handCellItem.uuid)
@@ -82,10 +84,10 @@ namespace Assets.Scripts.OrderSystem.View.HandView
 
         }
         //改变了可用显示
-        public void HandChangeCanUseJudge(List<HandCellItem> handCellItems) {
-            foreach (HandCellItem handCellItem in handCellItems) {
+        public void HandChangeCanUseJudge(List<CardEntry> handCellItems) {
+            foreach (CardEntry handCellItem in handCellItems) {
                 foreach (HandCellView handCellView in handCellViews) {
-                    if (handCellItem.cardEntry.uuid == handCellView.handCellItem.cardEntry.uuid) {
+                    if (handCellItem.uuid == handCellView.handCellItem.uuid) {
                         handCellView.SetCanUseOutLight(handCellItem);
                     }
 
@@ -93,11 +95,11 @@ namespace Assets.Scripts.OrderSystem.View.HandView
             }
         }
         //选中的手牌没有被成功使用
-        public void HandChangeUncheckHandItem(HandCellItem uncheckHandCellItem)
+        public void HandChangeUncheckHandItem(CardEntry uncheckHandCellItem)
         {
             foreach (HandCellView handCellView in handCellViews)
             {
-                if (uncheckHandCellItem.cardEntry.uuid == handCellView.handCellItem.cardEntry.uuid)
+                if (uncheckHandCellItem.uuid == handCellView.handCellItem.uuid)
                 {
                     handCellView.UncheckChange();
                 }
@@ -107,12 +109,12 @@ namespace Assets.Scripts.OrderSystem.View.HandView
 
 
         //添加一张牌
-        public void PlayerDrawOneCard(HandCellItem handCellItem, UnityAction callBack)
+        public void PlayerDrawOneCard(CardEntry handCellItem, UnityAction callBack)
         {
             StartCoroutine(PlayerDrawOneCardEnumerator(handCellItem , callBack));
         }
         //添加一张牌的动画
-        public IEnumerator PlayerDrawOneCardEnumerator(HandCellItem handCellItem, UnityAction callBack)
+        public IEnumerator PlayerDrawOneCardEnumerator(CardEntry handCellItem, UnityAction callBack)
         {
             Vector3 position = new Vector3();
             //position = HandMetrics.erectPosition(position, handCellItem.X);
@@ -131,7 +133,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
 
         }
         //移除一张牌
-        public void PlayerRemoveOneCard(HandCellItem handCellItem, UnityAction callBack)
+        public void PlayerRemoveOneCard(CardEntry handCellItem, UnityAction callBack)
         {
             //清除
             foreach (HandCellView handCellView in handCellViews)

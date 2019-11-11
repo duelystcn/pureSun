@@ -1,5 +1,6 @@
 ﻿
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Model.Database.GameContainer;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent;
 using OrderSystem;
@@ -12,14 +13,13 @@ public class GraveyardListOne : MonoBehaviour
     public ObjectPool<CardIntactView> cardIntactViewPool;
     public List<CardIntactView> cardIntactViewList = new List<CardIntactView>();
 
-    public void InitView(CardDeck cardGraveyard)
+    public void InitView(GameContainerItem cardGraveyard)
     {
         if (cardIntactViewPool == null)
         {
             GameObject prefab = cardIntactViewPrefab.gameObject;
             cardIntactViewPool = new ObjectPool<CardIntactView>(prefab, "minionCellPool");
         }
-        UtilityLog.Log("读取墓地窗口：" + cardGraveyard.cardEntryList.Count, LogUtType.Special);
         for (int n = 0; n < cardGraveyard.cardEntryList.Count; n++)
         {
             if (n < cardIntactViewList.Count)

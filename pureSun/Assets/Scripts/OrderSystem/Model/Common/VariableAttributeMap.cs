@@ -17,14 +17,13 @@ namespace Assets.Scripts.OrderSystem.Model.Common
         public Dictionary<string, VariableAttribute> variableAttributeMap = new Dictionary<string, VariableAttribute>();
 
         //创建一个可变属性，需要提供一个初始值和code
-        public void CreateVariableAttributeByOriginalValueAndCodeAndBetterAndAutoRestore(string valueCode, int originalValue, bool biggerThebetter, bool autoRestore) {
+        public void CreateVariableAttributeByOriginalValueAndCodeAndBetterAndAutoRestore(string valueCode, int originalValue, bool biggerThebetter) {
             VariableAttribute variableAttribute = new VariableAttribute();
             variableAttribute.valueCode = valueCode;
             variableAttribute.biggerThebetter = biggerThebetter;
-            variableAttribute.autoRestore = autoRestore;
             variableAttribute.valueMap[VATtrtype.OriginalValue] = originalValue;
-            variableAttribute.valueMap[VATtrtype.CurrentValue] = originalValue;
-            variableAttribute.valueMap[VATtrtype.UpperLimitValue] = originalValue;
+            variableAttribute.valueMap[VATtrtype.ChangeValue] = 0;
+            variableAttribute.valueMap[VATtrtype.DamageValue] = 0;
             variableAttributeMap.Add(valueCode, variableAttribute);
         }
 
@@ -38,64 +37,40 @@ namespace Assets.Scripts.OrderSystem.Model.Common
             if (isReverse) {
                 changeValue = -changeValue;
             }
-            if (!isReverse)
-            {
-                variableAttributeMap[valueCode].valueMap[VATtrtype.UpperLimitValue] += changeValue;
-                variableAttributeMap[valueCode].valueMap[VATtrtype.CurrentValue] += changeValue;
-            }
-            else {
-                if (changeValue >= 0)
-                {
-                    if (variableAttributeMap[valueCode].autoRestore)
-                    {
-                        variableAttributeMap[valueCode].valueMap[VATtrtype.UpperLimitValue] += changeValue;
-                        variableAttributeMap[valueCode].valueMap[VATtrtype.CurrentValue] += changeValue;
-                    }
-                    else {
-                        variableAttributeMap[valueCode].valueMap[VATtrtype.UpperLimitValue] += changeValue;
-                    }
-                }
-                else
-                {
-                    variableAttributeMap[valueCode].valueMap[VATtrtype.UpperLimitValue] += changeValue;
-                    //判断当前值是否大于上限，如果是，那么当前值要减到上限为止
-                    if (variableAttributeMap[valueCode].valueMap[VATtrtype.CurrentValue] > 
-                            variableAttributeMap[valueCode].valueMap[VATtrtype.UpperLimitValue]) {
-                        variableAttributeMap[valueCode].valueMap[VATtrtype.CurrentValue] = variableAttributeMap[valueCode].valueMap[VATtrtype.UpperLimitValue];
-                    }
-
-                }
-            }
+            variableAttributeMap[valueCode].valueMap[VATtrtype.ChangeValue] += changeValue;
+            
            
           
         }
         //获取当前值
         public int GetValueByCodeAndType(string valueCode, VATtrtype vAType) {
-            return variableAttributeMap[valueCode].valueMap[vAType];
+            return variableAttributeMap[valueCode].valueMap[VATtrtype.OriginalValue] + variableAttributeMap[valueCode].valueMap[VATtrtype.ChangeValue] + variableAttributeMap[valueCode].valueMap[VATtrtype.DamageValue];
         }
 
         //判断一个属性值是该提示绿色还是提示红色
         public string CheckCurrentValueIsBetterByCode(string valueCode)
         {
             //获取当前值
-            int currentValue = variableAttributeMap[valueCode].valueMap[VATtrtype.CurrentValue];
-            //获取上限
-            int upperLimitValue = variableAttributeMap[valueCode].valueMap[VATtrtype.UpperLimitValue];
+            int DamageValue = variableAttributeMap[valueCode].valueMap[VATtrtype.DamageValue];
+            //获取变化值
+            int ChangeValue = variableAttributeMap[valueCode].valueMap[VATtrtype.ChangeValue];
             //获取初始值
             int originalValue = variableAttributeMap[valueCode].valueMap[VATtrtype.OriginalValue];
-            //判断当前值是否小于上限
-            if (currentValue < upperLimitValue) {
+            //判断是否已经受伤
+            if (DamageValue < 0)
+            {
                 if (variableAttributeMap[valueCode].biggerThebetter == true)
                 {
                     return "Bad";
                 }
-                else {
+                else
+                {
                     return "Good";
                 }
-
-            } else if (currentValue == upperLimitValue) {
-                //判断当前值和初始值的大小
-                if (originalValue < currentValue) {
+            }
+            else {
+                if (ChangeValue > 0)
+                {
                     if (variableAttributeMap[valueCode].biggerThebetter == true)
                     {
                         return "Good";
@@ -105,10 +80,11 @@ namespace Assets.Scripts.OrderSystem.Model.Common
                         return "Bad";
                     }
                 }
-                else if (originalValue == currentValue) {
+                else if (ChangeValue == 0)
+                {
                     return "NoChange";
                 }
-                else{
+                else {
                     if (variableAttributeMap[valueCode].biggerThebetter == true)
                     {
                         return "Bad";
@@ -118,11 +94,6 @@ namespace Assets.Scripts.OrderSystem.Model.Common
                         return "Good";
                     }
                 }
-
-            } else{
-                //按照逻辑，当前值不可能大于上限值
-                UtilityLog.LogError("按照逻辑，当前值不可能大于上限值，值代码为【" + valueCode + "】");
-                return "Error";
             }
         }
 

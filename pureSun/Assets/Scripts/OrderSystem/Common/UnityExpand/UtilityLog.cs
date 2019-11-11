@@ -7,6 +7,7 @@
      * 修改时间：
      * 修 改 人：
     *************************************************************************************/
+using System;
 using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.Common.UnityExpand
@@ -61,7 +62,9 @@ namespace Assets.Scripts.OrderSystem.Common.UnityExpand
                 Debug.Log(msg);
             }
             else {
-                if (logType == LogUtType.Special || logType == LogUtType.Special) {
+                if (logType == LogUtType.Special || logType == LogUtType.Special || logType == LogUtType.Effect)
+                {
+                    //Debug.Log(string.Format(GetColor(color), msg.ToString() + "|||||||||" + System.Guid.NewGuid().ToString("N")));
                     Debug.Log(string.Format(GetColor(color), msg.ToString()));
                 }
             }
@@ -97,6 +100,16 @@ namespace Assets.Scripts.OrderSystem.Common.UnityExpand
         public static void LogWarning(object msg)
         {
             Debug.LogWarning(msg);
+        }
+
+        /// <summary>
+        /// 获取时间戳
+        /// </summary>
+        /// <returns></returns>
+        public static string GetTimeStamp()
+        {
+            TimeSpan ts = DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            return Convert.ToInt64(ts.TotalSeconds).ToString();
         }
 
     }

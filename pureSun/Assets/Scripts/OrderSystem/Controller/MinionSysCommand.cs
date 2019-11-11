@@ -3,6 +3,7 @@
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
+using Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
 using PureMVC.Interfaces;
@@ -24,10 +25,10 @@ namespace Assets.Scripts.OrderSystem.Controller
             {
                 //根据效果渲染高亮
                 case MinionSystemEvent.MINION_SYS_EFFECT_HIGHLIGHT:
-                    EffectInfo effectInfo = notification.Body as EffectInfo;
+                    TargetSet targetSetToChoose = notification.Body as TargetSet;
                     List<MinionCellItem> mList = new List<MinionCellItem>();
                     foreach (MinionCellItem minionCellItem in minionGridProxy.minionGridItem.minionCells.Values) {
-                        if (effectInfo.checkEffectToTargetMinionCellItem(minionCellItem)) {
+                        if (targetSetToChoose.checkEffectToTargetMinionCellItem(minionCellItem)) {
                             minionCellItem.IsEffectTarget = true;
                             mList.Add(minionCellItem);
                         } 
@@ -52,7 +53,8 @@ namespace Assets.Scripts.OrderSystem.Controller
                     MinionCellItem minionCellItemIsDead = notification.Body as MinionCellItem;
                     minionGridProxy.minionGridItem.minionCells.Remove(minionCellItemIsDead.index);
                     //放入墓地
-                    playerGroupProxy.getPlayerByPlayerCode(minionCellItemIsDead.playerCode).AddOneCardToGraveyard(minionCellItemIsDead.cardEntry);
+                    minionCellItemIsDead.cardEntry.nextGameContainerType = "CardGraveyard";
+                    minionCellItemIsDead.cardEntry.ttNeedChangeGameContainerType(minionCellItemIsDead.cardEntry);
                     break;
 
             }

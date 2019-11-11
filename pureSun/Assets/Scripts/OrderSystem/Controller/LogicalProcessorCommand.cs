@@ -7,6 +7,7 @@ using Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
+using Assets.Scripts.OrderSystem.Model.Database.GameContainer;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.OperateSystem;
 using Assets.Scripts.OrderSystem.Model.Player;
@@ -38,6 +39,10 @@ namespace Assets.Scripts.OrderSystem.Controller
                Facade.RetrieveProxy(EffectInfoProxy.NAME) as EffectInfoProxy;
             HexGridProxy hexGridProxy =
                       Facade.RetrieveProxy(HexGridProxy.NAME) as HexGridProxy;
+            GameContainerProxy gameContainerProxy =
+               Facade.RetrieveProxy(GameContainerProxy.NAME) as GameContainerProxy;
+
+            CardDbProxy cardDbProxy = Facade.RetrieveProxy(CardDbProxy.NAME) as CardDbProxy;
             PlayerItem playerItem = null;
             switch (notification.Type)
             {
@@ -77,9 +82,8 @@ namespace Assets.Scripts.OrderSystem.Controller
                         //把这些效果实例化成卡片
                         List<CardEntry> cardEntries = new List<CardEntry>();
                         foreach (string effectName in effectInfo.chooseEffectList) {
-                            EffectInfo oneEffectInfo = effectInfoProxy.effectSysItem.effectInfoMap[effectName];
-                            CardEntry oneCardEntry = new CardEntry();
-                            oneCardEntry.InitializeByCardInfo(effectInfo.cardEntry.cardInfo);
+                            EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectName);
+                            CardEntry oneCardEntry = cardDbProxy.GetCardEntryBCardInfo(effectInfo.cardEntry.cardInfo);
                             oneCardEntry.InitializeByEffectInfo(oneEffectInfo);
                             cardEntries.Add(oneCardEntry);
                         }
@@ -103,9 +107,8 @@ namespace Assets.Scripts.OrderSystem.Controller
                     {
                         UtilityLog.Log("AI玩家【" + playerItem.playerCode + "】开始选择卡牌效果",LogUtType.Operate);
                         //先直接选择第一种
-                        EffectInfo oneEffectInfo = effectInfoProxy.effectSysItem.effectInfoMap[effectInfo.chooseEffectList[0]];
-                        CardEntry oneCardEntry = new CardEntry();
-                        oneCardEntry.InitializeByCardInfo(effectInfo.cardEntry.cardInfo);
+                        EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectInfo.chooseEffectList[0]);
+                        CardEntry oneCardEntry = cardDbProxy.GetCardEntryBCardInfo(effectInfo.cardEntry.cardInfo);
                         oneCardEntry.InitializeByEffectInfo(oneEffectInfo);
                         SendNotification(OperateSystemEvent.OPERATE_SYS, oneCardEntry, OperateSystemEvent.OPERATE_SYS_CHOOSE_ONE_EFFECT);
                     }
@@ -126,7 +129,8 @@ namespace Assets.Scripts.OrderSystem.Controller
                     if (playerItemNow.CheckResourceCardCanUse())
                     {
                         UtilityLog.Log("AI玩家" + playerCodeNow + "可以使用资源牌：", LogUtType.Operate);
-                        HandCellItem getHand = playerItemNow.GetOneCardTypeCard(CardType.ResourceCard);
+                        GameContainerItem gameContainerItem = gameContainerProxy.GetGameContainerItemByPlayerItemAndGameContainerType(playerItemNow,"CardHand");
+                        CardEntry getHand = gameContainerItem.GetOneCardTypeCard(CardType.ResourceCard);
                         //检查手牌里是否存在资源牌
                         if (getHand != null)
                         {

@@ -44,8 +44,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                     //为每个玩家分配不同的船
                     for (int rnum = 0;rnum<randomList.Count;rnum++) {
                         string playerCode = playerCodeList[rnum % playerCodeList.Count];
-                        CardEntry fpCardShip = new CardEntry();
-                        fpCardShip.InitializeByCardInfo(shipCardList[randomList[rnum]]);
+                        CardEntry fpCardShip = cardDbProxy.GetCardEntryBCardInfo(shipCardList[randomList[rnum]]);
                         chooseStageCircuitProxy.chooseStageCircuitItem.playerShipCardMap[playerCode].Add(fpCardShip);
                     }
                     string playerCodeNow = chooseStageCircuitProxy.GetNowPlayerCode();
@@ -90,7 +89,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                     }
                     else {
                         //添加到卡组
-                        playerItemNow.cardDeck.PutOneCard(card);
+                        //playerItemNow.cardDeck.PutOneCard(card);
                         cardDbProxy.RemoveOneCardEntry(card);
                         //该玩家的购买费用减少
                         playerItemNow.shipCard.cost -= card.cost;

@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
+﻿using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent;
 using UnityEngine.Events;
@@ -14,7 +15,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
        
 
 
-        public HandCellItem handCellItem;
+        public CardEntry handCellItem;
         //视图
         public CardIntactView cardIntactView;
         public HandCellInstance handCellInstance;
@@ -29,20 +30,20 @@ namespace Assets.Scripts.OrderSystem.View.HandView
         public UnityAction OnPointerExit = () => { };
 
         public bool myself;
-        public void LoadHandCellItem(HandCellItem handCellItem)
+        public void LoadHandCellItem(CardEntry handCellItem)
         {
             this.handCellItem = handCellItem;
             //详细图读取后隐藏
-            cardIntactView.LoadCard(handCellItem.cardEntry, myself);
+            cardIntactView.LoadCard(handCellItem, myself);
             cardIntactView.gameObject.SetActive(false);
             //缩略图读取
-            handCellInstance.LoadCard(handCellItem.cardEntry, myself);
+            handCellInstance.LoadCard(handCellItem, myself);
             if (myself) {
                 SetCanUseOutLight(handCellItem);
             }
         }
         //设置可用给高亮
-        public void SetCanUseOutLight(HandCellItem handCellItem) {
+        public void SetCanUseOutLight(CardEntry handCellItem) {
             this.handCellItem.canUse = handCellItem.canUse;
             handCellInstance.SetOutLight(handCellItem.canUse);
             cardIntactView.SetOutLight(handCellItem.canUse);

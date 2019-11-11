@@ -247,27 +247,27 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
             string atkStr = minionCellItem.minionVariableAttributeMap.CheckCurrentValueIsBetterByCode("Atk");
             if (atkStr == "Good")
             {
-                atkStr = "<color=\"green\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CurrentValue);
+                atkStr = "<color=\"green\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CalculatedValue);
             }
             else if (atkStr == "Bad") {
-                atkStr = "<color=\"red\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CurrentValue);
+                atkStr = "<color=\"red\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CalculatedValue);
             }
             else if (atkStr == "NoChange")
             {
-                atkStr = "<color=\"black\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CurrentValue);
+                atkStr = "<color=\"black\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CalculatedValue);
             }
             string defStr = minionCellItem.minionVariableAttributeMap.CheckCurrentValueIsBetterByCode("Def");
             if (defStr == "Good")
             {
-                defStr = "<color=\"green\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CurrentValue);
+                defStr = "<color=\"green\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CalculatedValue);
             }
             else if (defStr == "Bad")
             {
-                defStr = "<color=\"red\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CurrentValue);
+                defStr = "<color=\"red\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CalculatedValue);
             }
             else if (defStr == "NoChange")
             {
-                defStr = "<color=\"black\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CurrentValue);
+                defStr = "<color=\"black\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CalculatedValue);
             }
 
            

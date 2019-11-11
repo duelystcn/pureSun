@@ -1,13 +1,13 @@
 ﻿using Assets.Scripts.OrderSystem.Metrics;
+using Assets.Scripts.OrderSystem.Model.Common.BasicGame;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
-using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.ChooseMakeStage;
-using UnityEngine;
+using static Assets.Scripts.OrderSystem.Model.Database.Card.CardEntryComponent.CardEntryTimeTrigger;
 
 namespace Assets.Scripts.OrderSystem.Model.Database.Card
 {
-    public class CardEntry
+    public class CardEntry : BasicGameDto
     {
         //类型
         public enum CardType { MinionCard, ResourceCard, TacticsCard, ShipCard };    
@@ -36,7 +36,22 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
         //描述
         public string description { get; set; }
 
-       
+        //上一个归属地
+        public string lastGameContainerType;
+        //归属地
+        public string gameContainerType;
+        //下一个归属地
+        public string nextGameContainerType;
+
+        //在归属地中的坐标
+        public int locationIndex;
+
+
+
+        //判断是否可使用标识
+        public bool canUse = false;
+
+
 
 
         //功能属性
@@ -56,12 +71,13 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
         //需要被展示的效果
         public EffectInfo needShowEffectInfo;
 
-        //这张牌的当前所使用者，用于效果执行
-        public PlayerItem player;
 
         //目标暂存
-        //生物
-        public MinionCellItem targetMinionCellItem;
+        public BasicGameDto targetBasicGameDto;
+
+
+        //卡牌需要变更归属地
+        public TTNeedChangeGameContainerType ttNeedChangeGameContainerType;
 
         //根据效果实例化一张卡（用作展示）
         public void InitializeByEffectInfo(EffectInfo oneEffectInfo)

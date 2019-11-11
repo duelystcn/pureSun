@@ -8,6 +8,7 @@
 using Assets.Scripts.OrderSystem.Model.Circuit.ChooseStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
+using Assets.Scripts.OrderSystem.Model.Database.GameContainer;
 using Assets.Scripts.OrderSystem.Model.Database.GameModelInfo;
 using Assets.Scripts.OrderSystem.Model.Database.TestCase;
 using Assets.Scripts.OrderSystem.Model.Minion;
@@ -57,10 +58,17 @@ namespace OrderSystem
             PlayerGroupProxy playerGroupProxy = new PlayerGroupProxy();
             Facade.RegisterProxy(playerGroupProxy);
 
+            //游戏容器代理
+            GameContainerProxy gameContainerProxy = new GameContainerProxy();
+            Facade.RegisterProxy(gameContainerProxy);
+
+
 
             //选择阶段进程代理
             ChooseStageCircuitProxy chooseStageCircuitProxy = new ChooseStageCircuitProxy();
             Facade.RegisterProxy(chooseStageCircuitProxy);
+
+
 
         
 

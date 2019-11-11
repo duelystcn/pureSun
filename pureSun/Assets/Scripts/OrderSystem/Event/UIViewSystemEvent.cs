@@ -267,6 +267,10 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 效果展示列表放入一个效果
         /// </summary>
         public const string UI_EFFECT_DISPLAY_SYS_PUT_ONE_EFFECT = "UIEffectDisplaySysPutOneEffect";
+        /// <summary>
+        /// 一个效果需要用户选择
+        /// </summary>
+        public const string UI_EFFECT_DISPLAY_SYS_ONE_EFFECT_NEED_CHOOSE= "UIEffectDisplaySysOneEffectNeedChoose";
 
 
         /// <summary>

@@ -1,18 +1,20 @@
 ﻿
 
+using Assets.Scripts.OrderSystem.Model.Database.Card;
+
 namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
 {
     public class PlayerTimeTrigger
     {
         //玩家抽了一张牌
-        public delegate void TTPlayerDrawACard(HandCellItem handCellItem);
+        public delegate void TTPlayerDrawACard();
         //玩家获得了一张牌
-        public delegate void TTPlayerGetACard(HandCellItem handCellItem);
+        public delegate void TTPlayerGetACard(CardEntry handCellItem);
 
         //玩家移除一张牌
-        public delegate void TTPlayerRemoveACard(HandCellItem handCellItem);
+        public delegate void TTPlayerRemoveACard(CardEntry handCellItem);
         //玩家使用一张牌
-        public delegate void TTPlayerUseACard(HandCellItem handCellItem);
+        public delegate void TTPlayerUseACard(CardEntry handCellItem);
         //判断手牌是否可用
         public delegate void TTPlayerHandCanUseJudge();
 

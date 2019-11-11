@@ -23,6 +23,8 @@ namespace Assets.Scripts.OrderSystem.View
         //设置地图模式
         public HexModelInfo hexModelInfo;
 
+       
+
         public MediatorExpand(string mediatorName, object viewComponent = null) : base(mediatorName, viewComponent)
         {
            

@@ -3,6 +3,7 @@
 using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using PureMVC.Patterns.Proxy;
 
@@ -47,13 +48,14 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         public void AddTimeTrigger(PlayerItem playerItem)
         {
             //抽一张牌
-            playerItem.ttPlayerDrawACard = (HandCellItem handCellItem) =>
+            playerItem.ttPlayerDrawACard = () =>
             {
-                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, handCellItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD, playerItem.playerCode));
-                playerItem.ttPlayerGetACard(handCellItem);
+
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, null, StringUtil.GetNTByNotificationTypeAndPlayerCode(TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD, playerItem.playerCode));
+                playerItem.ttPlayerGetACard(null);
             };
             //获得一张牌
-            playerItem.ttPlayerGetACard = (HandCellItem handCellItem) =>
+            playerItem.ttPlayerGetACard = (CardEntry handCellItem) =>
             {
                 SendNotification(UIViewSystemEvent.UI_VIEW_ZF_HAND_CHANGE, handCellItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_DRAW_ONE_CARD, playerItem.playerCode));
                 SendNotification(OperateSystemEvent.OPERATE_SYS, playerItem.playerCode, OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE);
@@ -65,12 +67,12 @@ namespace Assets.Scripts.OrderSystem.Model.Player
                 SendNotification(OperateSystemEvent.OPERATE_SYS, playerItem.playerCode, OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE);
             };
             //使用一张牌
-            playerItem.ttPlayerUseACard = (HandCellItem handCellItem) =>
+            playerItem.ttPlayerUseACard = (CardEntry handCellItem) =>
             {
                 SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, handCellItem, TimeTriggerEvent.TIME_TRIGGER_SYS_USE_HAND_CARD);
             };
             //移除一张牌
-            playerItem.ttPlayerRemoveACard = (HandCellItem handCellItem) =>
+            playerItem.ttPlayerRemoveACard = (CardEntry handCellItem) =>
             {
                 SendNotification(HandSystemEvent.HAND_CHANGE, handCellItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_REMOVE_ONE_CARD, playerItem.playerCode));
                 SendNotification(OperateSystemEvent.OPERATE_SYS, playerItem.playerCode, OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE);

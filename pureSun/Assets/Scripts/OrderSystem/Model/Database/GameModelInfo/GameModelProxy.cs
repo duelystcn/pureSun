@@ -32,22 +32,6 @@ namespace Assets.Scripts.OrderSystem.Model.Database.GameModelInfo
         //当前坐标模式
         public HexModelInfo hexModelInfoNow = null;
 
-        //设置当前游戏模式
-        public void setGameModelNow (string name){
-            //先默认是安多尔模式
-            gameModelNow = this.gameModelInfoMap[name];
-            UtilityLog.Log("当前游戏模式：" + gameModelNow.name,LogUtType.Other);
-
-            //地图模式
-            string arrayMode = gameModelNow.arrayMode;
-            //地图大小
-            int height = gameModelNow.height;
-            int width = gameModelNow.width;
-
-            hexModelInfoNow = new HexModelInfo(width, height, arrayMode, HexModelType.Source);
-            SendNotification(OrderSystemEvent.CLINET_SYS, hexModelInfoNow, OrderSystemEvent.CLINET_SYS_GMAE_MODEL_SET);
-        }
-
         public GameModelProxy() : base(NAME)
         {
             gameModelInfoMap = new Dictionary<string, GameModel>();
@@ -65,5 +49,25 @@ namespace Assets.Scripts.OrderSystem.Model.Database.GameModelInfo
                 JsonConvert.DeserializeObject<Dictionary<string, GM_OneStageSite>>(stageSiteStr);
 
         }
+
+        //设置当前游戏模式
+        public void setGameModelNow(string name)
+        {
+            //先默认是安多尔模式
+            gameModelNow = this.gameModelInfoMap[name];
+            UtilityLog.Log("当前游戏模式：" + gameModelNow.name, LogUtType.Other);
+
+            //地图模式
+            string arrayMode = gameModelNow.arrayMode;
+            //地图大小
+            int height = gameModelNow.height;
+            int width = gameModelNow.width;
+
+            hexModelInfoNow = new HexModelInfo(width, height, arrayMode, HexModelType.Source);
+            SendNotification(OrderSystemEvent.CLINET_SYS, hexModelInfoNow, OrderSystemEvent.CLINET_SYS_GMAE_MODEL_SET);
+        }
+
+        
+
     }
 }

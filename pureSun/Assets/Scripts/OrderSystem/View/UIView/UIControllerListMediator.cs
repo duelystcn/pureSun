@@ -4,6 +4,7 @@ using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.TestCase;
 using Assets.Scripts.OrderSystem.Model.Minion;
+using Assets.Scripts.OrderSystem.Model.OperateSystem;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView;
@@ -27,6 +28,9 @@ namespace Assets.Scripts.OrderSystem.View.UIView
     public class UIControllerListMediator : MediatorExpand
     {
         public new const string NAME = "UIControllerListMediator";
+
+        //需要传递参数的call
+        public delegate void SendNotificationAddCardEntry(OneUserSelectionItem oneUserSelectionItem);
 
 
 
@@ -295,7 +299,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                             {
                                 if (cardDeckListLoad[num].playerItem.playerCode == playerItemLoad.playerCode)
                                 {
-                                    cardDeckListLoad[num].playerItem = playerItemLoad;
+
                                     cardDeckListLoad[num].LoadPlayerInfo();
                                     foreach (CardHeadView cardHeadView in cardDeckListLoad[num].cardHeadViews)
                                     {
@@ -371,7 +375,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                     {
                         case UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_PUT_ONE_EFFECT:
                             effectDisplayView = UIControllerLIst.GetViewByName<EffectDisplayView>(UIViewName.EffectDisplayView);
-                            CardEntry effectCard = notification.Body as CardEntry;
+                            CardEntry effectCardNeedShow = notification.Body as CardEntry;
                             callBackDelay = true;
                             //回调函数
                             callBack = () =>
@@ -380,7 +384,16 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                                 SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EFFECT_SHOW_OVER);
                                 SendNotification(UIViewSystemEvent.UI_ANIMATION_SYS, null, UIViewSystemEvent.UI_ANIMATION_SYS_START);
                             };
-                            effectDisplayView.ShowCradEffectByCardEntry(effectCard, callBack);
+                            effectDisplayView.ShowCradEffectByCardEntry(effectCardNeedShow, callBack);
+                            break;
+                        case UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_ONE_EFFECT_NEED_CHOOSE:
+                            effectDisplayView = UIControllerLIst.GetViewByName<EffectDisplayView>(UIViewName.EffectDisplayView);
+                            CardEntry effectCardNeedChoose = notification.Body as CardEntry;
+                            SendNotificationAddCardEntry sendNotificationAddCard = (OneUserSelectionItem oneUserSelectionItem) =>
+                            {
+                                SendNotification(OperateSystemEvent.OPERATE_SYS, oneUserSelectionItem, OperateSystemEvent.OPERATE_SYS_CHOOSE_ONE_USER_SELECTION_ITEM);
+                            };
+                            effectDisplayView.ShowCradEffectAndUserSelectionListByCardEntry(effectCardNeedChoose, sendNotificationAddCard);
                             break;
                     }
                     break;

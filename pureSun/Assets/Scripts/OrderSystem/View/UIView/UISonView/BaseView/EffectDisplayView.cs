@@ -11,17 +11,21 @@
     *************************************************************************************/
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
+using Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS;
+using Assets.Scripts.OrderSystem.Model.OperateSystem;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.PlayerComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.EffectDisplayComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.ManaInfoComponent;
+using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.OperateComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.TraitSignComponent;
 using OrderSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static Assets.Scripts.OrderSystem.View.UIView.UIControllerListMediator;
 
 namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
 {
@@ -37,6 +41,12 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
 
         //对象池
         public ObjectPool<EffectIndicationTrail> effectIndicationTrailPool;
+
+        //用户选项表
+        public UserSelectionList userSelectionList;
+
+        
+
 
         protected override void InitUIObjects()
         {
@@ -58,6 +68,42 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
             //0.5秒后隐藏擦除
             StartCoroutine(ShowOverAction(callBack));
         }
+
+        public void ShowCradEffectAndUserSelectionListByCardEntry(CardEntry cardEntry, SendNotificationAddCardEntry sendNotificationAddCard) {
+            //添加需要展示的卡牌
+            ShowCradEffect(cardEntry);
+            ShowUserSelectListByCardEntry(cardEntry, sendNotificationAddCard);
+
+
+        }
+        public void ShowUserSelectListByCardEntry(CardEntry cardEntry, SendNotificationAddCardEntry sendNotificationAddCard) {
+            //获取需要展示的效果
+            EffectInfo needShowEffectInfo = cardEntry.needShowEffectInfo;
+            //获取需要用户进行判断的效果
+            EffectInfo needChoosePreEffect = needShowEffectInfo.needChoosePreEffect;
+            List<OneUserSelectionItem> oneUserSelections = new List<OneUserSelectionItem>();
+            //制作第一个选项,用户选择生效
+            OneUserSelectionItem oneUserSelectionForYes = new OneUserSelectionItem();
+            oneUserSelectionForYes.defaultAvailab = needChoosePreEffect.checkCanExecution;
+            oneUserSelectionForYes.selectionText = needChoosePreEffect.description;
+            oneUserSelectionForYes.isExecute = true;
+            oneUserSelectionForYes.cardEntry = cardEntry;
+            //制作第二个选项，用户选择不生效
+            OneUserSelectionItem oneUserSelectionForNo = new OneUserSelectionItem();
+            oneUserSelectionForNo.defaultAvailab = true;
+            oneUserSelectionForNo.selectionText = "不执行";
+            oneUserSelectionForNo.isExecute = false;
+            oneUserSelectionForNo.cardEntry = cardEntry;
+            oneUserSelections.Add(oneUserSelectionForYes);
+            oneUserSelections.Add(oneUserSelectionForNo);
+            //关闭窗口时执行的操作
+            UnityAction choseThisView = () =>
+            {
+                  cardIntactView.gameObject.SetActive(false);
+            };
+            userSelectionList.LoadingUserSelectionListToCreate(oneUserSelections, sendNotificationAddCard, choseThisView);
+        }
+
         public void ShowCradEffect(CardEntry cardEntry) {
             cardIntactView.gameObject.SetActive(true);
             cardIntactView.LoadCard(cardEntry,true);
@@ -66,84 +112,91 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
         {
             List<Vector3> endVectors = new List<Vector3>();
             EffectInfo effectInfo = cardEntry.needShowEffectInfo;
-            switch (effectInfo.targetSetList[0].target) {
-                case "Player":      
-                    for (int n = 0; n < effectInfo.targetSetList[0].targetPlayerItems.Count; n++)
-                    {
-                        for (int m = 0; m < effectInfo.impactTargets.Length; m++)
+            foreach (TargetSet targetSet in effectInfo.operationalTarget.selectTargetList) {
+                switch (targetSet.target)
+                {
+                    case "Player":
+                        for (int n = 0; n < targetSet.targetPlayerItems.Count; n++)
                         {
-                            OnePlayerManaInfo[] onePlayerManaInfos = null;
-                            switch (effectInfo.impactTargets[m])
+                            for (int m = 0; m < effectInfo.operationalContent.impactTargets.Length; m++)
                             {
-                                //资源上限
-                                case "ManaUpperLimit":
-                                    onePlayerManaInfos = GameObject.FindObjectsOfType<OnePlayerManaInfo>();
-                                    foreach (PlayerItem playerItem in effectInfo.targetSetList[0].targetPlayerItems)
-                                    {
-                                        foreach (OnePlayerManaInfo onePlayerManaInfo in onePlayerManaInfos)
+                                OnePlayerManaInfo[] onePlayerManaInfos = null;
+                                switch (effectInfo.operationalContent.impactTargets[m])
+                                {
+                                    //资源上限
+                                    case "ManaUpperLimit":
+                                        onePlayerManaInfos = GameObject.FindObjectsOfType<OnePlayerManaInfo>();
+                                        foreach (PlayerItem playerItem in targetSet.targetPlayerItems)
                                         {
-                                            if (onePlayerManaInfo.playerCode == playerItem.playerCode)
+                                            foreach (OnePlayerManaInfo onePlayerManaInfo in onePlayerManaInfos)
                                             {
-                                                Vector3 endPosition = onePlayerManaInfo.transform.position;
-                                                endPosition.y = endPosition.y + 5;
-                                                endVectors.Add(endPosition);
+                                                if (onePlayerManaInfo.playerCode == playerItem.playerCode)
+                                                {
+                                                    Vector3 endPosition = onePlayerManaInfo.transform.position;
+                                                    endPosition.y = endPosition.y + 5;
+                                                    endVectors.Add(endPosition);
+                                                }
                                             }
                                         }
-                                    }
-                                    break;
-                                //可用费用
-                                case "ManaUsable":
-                                    onePlayerManaInfos = GameObject.FindObjectsOfType<OnePlayerManaInfo>();
-                                    foreach (PlayerItem playerItem in effectInfo.targetSetList[0].targetPlayerItems)
-                                    {
-                                        foreach (OnePlayerManaInfo onePlayerManaInfo in onePlayerManaInfos)
+                                        break;
+                                    //可用费用
+                                    case "ManaUsable":
+                                        onePlayerManaInfos = GameObject.FindObjectsOfType<OnePlayerManaInfo>();
+                                        foreach (PlayerItem playerItem in targetSet.targetPlayerItems)
                                         {
-                                            if (onePlayerManaInfo.playerCode == playerItem.playerCode)
+                                            foreach (OnePlayerManaInfo onePlayerManaInfo in onePlayerManaInfos)
                                             {
-                                                Vector3 endPosition = onePlayerManaInfo.transform.position;
+                                                if (onePlayerManaInfo.playerCode == playerItem.playerCode)
+                                                {
+                                                    Vector3 endPosition = onePlayerManaInfo.transform.position;
+                                                    endPosition.y = endPosition.y + 5;
+                                                    endVectors.Add(endPosition);
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    //科技相关
+                                    case "TraitAddOne":
+                                        TraitSignRowList[] traitSignRowLists = GameObject.FindObjectsOfType<TraitSignRowList>();
+                                        foreach (PlayerItem playerItem in targetSet.targetPlayerItems)
+                                        {
+                                            foreach (TraitSignRowList traitSignRowList in traitSignRowLists)
+                                            {
+                                                if (traitSignRowList.playerCode == playerItem.playerCode)
+                                                {
+                                                    Vector3 endPosition = traitSignRowList.transform.position;
+                                                    endPosition.y = endPosition.y + 5;
+                                                    endVectors.Add(endPosition);
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    //分数相关
+                                    case "Score":
+                                        ShipComponentView[] shipComponentViews = GameObject.FindObjectsOfType<ShipComponentView>();
+                                        foreach (PlayerItem playerItem in targetSet.targetPlayerItems)
+                                        {
+                                            if (shipComponentViews[0].myselfPlayerCode == playerItem.playerCode)
+                                            {
+                                                Vector3 endPosition = shipComponentViews[0].myselfScore.transform.position;
+                                                endPosition.y = endPosition.y + 5;
+                                                endVectors.Add(endPosition);
+                                            }
+                                            else
+                                            {
+                                                Vector3 endPosition = shipComponentViews[0].enemyScore.transform.position;
                                                 endPosition.y = endPosition.y + 5;
                                                 endVectors.Add(endPosition);
                                             }
                                         }
-                                    }
-                                    break;
-                                //科技相关
-                                case "TraitAddOne":
-                                    TraitSignRowList[] traitSignRowLists = GameObject.FindObjectsOfType<TraitSignRowList>();
-                                    foreach (PlayerItem playerItem in effectInfo.targetSetList[0].targetPlayerItems) {
-                                        foreach (TraitSignRowList traitSignRowList in traitSignRowLists)
-                                        {
-                                            if (traitSignRowList.playerCode == playerItem.playerCode) {
-                                                Vector3 endPosition = traitSignRowList.transform.position;
-                                                endPosition.y = endPosition.y + 5;
-                                                endVectors.Add(endPosition);
-                                            }
-                                        }
-                                    }
-                                    break;
-                                //分数相关
-                                case "Score":
-                                    ShipComponentView[] shipComponentViews = GameObject.FindObjectsOfType<ShipComponentView>();
-                                    foreach (PlayerItem playerItem in effectInfo.targetSetList[0].targetPlayerItems)
-                                    {
-                                        if (shipComponentViews[0].myselfPlayerCode == playerItem.playerCode)
-                                        {
-                                            Vector3 endPosition = shipComponentViews[0].myselfScore.transform.position;
-                                            endPosition.y = endPosition.y + 5;
-                                            endVectors.Add(endPosition);
-                                        }
-                                        else {
-                                            Vector3 endPosition = shipComponentViews[0].enemyScore.transform.position;
-                                            endPosition.y = endPosition.y + 5;
-                                            endVectors.Add(endPosition);
-                                        }
-                                    }
-                                    break;
-                            }                          
+                                        break;
+                                }
+                            }
                         }
-                    }
-                break;
+                        break;
 
+
+                }
 
             }
             //起始点固定

@@ -4,6 +4,7 @@
 using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Database.GameContainer;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.CardComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.GraveyardListComponent;
@@ -21,7 +22,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
 
         public override void InitViewForParameter(UIControllerListMediator mediator, object body, Dictionary<string, string> parameterMap)
         {
-            CardDeck cardGraveyard = body as CardDeck;
+            GameContainerItem cardGraveyard = body as GameContainerItem;
             graveyardListOne.InitView(cardGraveyard);
             this.graveyardListExit.OnPointerClick = () => {
                 //关闭墓地页面

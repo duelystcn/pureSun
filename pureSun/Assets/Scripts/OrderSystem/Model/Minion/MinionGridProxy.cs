@@ -34,9 +34,9 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             }
         }
         //根据手牌添加生物
-        public void AddOneMinionByHand(HexCoordinates index, HandCellItem chooseHand)
+        public void AddOneMinionByHand(HexCoordinates index, CardEntry chooseHand)
         {
-            AddOneMinionByCard(index,chooseHand.cardEntry);
+            AddOneMinionByCard(index,chooseHand);
         }
         //根据指定牌添加生物
         public void AddOneMinionByCard(HexCoordinates index, CardEntry cardEntry)
@@ -48,14 +48,15 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             }
             MinionCellItem minionCellItem = new MinionCellItem();
             minionCellItem.cardEntry = cardEntry;
+            minionCellItem.dtoType = "Minion";
             //设置所有者
-            minionCellItem.playerCode = cardEntry.player.playerCode;
+            minionCellItem.controllerPlayerItem = cardEntry.controllerPlayerItem;
             minionCellItem.color = Color.red;
             minionCellItem.IsEffectTarget = false;
             minionCellItem.uuid = System.Guid.NewGuid().ToString("N");
             minionCellItem.index = index;
-            minionCellItem.minionVariableAttributeMap.CreateVariableAttributeByOriginalValueAndCodeAndBetterAndAutoRestore("Atk", cardEntry.atk, true, true);
-            minionCellItem.minionVariableAttributeMap.CreateVariableAttributeByOriginalValueAndCodeAndBetterAndAutoRestore("Def", cardEntry.def, true, false);
+            minionCellItem.minionVariableAttributeMap.CreateVariableAttributeByOriginalValueAndCodeAndBetterAndAutoRestore("Atk", cardEntry.atk, true);
+            minionCellItem.minionVariableAttributeMap.CreateVariableAttributeByOriginalValueAndCodeAndBetterAndAutoRestore("Def", cardEntry.def, true);
             minionCellItem.minionComeFrom = MinionComeFrom.Hand;
             AddTimeTrigger(minionCellItem);
             minionGridItem.minionCells.Add(index, minionCellItem);
@@ -84,7 +85,7 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             };
             //生物准备发起一次攻击
             minionCellItem.ttLaunchAnAttack = () =>{
-                UtilityLog.Log("玩家【" + minionCellItem .playerCode + "】的生物【" + minionCellItem.cardEntry.name + "】发起一次攻击", LogUtType.Attack);
+                UtilityLog.Log("玩家【" + minionCellItem .controllerPlayerItem.playerCode + "】的生物【" + minionCellItem.cardEntry.name + "】发起一次攻击", LogUtType.Attack);
                 SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, minionCellItem, EffectExecutionEvent.EFFECT_EXECUTION_SYS_LAUNCH_AN_ATTACK);
             };
             //生物进行一次攻击
@@ -95,7 +96,7 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             //生物发起一次移动
             minionCellItem.ttLaunchAnMove = () =>
             {
-                UtilityLog.Log("玩家【" + minionCellItem.playerCode + "】的生物【" + minionCellItem.cardEntry.name + "】发起一次移动", LogUtType.Attack);
+                UtilityLog.Log("玩家【" + minionCellItem.controllerPlayerItem.playerCode + "】的生物【" + minionCellItem.cardEntry.name + "】发起一次移动", LogUtType.Attack);
                 SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, minionCellItem, EffectExecutionEvent.EFFECT_EXECUTION_SYS_LAUNCH_AN_MOVE);
             };
             //生物进行一次移动
@@ -122,7 +123,7 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             foreach (HexCoordinates key in keyCol)
             {
                 MinionCellItem minionCellItem = minionGridItem.minionCells[key];
-                if (minionCellItem.cardEntry.player.playerCode == playerItem.playerCode) {
+                if (minionCellItem.cardEntry.controllerPlayerItem.playerCode == playerItem.playerCode) {
                     minionCellItems.Add(minionCellItem);
                 }
             }

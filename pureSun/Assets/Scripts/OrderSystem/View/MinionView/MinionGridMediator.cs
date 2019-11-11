@@ -108,7 +108,7 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
                         case MinionSystemEvent.MINION_VIEW_ATTACK_TARGET_MINION:
                             callBackDelay = true;
                             MinionCellItem minionCellItemAttack = notification.Body as MinionCellItem;
-                            UtilityLog.Log("玩家【" + minionCellItemAttack.playerCode + "】的生物【" + minionCellItemAttack.cardEntry.name + "】准备执行攻击动画", LogUtType.Attack);
+                            UtilityLog.Log("玩家【" + minionCellItemAttack.controllerPlayerItem.playerCode + "】的生物【" + minionCellItemAttack.cardEntry.name + "】准备执行攻击动画", LogUtType.Attack);
                             callBack = () =>
                             {
                                 exceINotification = false;

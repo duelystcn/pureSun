@@ -1,6 +1,7 @@
 ﻿
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Database.GameContainer;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView;
@@ -48,14 +49,14 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
                 LoadShipCard(playerItem.shipCard);
             }
            
-            LoadCardList(playerItem.cardDeck);
+           // LoadCardList(playerItem.cardDeck);
         }
         public void LoadShipCard(CardEntry shipCard) {
             shipCardHeadView.gameObject.SetActive(true);
             shipCardHeadView.LoadCard(shipCard);
 
         }
-        public void LoadCardList(CardDeck cardDeck)
+        public void LoadCardList(GameContainerItem cardDeck)
         {
             for (int i = 0; i < cardDeck.cardEntryList.Count; i++)
             {

@@ -30,5 +30,8 @@ namespace Assets.Scripts.OrderSystem.Model.Database.GameModelInfo
         //玩家具体设置
         public GM_PlayerSite[] playerSiteList { get; set; }
 
+        //拥有的卡牌集合区域，类似于卡组，墓地，等等
+        public string[] gameContainerTypeList { get; set; }
+
     }
 }

@@ -78,10 +78,10 @@ namespace Assets.Scripts.OrderSystem.Controller
                     break;
                 //使用了一张手牌
                 case TimeTriggerEvent.TIME_TRIGGER_SYS_USE_HAND_CARD:
-                    HandCellItem handCellItemUse = notification.Body as HandCellItem;
-                    switch (handCellItemUse.cardEntry.WhichCard) {
+                    CardEntry handCellItemUse = notification.Body as CardEntry;
+                    switch (handCellItemUse.WhichCard) {
                         case CardEntry.CardType.ResourceCard:
-                            playerGroupProxy.playerGroup.playerItems[handCellItemUse.cardEntry.player.playerCode].canUseResourceNum--;
+                            handCellItemUse.controllerPlayerItem.canUseResourceNum--;
                             break;
 
                     }
@@ -101,7 +101,6 @@ namespace Assets.Scripts.OrderSystem.Controller
                 if (effectInfo.impactType == "GameModelRule") {
                     effectInfo.player.playerCode = playerCodeNotification;
                 }
-                UtilityLog.Log("【" + effectInfo.player.playerCode + "】拥有的效果【" + effectInfo.description + "】,触发者【" + playerCodeNotification + "】检测是否可以触发成功", LogUtType.Effect);
                 foreach (ImpactTimeTrigger impactTimeTrigger in effectInfo.impactTimeTriggerList)
                 {
                     if (impactTimeTrigger.impactTimeTriggertMonitor == notificationType)

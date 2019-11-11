@@ -43,11 +43,34 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 
 
         }
-
+        //根据目标对象的名称获取一个深度克隆的目标对象信息
+        public TargetSet GetDepthCloneTargetSetByName(string targetSetCode) {
+            return TransExpV2<TargetSet, TargetSet>.Trans(effectSysItem.targetSetMap[targetSetCode]);
+            
+        }
+        //根据效果的名称获取一个深度克隆的效果信息
         public EffectInfo GetDepthCloneEffectByName(string effectCode) {
             EffectInfo effectInfo = TransExpV2<EffectInfo, EffectInfo>.Trans(effectSysItem.effectInfoMap[effectCode]);
             //初始化效果
             effectSysItem.EffectActionReady(effectInfo);
+            if (effectInfo.preEffectList != null) {
+                //实例化每一个前置后置效果
+                foreach (string preEffectCode in effectInfo.preEffectList)
+                {
+                    EffectInfo preEffectInfo = TransExpV2<EffectInfo, EffectInfo>.Trans(effectSysItem.effectInfoMap[preEffectCode]);
+                    effectSysItem.EffectActionReady(preEffectInfo);
+                    effectInfo.preEffectEntryList.Add(preEffectInfo);
+                }
+            }
+            if (effectInfo.postEffectList != null) {
+                //实例化每一个前置后置效果
+                foreach (string postEffectCode in effectInfo.postEffectList)
+                {
+                    EffectInfo postEffectInfo = TransExpV2<EffectInfo, EffectInfo>.Trans(effectSysItem.effectInfoMap[postEffectCode]);
+                    effectSysItem.EffectActionReady(postEffectInfo);
+                    effectInfo.postEffectEntryList.Add(postEffectInfo);
+                }
+            }
             return effectInfo;
         }
 
@@ -67,8 +90,9 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
                     effectSysItem.effectSysItemStage = EffectSysItemStage.Executing;
                     effectSysItem.effectInfos = effectSysItem.effectInfosQueue.Dequeue();
                     effectSysItem.cardEntry = effectSysItem.cardEntryQueue.Dequeue();
-                    SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_OBJECT);
-                    //SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_TARGET);
+                    UtilityLog.Log("效果系统取出了卡牌【" + effectSysItem.cardEntry.name + "】进行释放", LogUtType.Effect);
+                    //SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_OBJECT);
+                    SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_TARGET);
                 }
                 else {
                     //UtilityLog.Log("当前没有需要结算的效果");

@@ -5,10 +5,11 @@ using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
 {
-    public class HandCellItem
+    //这个类弃用了
+    public class HandCellItem_Deprecated
     {
         //顺序标识
-        public int index;
+        public int locationIndex;
         //卡的实例
         public CardEntry cardEntry { get; private set; }
         //颜色
@@ -20,7 +21,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
 
 
 
-        public HandCellItem(CardEntry cardEntry)
+        public HandCellItem_Deprecated(CardEntry cardEntry)
         {
             this.cardEntry = cardEntry;
         }

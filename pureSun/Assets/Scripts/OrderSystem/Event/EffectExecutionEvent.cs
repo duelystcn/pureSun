@@ -22,8 +22,11 @@ namespace Assets.Scripts.OrderSystem.Event
         //执行效果寻找主语目标
         public const string EFFECT_EXECUTION_SYS_FIND_TARGET = "EffectExecutionSysFindTarget";
 
-        //执行效果
+        //询问用户是否需要确认效果发动或者选择
         public const string EFFECT_EXECUTION_SYS_EXE_EFFECT = "EffectExecutionSysExeEffect";
+
+        //执行效果
+        public const string EFFECT_EXECUTION_SYS_ASK_THE_USER = "EffectExecutionSysAskTheUser";
 
         //一个效果执行完毕，用来执行动画
 

@@ -1,6 +1,7 @@
 ﻿
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Common;
+using Assets.Scripts.OrderSystem.Model.Common.BasicGame;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using static Assets.Scripts.OrderSystem.Model.Minion.MinionComponent.MinionItemT
 namespace Assets.Scripts.OrderSystem.Model.Minion
 {
     public enum MinionComeFrom { Hand, Graveyard, Effect };
-    public class MinionCellItem
+    public class MinionCellItem: BasicGameDto
     {
         //颜色
         public Color color;
@@ -18,10 +19,7 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
         public CardEntry cardEntry;
         //是否可作为效果对象
         public bool IsEffectTarget;
-        //uuid
-        public string uuid;
-        //所有者
-        public string playerCode;
+
         //所在位置
         // public int index;
         public HexCoordinates index;
@@ -83,13 +81,13 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
         public void SufferDamage(int damageNum) {
             //cumulativeDamage += damageNum;
 
-            minionVariableAttributeMap.ChangeValueByCodeAndType("Def", VATtrtype.CurrentValue, -damageNum);
+            minionVariableAttributeMap.ChangeValueByCodeAndType("Def", VATtrtype.DamageValue, -damageNum);
             ttDefChange(damageNum);
             CheckMinionIsDead();
         }
         //检查生物是否死亡
         public void CheckMinionIsDead() {
-            if (minionVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CurrentValue) <= 0) {
+            if (minionVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CalculatedValue) <= 0) {
                 ttMinionIsDead();
             }
         
@@ -100,13 +98,13 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
         {
             this.attackTargetIndex = defensiveMinionCellItem.index;
             ttExecuteAnAttack();
-            defensiveMinionCellItem.SufferDamage(minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CurrentValue));
+            defensiveMinionCellItem.SufferDamage(minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CalculatedValue));
         }
         //生物反击某一个生物
         public void CounterAttackTargetMinion(MinionCellItem attackMinionCellItem) {
             this.attackTargetIndex = attackMinionCellItem.index;
             ttExecuteAnAttack();
-            attackMinionCellItem.SufferDamage(minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CurrentValue));
+            attackMinionCellItem.SufferDamage(minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CalculatedValue));
         }
       
 
@@ -115,15 +113,13 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
             bool buffHasChange = false;
             foreach (EffectInfo effectInfo in effectBuffInfoList) {
                 //倒计时为0则清除buff
-                if (effectInfo.effectiveTime.ContinuousStage == timeTrigger && effectInfo.effectiveTime.ContinuousRound == 0) {
+                if (effectInfo.effectiveTime.ContinuousStage == timeTrigger) {
                     effectInfo.effectiveTime.ContinuousRound--;
-                    buffHasChange = true;
+                    if (effectInfo.effectiveTime.ContinuousRound == 0) {
+                        buffHasChange = true;
+                    }
                 }
-                //倒计时不为0则倒计时减一
-                else if (effectInfo.effectiveTime.ContinuousStage == timeTrigger && effectInfo.effectiveTime.ContinuousRound > 0)
-                {
-                    effectInfo.effectiveTime.ContinuousRound--;
-                }
+               
             }
             if (buffHasChange) {
                 ttBuffNeedRemove();
@@ -131,7 +127,7 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
                 List<EffectInfo> newEffectBuffInfoList = new List<EffectInfo>();
                 foreach (EffectInfo effectInfo in effectBuffInfoList)
                 {
-                    if (effectInfo.effectiveTime.ContinuousRound >= 0) {
+                    if (effectInfo.effectiveTime.ContinuousRound > 0) {
                         newEffectBuffInfoList.Add(effectInfo);
                     }
                 }

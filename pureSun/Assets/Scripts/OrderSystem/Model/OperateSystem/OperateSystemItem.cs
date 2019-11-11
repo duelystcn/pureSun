@@ -17,7 +17,7 @@ namespace Assets.Scripts.OrderSystem.Model.OperateSystem
 
       
 
-        public HandCellItem onChooseHandCellItem
+        public CardEntry onChooseHandCellItem
         {
             get;  set;
         }

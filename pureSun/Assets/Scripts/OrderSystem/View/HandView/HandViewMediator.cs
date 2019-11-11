@@ -1,6 +1,8 @@
 ﻿using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Database.GameContainer;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using OrderSystem;
@@ -84,7 +86,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                     switch (notification.Type)
                     {
                         case HandSystemEvent.HAND_CHANGE_AFFLUX:
-                            HandGridItem handGridItem = notification.Body as HandGridItem;
+                            GameContainerItem handGridItem = notification.Body as GameContainerItem;
                             handControlView.handGridViewMap[playerCodeNotification].AchieveHandGrid(handGridItem,myself);               
                             SendNotification(HandSystemEvent.HAND_CHANGE, handControlView.handGridViewMap[playerCodeNotification], StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_OVER, playerCodeNotification));
                             break;
@@ -120,12 +122,12 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                             break;
                         //发出鼠标移入消息
                         case HandSystemEvent.HAND_CHANGE_POINTER_ENTER:
-                            HandCellItem enterHand = notification.Body as HandCellItem;
+                            CardEntry enterHand = notification.Body as CardEntry;
                             //handGridView.OneCardMousenPointerEnter(enterHand);
                             break;
                         //发出鼠标移出消息
                         case HandSystemEvent.HAND_CHANGE_POINTER_EXIT:
-                            HandCellItem exitHand = notification.Body as HandCellItem;
+                            CardEntry exitHand = notification.Body as CardEntry;
                             //handGridView.OneCardMousenPointerExit(exitHand);
                             break;
                         //抽了一张牌
@@ -139,13 +141,13 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                                     SendNotification(HandSystemEvent.HAND_CHANGE, null, HandSystemEvent.HAND_CHANGE_ANIMATION_START);
                                 };
                                 callBackDelay = true;
-                                HandCellItem handCellItemDraw = notification.Body as HandCellItem;
+                                CardEntry handCellItemDraw = notification.Body as CardEntry;
                                 handControlView.handGridViewMap[playerCodeNotification].PlayerDrawOneCard(handCellItemDraw, callBack);
 
                             break;
                         //移除一张牌
                         case HandSystemEvent.HAND_CHANGE_REMOVE_ONE_CARD:
-                            HandCellItem handCellItemRemove = notification.Body as HandCellItem;
+                            CardEntry handCellItemRemove = notification.Body as CardEntry;
                             callBackDelay = true;
                             handControlView.handGridViewMap[playerCodeNotification].PlayerRemoveOneCard(handCellItemRemove, callBack);
                             break;
@@ -153,14 +155,14 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                         case HandSystemEvent.HAND_CHANGE_CAN_USE_JUDGE:
                             if (myself)
                             {
-                                List<HandCellItem> handCells = notification.Body as List<HandCellItem>;
+                                List<CardEntry> handCells = notification.Body as List<CardEntry>;
                                 handControlView.handGridViewMap[playerCodeNotification].HandChangeCanUseJudge(handCells);
                             }
                             break;
                         //手牌恢复到初始状态，当使用手牌没有成功的
                         case HandSystemEvent.HAND_CHANGE_UNCHECK_STATUS:
 
-                            HandCellItem uncheckHandCellItem = notification.Body as HandCellItem;
+                            CardEntry uncheckHandCellItem = notification.Body as CardEntry;
                             handControlView.handGridViewMap[playerCodeNotification].HandChangeUncheckHandItem(uncheckHandCellItem);
                             break;
                     }

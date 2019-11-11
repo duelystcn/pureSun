@@ -1,15 +1,17 @@
 ﻿
 
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Model.Common.BasicGame;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
 {
-    public class HandGridItem
+    //这个类弃用了
+    public class HandGridItem_Deprecated : BasicGameListDto
     {
-        public List<HandCellItem> handCells
+        public List<CardEntry> handCells
         {
             get; private set;
         }
@@ -23,28 +25,25 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
         //模拟创建
         public void Create()
         {
-            handCells = new List<HandCellItem>();
+            handCells = new List<CardEntry>();
             cellIndex = 0;
         }
       
-        public HandCellItem CreateCell(CardEntry cardEntry)
+        public CardEntry CreateCell(CardEntry cardEntry)
         {
-            HandCellItem handCellItem = new HandCellItem(cardEntry);
-            handCellItem.color = defaultColor;
-            handCellItem.uuid = System.Guid.NewGuid().ToString("N");
-            handCellItem.index = cellIndex;
+            cardEntry.locationIndex = cellIndex;
             cellIndex++;
-            handCells.Add(handCellItem);
-            return handCellItem;
+            handCells.Add(cardEntry);
+            return cardEntry;
         }
 
         //移除一张手牌的实例
-        public void RemoveOneHandCellItem(HandCellItem handCellItem)
+        public void RemoveOneHandCellItem(CardEntry cardEntry)
         {
             int index = -1;
             for (int i = 0; i < this.handCells.Count; i++)
             {
-                if (this.handCells[i].uuid == handCellItem.uuid)
+                if (this.handCells[i].uuid == cardEntry.uuid)
                 {
                     index = i;
                     break;
@@ -52,7 +51,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
             }
             if (index < 0)
             {
-                UtilityLog.LogError("This handCellItem index" + handCellItem.index + "is not exist");
+                UtilityLog.LogError("This handCellItem index" + cardEntry.locationIndex + "is not exist");
             }
             else
             {

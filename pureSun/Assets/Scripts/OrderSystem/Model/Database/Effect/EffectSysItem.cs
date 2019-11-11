@@ -4,6 +4,7 @@ using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Common;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Database.Effect.EffectCompent;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS;
 using Assets.Scripts.OrderSystem.Model.Minion;
@@ -55,141 +56,16 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         //发送到前台进行展示的效果个数
         public int showEffectNum = 0;
 
-       
 
-
-        public void EffectActionReady(EffectInfo effect) {
-            foreach (string objectSet in effect.objectSet) {
-                TargetSet objectSetDto = TransExpV2<TargetSet, TargetSet>.Trans(targetSetMap[objectSet]);
-                effect.objectSetList.Add(objectSetDto);
-            }
-            
-            foreach (string targetSet in effect.targetSet) {
-                TargetSet targetSetDto = TransExpV2<TargetSet, TargetSet>.Trans(targetSetMap[targetSet]);
-                effect.targetSetList.Add(targetSetDto);
-                if (targetSetDto.target == "Minion")
-                {
-                    effect.TargetMinionList = (List<MinionCellItem> minionCellItemList, TargetSet objectSet) =>
-                    {
-                        for (int n = 0; n < minionCellItemList.Count; n++)
-                        {
-                            if (!effect.isReverse)
-                            {
-                                if (effect.effectiveTime.ContinuousStage != "Moment" && effect.effectiveTime.ContinuousStage != "Permanent")
-                                {
-                                    minionCellItemList[n].effectBuffInfoList.Add(effect);
-                                    minionCellItemList[n].ttBuffChange();
-                                }
-                            }
-
-                            for (int m = 0; m < effect.impactTargets.Length; m++)
-                            {
-                                ChangeMinion(effect.impactTargets[m], effect.impactContents[m], minionCellItemList[n], effect.isReverse);
-                            }
-                        }
-                    };
-                }
-                else if (targetSetDto.target == "Player")
-                {
-                    effect.TargetPlayerList = (List<PlayerItem> playerItemList, TargetSet objectSet) =>
-                    {
-                        for (int n = 0; n < playerItemList.Count; n++)
-                        {
-                            UtilityLog.Log("目标玩家【" + playerItemList[n].playerCode + "】生效效果【" + effect.description + "】", LogUtType.Effect);
-                            for (int m = 0; m < effect.impactTargets.Length; m++)
-                            {
-                                ChangePlayer(effect.impactTargets[m], effect.impactContents[m], playerItemList[n], objectSet);
-                            }
-                        }
-                    };
-                }
-                else if (targetSetDto.target == "Card") 
-                {
-                    effect.TargetCardEntryList = (List<CardEntry> cardEntryList, TargetSet objectSet) =>
-                    {
-                       
-                    };
-                }
-
-            }
-           
-
-        }
-        void ChangeMinion(string impactTarget, string impactContent, MinionCellItem minionCellItem, bool isReverse)
+        public void EffectActionReady(EffectInfo effect)
         {
-           
-            switch (impactTarget)
+            effect.operationalTarget.selectTargetList = new List<TargetSet>();
+            foreach (string targetSetCode in effect.operationalTarget.selectTarget)
             {
-                case "ATK":
-                    minionCellItem.minionVariableAttributeMap.ChangeValueByCodeAndTypeAndIsReverse("Atk", Convert.ToInt32(impactContent), isReverse);
-                    minionCellItem.ttAtkChange(Convert.ToInt32(impactContent));
-                    break;
-                case "DEF":
-                    minionCellItem.minionVariableAttributeMap.ChangeValueByCodeAndTypeAndIsReverse("Def", Convert.ToInt32(impactContent), isReverse);
-                    minionCellItem.ttDefChange(Convert.ToInt32(impactContent));
-                    break;
-                case "Attack":
-                    minionCellItem.ttLaunchAnAttack();
-                    break;
-                case "Move":
-                    minionCellItem.ttLaunchAnMove();
-                    break;
+                TargetSet targetSetDto = TransExpV2<TargetSet, TargetSet>.Trans(targetSetMap[targetSetCode]);
+                targetSetDto.CleanEffectTargetSetList();
+                effect.operationalTarget.selectTargetList.Add(targetSetDto);
             }
-        }
-        void ChangePlayer(string impactTarget, string impactContent, PlayerItem playerItem, TargetSet objectSet)
-        {
-            switch (impactTarget)
-            {
-                case "Hand":
-                    if (impactContent == "Add")
-                    {
-                        //获取宾语目标
-                        foreach (CardEntry cardEntry in objectSet.targetCardEntries) {
-                            playerItem.AddCardToHand(cardEntry);
-                        }
-                    }
-                    else {
-                        playerItem.DrawCard(Convert.ToInt32(impactContent));
-                    }
-                    break;
-                //资源上限
-                case "ManaUpperLimit":
-                    playerItem.ChangeManaUpperLimit(Convert.ToInt32(impactContent));
-                    break;
-                case "ManaUsable":
-                    //恢复至上限使用Max,是不能被转为数字的
-                    if (impactContent == "Max")
-                    {
-                        playerItem.RestoreToTheUpperLimit();
-                    }
-                    else {
-                        playerItem.ChangeManaUsable(Convert.ToInt32(impactContent));
-                    }
-                    
-                    break;
-                //科技相关
-                case "TraitAddOne":
-                    playerItem.AddTraitType(impactContent);
-                    break;
-                case "Score":
-                    playerItem.ChangeSocre(Convert.ToInt32(impactContent));
-                    break;
-                case "CanUseResourceNum":
-                    if (impactContent == "Max")
-                    {
-                        // 使用资源牌恢复到最大次数
-                        playerItem.RestoreCanUseResourceNumMax();
-                    }
-                    else
-                    {
-                        
-                    }
-                    break;
-
-            }
-
-           
-
         }
     }
 }

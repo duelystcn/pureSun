@@ -22,10 +22,8 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Persistence
         {
             get;  set;
         }
-        //手牌
-        public string[] handCard { get; set; }
-        //卡组列表
-        public string[] deckCard { get; set; }
+        //容器（就是卡组，手牌，墓地等到）
+        public PI_GameContainer[] gameContainerList { get; set; }
         //当前拥有科技
         public string[] traitList
         {

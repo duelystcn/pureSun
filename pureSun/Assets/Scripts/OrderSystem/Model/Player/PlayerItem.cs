@@ -22,17 +22,17 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         }
         public PlayerType playerType;
         //手牌
-        public HandGridItem handGridItem;
+        //public HandGridItem handGridItem;
 
         //船
         public CardEntry shipCard;
 
 
         //牌组
-        public CardDeck cardDeck ;
+        //public CardDeck cardDeck ;
 
         //墓地
-        public CardDeck cardGraveyard = new CardDeck();
+        //public CardDeck cardGraveyard = new CardDeck();
 
 
         //起始点，虚拟坐标，用于确认召唤范围？
@@ -65,10 +65,6 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         public PlayerItem(string playCode)
         {
             this.playerCode = playCode;
-            handGridItem = new HandGridItem();
-            handGridItem.playerCode = playerCode;
-            handGridItem.Create();
-            cardDeck = new CardDeck();
             manaItem = new ManaItem();
             traitCombination = new TraitCombination();
         }
@@ -168,39 +164,20 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             }
             return canCall;
         }
-        //手牌可使用判断
-        public void ChangeHandCardCanUse() {
-            foreach (HandCellItem handCellItem in this.handGridItem.handCells)
-            {
-                handCellItem.canUse = CheckOneCardCanUse(handCellItem.cardEntry);
-            }
-        }
+       
         //传入一个卡牌类型，检查是否有这个类型的牌
-        public bool CheckHasOneCardTypeCard(CardType cardType) {
-            bool hasCard = false;
-            foreach (HandCellItem handCellItem in this.handGridItem.handCells)
-            {
-                if (handCellItem.cardEntry.WhichCard == cardType) {
-                    hasCard = true;
-                    return hasCard;
-                }
-            }
-            return hasCard;
-        }
-        //获取一张卡牌类型的牌，暂时先返回第一张
-        public HandCellItem GetOneCardTypeCard(CardType cardType)
-        {
-           HandCellItem getHand = null;
-            foreach (HandCellItem handCellItem in this.handGridItem.handCells)
-            {
-                if (handCellItem.cardEntry.WhichCard == cardType)
-                {
-                    getHand = handCellItem;
-                    return handCellItem;
-                }
-            }
-            return getHand;
-        }
+        //public bool checkhasonecardtypecard(cardtype cardtype) {
+        //    bool hascard = false;
+        //    foreach (cardentry handcellitem in this.handgriditem.handcells)
+        //    {
+        //        if (handcellitem.whichcard == cardtype) {
+        //            hascard = true;
+        //            return hascard;
+        //        }
+        //    }
+        //    return hascard;
+        //}
+       
         //判断玩家是否可以再使用资源卡
         public bool CheckResourceCardCanUse() {
             bool canUse = true;
@@ -271,57 +248,46 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             ttAddTraitType(traitType);
 
         }
-        //增加一张固定的手牌，且不触发时点
-        public void AddCardToHandAndNoTT(CardEntry card)
-        {
-            HandCellItem handcellItem = this.handGridItem.CreateCell(card);
 
-        }
-        //获得一张固定的手牌
-        public void AddCardToHand(CardEntry card)
-        {
-            HandCellItem handcellItem = this.handGridItem.CreateCell(card);
-            ttPlayerGetACard(handcellItem);
-        }
+        
 
         //方法抽一张牌
         public void DrawCard(int num) {
             for (int n = 0; n < num; n++) {
-                HandCellItem handcellItem = this.handGridItem.CreateCell(this.cardDeck.GetFirstCard());
-                ttPlayerDrawACard(handcellItem);
+                ttPlayerDrawACard();
             }
         }
         //将一张牌放入墓地
-        public void AddOneCardToGraveyard(CardEntry cardEntry) {
-            UtilityLog.Log("放入墓地：" + cardEntry.cardInfo.name,LogUtType.Special);
-            this.cardGraveyard.PutOneCard(cardEntry);
-        }
+        //public void addonecardtograveyard(cardentry cardentry) {
+        //    utilitylog.log("放入墓地：" + cardentry.cardinfo.name,loguttype.operate);
+        //    this.cardgraveyard.putonecard(cardentry);
+        //}
 
         //因为使用而失去一张手牌
-        public void RemoveOneCardByUse(HandCellItem handCellItem)
+        public void RemoveOneCardByUse(CardEntry handCellItem)
         {
             ttPlayerUseACard(handCellItem);
-            RemoveOneCard(handCellItem);
+            //RemoveOneCard(handCellItem);
         }
         //移除一张手牌
-        public void RemoveOneCard(HandCellItem handCellItem) {
-            //找到目标要移除的牌
-            HandCellItem targetHand = null;
-            foreach (HandCellItem handCell in handGridItem.handCells) {
-                if (handCell.cardEntry.uuid == handCellItem.cardEntry.uuid) {
-                    targetHand = handCell;
-                }
-            }
-            if (targetHand != null)
-            {
-                handGridItem.handCells.Remove(targetHand);
-                ttPlayerRemoveACard(targetHand);
-            }
-            else {
-                UtilityLog.LogError("找不到要移除的手牌");
+        //public void removeonecard(cardentry handcellitem) {
+        //    //找到目标要移除的牌
+        //    cardentry targethand = null;
+        //    foreach (cardentry handcell in handgriditem.handcells) {
+        //        if (handcell.uuid == handcellitem.uuid) {
+        //            targethand = handcell;
+        //        }
+        //    }
+        //    if (targethand != null)
+        //    {
+        //        handgriditem.handcells.remove(targethand);
+        //        ttplayerremoveacard(targethand);
+        //    }
+        //    else {
+        //        utilitylog.logerror("找不到要移除的手牌");
 
-            }
-        }
+        //    }
+        //}
         //改变费用上限
         public void ChangeManaUpperLimit(int num)
         {
@@ -333,6 +299,17 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         {
             manaItem.changeManaUsable(num);
             ttManaCostUsableChange(num);
+        }
+        //判断是否可以改变费用
+        public bool CheckCanChangeManaUsable(int num)
+        {
+            if (manaItem.manaUsable + num < 0)
+            {
+                return false;
+            }
+            else {
+                return true;
+            }
         }
         //费用恢复至上限
         public void RestoreToTheUpperLimit()
@@ -349,8 +326,8 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             ttScoreChange(changeNum);
         }
         //因为打出一张牌而减少了费用
-        public void ChangeManaUsableByUseHand(HandCellItem chooseHand) {
-            ChangeManaUsable(-chooseHand.cardEntry.cost);
+        public void ChangeManaUsableByUseHand(CardEntry chooseHand) {
+            ChangeManaUsable(-chooseHand.cost);
         }
 
 

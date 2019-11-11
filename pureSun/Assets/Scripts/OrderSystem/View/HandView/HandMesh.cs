@@ -53,7 +53,7 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                     center + arrayCorners[i],
                     center + arrayCorners[i + 1]
                 );
-                AddTriangleColor(cell.handCellItem.color);
+                AddTriangleColor(Color.white);
             }
         }
         //渲染颜色

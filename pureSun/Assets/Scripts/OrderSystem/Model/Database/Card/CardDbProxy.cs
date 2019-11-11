@@ -2,6 +2,7 @@
 
 using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Metrics;
 using Newtonsoft.Json;
 using PureMVC.Patterns.Proxy;
@@ -42,6 +43,29 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
             }
             return cardInfo;
         }
+        //根据code获取一张卡的实例
+        public CardEntry GetCardEntryByCode(string cardCode)
+        {
+            CardEntry cardEntry = new CardEntry();
+            cardEntry.InitializeByCardInfo(this.GetCardInfoByCode(cardCode));
+            AddTimeTriggerForCardEntry(cardEntry);
+            return cardEntry;
+        }
+        //根据cardInfo获取一张卡的实例
+        public CardEntry GetCardEntryBCardInfo(CardInfo cardInfo)
+        {
+            CardEntry cardEntry = new CardEntry();
+            cardEntry.InitializeByCardInfo(cardInfo);
+            AddTimeTriggerForCardEntry(cardEntry);
+            return cardEntry;
+        }
+        //给一张卡绑定上时点关系
+        public void AddTimeTriggerForCardEntry(CardEntry addTTcardEntry)
+        {
+            addTTcardEntry.ttNeedChangeGameContainerType = (CardEntry cardEntry) => {
+                SendNotification(GameContainerEvent.GAME_CONTAINER_SYS, cardEntry, GameContainerEvent.GAME_CONTAINER_SYS_CARD_NEED_MOVE);
+            };
+        }
         //根据Type获取信息
         public List<CardInfo> GetCardInfoByType(string cardType) {
             List<CardInfo> cardInfos = new List<CardInfo>();
@@ -65,9 +89,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
             for (int n = 0; n < cardInfos.Count; n++) {
                 int quantity = cardInfos[n].quantity;
                 for (int m = 0; m < quantity; m++) {
-                    CardEntry card = new CardEntry();
-                    card.cardInfo = cardInfos[n];
-                    card.InitializeByCardInfo(cardInfos[n]);
+                    CardEntry card = this.GetCardEntryBCardInfo(cardInfos[n]);
                     cardDbItem.cardEntryPool.Add(card);
                 }
             }

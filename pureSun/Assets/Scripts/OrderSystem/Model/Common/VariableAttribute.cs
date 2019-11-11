@@ -11,8 +11,8 @@ using System.Collections.Generic;
 
 namespace Assets.Scripts.OrderSystem.Model.Common
 {
-    //初始值，当前值，上限值
-    public enum VATtrtype { OriginalValue, CurrentValue, UpperLimitValue };
+    //初始值，变动值，伤害标记,
+    public enum VATtrtype { OriginalValue, ChangeValue, DamageValue, CalculatedValue };
     public class VariableAttribute
     {
         //code
@@ -21,9 +21,7 @@ namespace Assets.Scripts.OrderSystem.Model.Common
         //因为攻击生命是越大越好，费用是越低越好，所以这里希望可以有一个属性区分
         public bool biggerThebetter;
 
-        //是否会自动回复，生命不会自动回复，但是攻击会
-        public bool autoRestore;
-
+       
         public Dictionary<VATtrtype, int> valueMap = new Dictionary<VATtrtype, int>();
 
 

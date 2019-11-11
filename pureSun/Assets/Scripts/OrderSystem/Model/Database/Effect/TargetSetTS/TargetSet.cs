@@ -1,11 +1,7 @@
 ﻿using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS
 {
@@ -26,9 +22,8 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS
         //Owner
         //--Myself
         //--Enemy
-        public string[] targetClaims { get; set; }
+        public TargetClaim[] targetClaims { get; set; }
 
-        public string[] targetClaimsContents { get; set; }
 
         public int targetClaimsNums { get; set; }
 
@@ -47,6 +42,20 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS
             targetMinionCellItems.Clear();
             targetPlayerItems.Clear();
             targetEffectInfos.Clear();
+        }
+
+        //检查一个效果是否可以作用与目标生物
+        public bool checkEffectToTargetMinionCellItem(MinionCellItem minionCellItem)
+        {
+            foreach (TargetClaim targetClaim in targetClaims)
+            {
+                if ( !targetClaim.result.Contains(minionCellItem.controllerPlayerItem.playerCode))
+                {
+                    return false;
+                }
+            }
+            return true;
+
         }
     }
 }

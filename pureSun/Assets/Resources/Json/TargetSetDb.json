@@ -3,17 +3,39 @@
     "name": "OneMyselfMinion",
     "target": "Minion",
     "targetSource": "Battlefield",
-    "targetClaims": [ "Owner" ],
-    "targetClaimsContents": [ "Myself" ],
+    "targetClaims": [
+      {
+        "claim": "Owner",
+        "content": "Myself"
+      }
+    ],
     "targetClaimsNums": 1,
     "description": "选择一个战场上的己方生物"
   },
+  "AllMyselfMinion": {
+    "name": "AllMyselfMinion",
+    "target": "Minion",
+    "targetSource": "Battlefield",
+    "targetClaims": [
+      {
+        "claim": "Owner",
+        "content": "Myself"
+      }
+    ],
+    "targetClaimsNums": 999,
+    "description": "选择所有己方生物"
+  },
+
   "MyselfChooseEffect": {
     "name": "MyselfChooseEffect",
     "target": "ChooseEffect",
     "targetSource": "ChooseStageView",
-    "targetClaims": [ "Owner" ],
-    "targetClaimsContents": [ "Myself" ],
+    "targetClaims": [
+      {
+        "claim": "Owner",
+        "content": "Myself"
+      }
+    ],
     "targetClaimsNums": 1,
     "description": "己方玩家选择一个目标效果"
   },
@@ -21,26 +43,47 @@
     "name": "MyselfPlayer",
     "target": "Player",
     "targetSource": "Battlefield",
-    "targetClaims": [ "Owner" ],
-    "targetClaimsContents": [ "Myself" ],
+    "targetClaims": [
+      {
+        "claim": "Owner",
+        "content": "Myself"
+      }
+    ],
     "targetClaimsNums": 1,
     "description": "选择己方玩家"
   },
-  "AllMyselfMinion": {
-    "name": "AllMyselfMinion",
-    "target": "Minion",
-    "targetSource": "Battlefield",
-    "targetClaims": [ "Owner" ],
-    "targetClaimsContents": [ "Myself" ],
-    "targetClaimsNums": 999,
-    "description": "选择所有己方生物"
+  "OneCardFormCardDeckIsTop": {
+    "name": "OneCardFormCardDeckIsTop",
+    "target": "Card",
+    "targetSource": "CardDeck",
+    "targetClaims": [
+      {
+        "claim": "locationIndex",
+        "content": "0"
+      },
+      {
+        "claim": "Owner",
+        "content": "Myself"
+      }
+    ],
+    "targetClaimsNums": 1,
+    "description": "选择己方牌库最上方一张牌"
   },
+
+
+
+
+
   "OneStarChainInfantryCardFormCardDeck": {
     "name": "OneStarChainInfantryCardFormCardDeck",
     "target": "Card",
     "targetSource": "CardDeck",
-    "targetClaims": [ "Code" ],
-    "targetClaimsContents": [ "StarChainInfantry" ],
+    "targetClaims": [
+      {
+        "claim": "Code",
+        "content": "StarChainInfantry"
+      }
+    ],
     "targetClaimsNums": 1,
     "description": "选择牌库里一张星链军团步兵"
   }

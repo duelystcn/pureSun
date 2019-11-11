@@ -1,10 +1,11 @@
 ﻿
+using Assets.Scripts.OrderSystem.Model.Common.BasicGame;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using System.Collections.Generic;
 
 namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
 {
-    public class CardDeck
+    public class CardDeck_Deprecated : BasicGameListDto
     {
         public List<CardEntry> cardEntryList = new List<CardEntry>();
         //测试初始化，随机添加一些牌

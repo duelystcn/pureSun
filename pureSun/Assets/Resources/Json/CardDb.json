@@ -20,8 +20,66 @@
     "cost": "3",
     "trait": [ "supremcy" ],
     "traitdemand": [ "supremcy" ],
-    "effectCodeList": [  ],
+    "effectCodeList": [],
     "quantity": "3"
+  },
+  "FortifiedAgent": {
+    "code": "FortifiedAgent",
+    "name": "激励",
+    "type": "Tactics",
+    "cost": "1",
+    "effectCodeList": [ "TargetMinionGetAtk1_Def1" ],
+    "description": "目标己方生物获得+1+1",
+    "trait": [ "supremcy" ],
+    "traitdemand": [ "supremcy" ],
+    "quantity": "3",
+    "targetSetToChooseList": [ "OneMyselfMinion" ]
+  },
+  "Adrenaline": {
+    "code": "Adrenaline",
+    "name": "肾上腺素",
+    "type": "Tactics",
+    "cost": "1",
+    "effectCodeList": [ "TargetMinionGetAtk1_Def1_Until_0_EndOfTurn" ],
+    "description": "目标己方生物获得+1+1直到回合结束",
+    "trait": [ "supremcy" ],
+    "traitdemand": [ "supremcy" ],
+    "quantity": "3",
+    "targetSetToChooseList": [ "OneMyselfMinion" ]
+  },
+  "Dazzling": {
+    "code": "Dazzling",
+    "name": "炫目",
+    "type": "Tactics",
+    "cost": "1",
+    "effectCodeList": [ "TargetMinionGetAtkF1_DefF1_Until_0_EndOfTurn", "DrawCardToMyself" ],
+    "description": "目标己方生物获得-1-1直到回合结束，抽一张牌",
+    "trait": [ "supremcy" ],
+    "traitdemand": [ "supremcy" ],
+    "quantity": "3",
+    "targetSetToChooseList": [ "OneMyselfMinion" ]
+  },
+  "TaxCar": {
+    "code": "TaxCar",
+    "name": "税车",
+    "type": "Resource",
+    "cost": "0",
+    "isMoment": "Y",
+    "effectCodeList": [ "GetManaOneToMyself", "ChooseOneAddManaUpOneORDrawCardOrAddSupremcyTraitOneToMyself" ],
+    "description": "瞬间,获得①,选择一项：\n●获得一点资源上限；\n●抽一张牌；\n●增加一点至高等级",
+    "trait": [ "supremcy" ],
+    "traitdemand": [],
+    "quantity": "4"
+  },
+  "FindWay": {
+    "code": "FindWay",
+    "name": "寻路客",
+    "type": "Ship",
+    "cost": "80",
+    "trait": [ "neutral" ],
+    "traitdemand": [ "neutral" ],
+    "effectCodeList": [ "SelfDrawOneCardThenGetOneScore" ],
+    "description": "每当你抽一张牌时，获得1分"
   },
   "StarChainInfantry": {
     "code": "StarChainInfantry",
@@ -36,6 +94,23 @@
     "description": "当星链军团步兵进入战场时，从你的牌库中抽取1张星链军团步兵",
     "quantity": "3"
   },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   "BaseSniper": {
     "code": "BaseSniper",
     "name": "基地狙击手",
@@ -64,22 +139,11 @@
     "type": "Minion",
     "atk": "1",
     "def": "4",
-    "cost": "2",
+    "cost": "1",
     "description": "显现：支付①，然后抽一张牌",
-    "trait": [ "neutral" ],
-    "traitdemand": [ "neutral" ],
-    "quantity": "4"
-  },
-  "TaxCar": {
-    "code": "TaxCar",
-    "name": "税车",
-    "type": "Resource",
-    "cost": "0",
-    "isMoment": "Y",
-    "effectCodeList": [ "GetManaOneToMyself", "ChooseOneAddManaUpOneORDrawCardOrAddSupremcyTraitOneToMyself" ],
-    "description": "瞬间,获得①,选择一项：\n●获得一点资源上限；\n●抽一张牌；\n●增加一点至高等级",
     "trait": [ "supremcy" ],
-    "traitdemand": [],
+    "traitdemand": [ "supremcy" ],
+    "effectCodeList": [ "LoseManaOneToMyselfThenDrawCardToMyself" ],
     "quantity": "4"
   },
   "ResonantCrystal": {
@@ -126,42 +190,19 @@
     "traitdemand": [ "innovation", "supremcy" ],
     "quantity": "3"
   },
-  "FortifiedAgent": {
-    "code": "FortifiedAgent",
-    "name": "激励",
+
+  "AbandonPiece": {
+    "code": "AbandonPiece",
+    "name": "弃子",
     "type": "Tactics",
     "cost": "1",
-    "effectCodeList": [ "TargetMinionGetAtk1_Def1" ],
-    "description": "目标生物获得+1+1",
+    "effectCodeList": [ "SacrificeTargetMyselfMinionToDestoryTargetEnemyMinion" ],
+    "description": "牺牲一个己方生物然后消灭目标敌方生物",
     "trait": [ "supremcy" ],
     "traitdemand": [ "supremcy" ],
-    "quantity": "3",
-    "targetEffectInfo": "TargetMinionGetAtk1_Def1"
+    "quantity": "3"
   },
-  "Adrenaline": {
-    "code": "Adrenaline",
-    "name": "肾上腺素",
-    "type": "Tactics",
-    "cost": "1",
-    "effectCodeList": [ "TargetMinionGetAtk1_Def1_Until_0_EndOfTurn" ],
-    "description": "目标生物获得+1+1直到回合结束",
-    "trait": [ "supremcy" ],
-    "traitdemand": [ "supremcy" ],
-    "quantity": "3",
-    "targetEffectInfo": "TargetMinionGetAtk1_Def1_Until_0_EndOfTurn"
-  },
-  "Dazzling": {
-    "code": "Dazzling",
-    "name": "炫目",
-    "type": "Tactics",
-    "cost": "1",
-    "effectCodeList": [ "TargetMinionGetAtk1_DefF1_UntiFl_0_EndOfTurn", "DrawCardToMyself" ],
-    "description": "目标生物获得-1-1直到回合结束，抽一张牌",
-    "trait": [ "supremcy" ],
-    "traitdemand": [ "supremcy" ],
-    "quantity": "3",
-    "targetEffectInfo": "TargetMinionGetAtk1_DefF1_UntiFl_0_EndOfTurn"
-  },
+
   "Climbingtechnology": {
     "code": "Climbingtechnology",
     "name": "科技爆发",
@@ -224,16 +265,6 @@
     "traitdemand": [ "innovation", "supremcy" ],
     "effectCodeList": [ "testEffect" ],
     "description": "瞬间，支付①，你使用的下一个生物或机甲获得空降"
-  },
-  "FindWay": {
-    "code": "FindWay",
-    "name": "寻路客",
-    "type": "Ship",
-    "cost": "80",
-    "trait": [ "neutral" ],
-    "traitdemand": [ "neutral" ],
-    "effectCodeList": [ "SelfDrawOneCardThenGetOneScore" ],
-    "description": "每当你抽一张牌时，获得1分"
   },
   "Taxation": {
     "code": "Taxation",

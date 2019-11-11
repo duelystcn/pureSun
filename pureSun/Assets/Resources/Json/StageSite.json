@@ -7,7 +7,7 @@
       "DrawCardToMyselfWhenStartOfTrunExecution",
       "RestoreToTheUpperLimitWhenStartOfTrunExecution",
       "RestoreCanUseResourceNumMaxWhenStartOfTrunExecution",
-      "MyselfMinionMoveSpecifiedDirectionWhenStartOfBattleExecution"
+      "MyselfMinionMoveSpecifiedDirectionWhenStartOfTrunExecution"
     ]
   },
   "ActivePhase": {

@@ -10,8 +10,16 @@
       "manaUpperLimit": 2,
       "manaUsable": 2,
       "shipCardCode": "FindWay",
-      "handCard": [ "FortifiedAgent", "FortifiedAgent", "ImperialRecruit" ],
-      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
+      "gameContainerList": [
+        {
+          "gameContainerType": "CardDeck",
+          "gameContainerContent": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ]
+        },
+        {
+          "gameContainerType": "CardHand",
+          "gameContainerContent": [ "Dazzling", "FortifiedAgent", "Adrenaline" ]
+        }
+      ],
       "minionList": [
         {
           "code": "ImperialRecruit",
@@ -26,8 +34,16 @@
       "manaUpperLimit": 2,
       "manaUsable": 2,
       "shipCardCode": "FindWay",
-      "handCard": [ "FortifiedAgent", "FortifiedAgent", "ImperialRecruit" ],
-      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
+      "gameContainerList": [
+        {
+          "gameContainerType": "CardDeck",
+          "gameContainerContent": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ]
+        },
+        {
+          "gameContainerType": "CardHand",
+          "gameContainerContent": [ "FortifiedAgent", "FortifiedAgent", "ImperialRecruit" ]
+        }
+      ],
       "minionList": [
 
       ]
@@ -44,8 +60,16 @@
       "manaUpperLimit": 2,
       "manaUsable": 2,
       "shipCardCode": "FindWay",
-      "handCard": [ "StarChainInfantry", "Dazzling", "TaxCar" ],
-      "deckCard": [ "StarChainInfantry", "StarChainInfantry", "FortifiedAgent", "FortifiedAgent" ],
+      "gameContainerList": [
+        {
+          "gameContainerType": "CardDeck",
+          "gameContainerContent": [ "StarChainInfantry", "StarChainInfantry", "FortifiedAgent", "FortifiedAgent" ]
+        },
+        {
+          "gameContainerType": "CardHand",
+          "gameContainerContent": [ "StarChainInfantry", "Dazzling", "GroceryStoreOwner" ]
+        }
+      ],
       "minionList": [
         {
           "code": "ImperialRecruit",
@@ -60,8 +84,16 @@
       "manaUpperLimit": 2,
       "manaUsable": 2,
       "shipCardCode": "FindWay",
-      "handCard": [ "Adrenaline", "Dazzling", "ImperialRecruit" ],
-      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
+      "gameContainerList": [
+        {
+          "gameContainerType": "CardDeck",
+          "gameContainerContent": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ]
+        },
+        {
+          "gameContainerType": "CardHand",
+          "gameContainerContent": [ "Adrenaline", "Dazzling", "ImperialRecruit" ]
+        }
+      ],
       "minionList": [
         {
           "code": "ImperialRecruit",
@@ -87,8 +119,16 @@
       "manaUpperLimit": 2,
       "manaUsable": 2,
       "shipCardCode": "FindWay",
-      "handCard": [ "Dazzling", "Dazzling", "ImperialRecruit" ],
-      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
+      "gameContainerList": [
+        {
+          "gameContainerType": "CardDeck",
+          "gameContainerContent": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ]
+        },
+        {
+          "gameContainerType": "CardHand",
+          "gameContainerContent": [ "Dazzling", "Dazzling", "ImperialRecruit" ]
+        }
+      ],
       "minionList": [
         {
           "code": "ImperialSoldier",
@@ -108,8 +148,16 @@
       "manaUpperLimit": 2,
       "manaUsable": 2,
       "shipCardCode": "FindWay",
-      "handCard": [ "Adrenaline", "Adrenaline", "ImperialRecruit" ],
-      "deckCard": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ],
+      "gameContainerList": [
+        {
+          "gameContainerType": "CardDeck",
+          "gameContainerContent": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ]
+        },
+        {
+          "gameContainerType": "CardHand",
+          "gameContainerContent": [ "Dazzling", "Dazzling", "ImperialRecruit" ]
+        }
+      ],
       "minionList": [
         {
           "code": "ImperialRecruit",
