@@ -4,6 +4,7 @@ using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
+using Assets.Scripts.OrderSystem.Model.Common;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
 using Assets.Scripts.OrderSystem.Model.Database.GameContainer;
@@ -33,8 +34,6 @@ namespace Assets.Scripts.OrderSystem.Controller
             CardDbProxy cardDbProxy = Facade.RetrieveProxy(CardDbProxy.NAME) as CardDbProxy;
             HexGridProxy hexGridProxy = Facade.RetrieveProxy(HexGridProxy.NAME) as HexGridProxy;
             OperateSystemProxy operateSystemProxy = Facade.RetrieveProxy(OperateSystemProxy.NAME) as OperateSystemProxy;
-            MinionGridProxy minionGridProxy =
-               Facade.RetrieveProxy(MinionGridProxy.NAME) as MinionGridProxy;
             GameModelProxy gameModelProxy = Facade.RetrieveProxy(GameModelProxy.NAME) as GameModelProxy;
 
             QuestStageCircuitProxy questStageCircuitProxy = Facade.RetrieveProxy(QuestStageCircuitProxy.NAME) as QuestStageCircuitProxy;
@@ -73,6 +72,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                             foreach (string cardCode in pI_GameContainer.gameContainerContent) {
                                 CardEntry cardEntry = cardDbProxy.GetCardEntryByCode(cardCode);
                                 cardEntry.controllerPlayerItem = playerItem;
+                                cardEntry.ttCardNeedAddToTTS(cardEntry);
                                 cardEntries.Add(cardEntry);
                             }
                             gameContainerProxy.AddCardListByPlayerItemAndGameContainerType(playerItem, pI_GameContainer.gameContainerType,cardEntries);
@@ -81,8 +81,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                         CardEntry shipCard = cardDbProxy.GetCardEntryByCode(pI_Player.shipCardCode);
                         playerItem.shipCard = shipCard;
                         //费用上限和可用费用
-                        playerItem.manaItem.manaUpperLimit = pI_Player.manaUpperLimit;
-                        playerItem.manaItem.manaUsable = pI_Player.manaUpperLimit;
+                        playerItem.LoadingManaInfo(pI_Player.manaUpperLimit, pI_Player.manaUpperLimit);
                         //科技
                         foreach (string trait in pI_Player.traitList)
                         {
@@ -93,8 +92,8 @@ namespace Assets.Scripts.OrderSystem.Controller
                             HexCoordinates index =new HexCoordinates(pI_Minion.x, pI_Minion.z);
                             CardEntry cardEntry = cardDbProxy.GetCardEntryByCode(pI_Minion.code);
                             cardEntry.controllerPlayerItem = playerItem;
-                            minionGridProxy.AddOneMinionByCard(index, cardEntry);
-
+                            gameContainerProxy.AddOneMinionByCard(index, cardEntry);
+                            gameContainerProxy.AddCardByPlayerItemAndGameContainerType(playerItem, "CardBattlefield", cardEntry);
                         }
                       
                     }
@@ -103,7 +102,6 @@ namespace Assets.Scripts.OrderSystem.Controller
                     {
                         //刷新手牌是否可用
                         GameContainerItem gameContainerItem = gameContainerProxy.GetGameContainerItemByPlayerItemAndGameContainerType(playerItem, "CardHand");
-                        gameContainerItem.ChangeHandCardCanUse();
                         //先开启手牌栏
                         SendNotification(HandSystemEvent.HAND_VIEW_SYS, null, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_VIEW_SYS_INIT_PLAYER_CODE, playerItem.playerCode));
                         //手牌渲染
@@ -120,12 +118,9 @@ namespace Assets.Scripts.OrderSystem.Controller
                             }
 
                         }
+                        VariableAttribute manaVariableAttribute = playerItem.playerVariableAttributeMap.variableAttributeMap["Mana"];
 
-                        ManaItem manaItem = new ManaItem();
-                        manaItem.manaUpperLimit = playerItem.manaItem.manaUpperLimit;
-                        manaItem.manaUsable = playerItem.manaItem.manaUsable;
-
-                        SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, manaItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_INIT, playerItem.playerCode));
+                        SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, manaVariableAttribute, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_INIT, playerItem.playerCode));
                         SendNotification(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS, playerItem.traitCombination.traitTypes, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS_INIT, playerItem.playerCode));
                     }
                     ShowSomeInCommonUseUIView();
@@ -165,6 +160,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                                 cardEntry = cardDbProxy.GetCardEntryByCode("TaxCar");
                             }
                             cardEntry.controllerPlayerItem = playerItem;
+                            cardEntry.ttCardNeedAddToTTS(cardEntry);
                             cardEntryList.Add(cardEntry);
                         }
                         gameContainerProxy.AddCardListByPlayerItemAndGameContainerType(playerItem, "CardDeck", cardEntryList);
@@ -178,10 +174,9 @@ namespace Assets.Scripts.OrderSystem.Controller
 
                         //分发手牌
                         playerItem.DrawCard(3);
-                        //设置起始费用上限
-                        playerItem.manaItem.manaUpperLimit = 1;
+                        //设置起始费用上限1
                         //设置当前费用为0
-                        playerItem.manaItem.manaUsable = 0;
+                        playerItem.LoadingManaInfo(1, 0);
                         //获取船只的效果，如果是持续效果则添加到全局监听中
                         foreach (string effectCode in playerItem.shipCard.effectCodeList)
                         {
@@ -193,10 +188,8 @@ namespace Assets.Scripts.OrderSystem.Controller
                             }
 
                         }
-                        ManaItem manaItem = new ManaItem();
-                        manaItem.manaUpperLimit = playerItem.manaItem.manaUpperLimit;
-                        manaItem.manaUsable = playerItem.manaItem.manaUsable;
-                        SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, manaItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_INIT,playerItem.playerCode));
+                        VariableAttribute manaVariableAttribute = playerItem.playerVariableAttributeMap.variableAttributeMap["Mana"];
+                        SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, manaVariableAttribute, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_INIT,playerItem.playerCode));
 
                         SendNotification(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS, playerItem.traitCombination.traitTypes, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_TRAIT_COMBINATION_SYS_INIT, playerItem.playerCode));
                         //手牌渲染
@@ -309,6 +302,15 @@ namespace Assets.Scripts.OrderSystem.Controller
                                   UIViewConfig.getNameStrByUIViewName(UIViewName.ShipComponentView)
                                   )
                               );
+            //打开回合控制栏
+            SendNotification(
+                                UIViewSystemEvent.UI_VIEW_CURRENT,
+                                questStageCircuitProxy.circuitItem.questOneTurnStageList,
+                                StringUtil.GetNTByNotificationTypeAndUIViewName(
+                                    UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW,
+                                    UIViewConfig.getNameStrByUIViewName(UIViewName.TurnSysProgressBarView)
+                                    )
+                                );
         }
     }
 }

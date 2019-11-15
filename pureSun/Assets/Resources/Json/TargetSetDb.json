@@ -12,6 +12,19 @@
     "targetClaimsNums": 1,
     "description": "选择一个战场上的己方生物"
   },
+  "OneEnemyMinion": {
+    "name": "OneEnemyMinion",
+    "target": "Minion",
+    "targetSource": "Battlefield",
+    "targetClaims": [
+      {
+        "claim": "Owner",
+        "content": "Enemy"
+      }
+    ],
+    "targetClaimsNums": 1,
+    "description": "选择一个战场上的敌方生物"
+  },
   "AllMyselfMinion": {
     "name": "AllMyselfMinion",
     "target": "Minion",
@@ -80,8 +93,12 @@
     "targetSource": "CardDeck",
     "targetClaims": [
       {
-        "claim": "Code",
+        "claim": "CardCode",
         "content": "StarChainInfantry"
+      },
+      {
+        "claim": "Owner",
+        "content": "Myself"
       }
     ],
     "targetClaimsNums": 1,

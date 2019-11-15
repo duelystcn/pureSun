@@ -43,6 +43,9 @@ namespace Assets.Scripts.OrderSystem.Event
         //选择了一个效果的选项
         public const string OPERATE_SYS_CHOOSE_ONE_USER_SELECTION_ITEM = "OperateSysChooseOneUserSelectionItem ";
 
+        //选择了一个生物的选项
+        public const string OPERATE_SYS_CHOOSE_ONE_MINION = "OperateSysChooseOneMinion";
+
         /// <summary>
         /// 监听器相关，需要重新渲染手牌可用，暂时放在这里
         /// </summary>
@@ -53,6 +56,9 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 墓地列表打开
         /// </summary>
         public const string OPERATE_SYS_GRAVEYARD_LIST_LOAD = "OperateSysGraveyardListLoad";
+
+        //玩家选择了战场上一个生物
+        public const string OPERATE_SYS_POINTER_DOWN_ONE_MINION = "OperateSysPointerDownOneMinion";
 
     }
 }

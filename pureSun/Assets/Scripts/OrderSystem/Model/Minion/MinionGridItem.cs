@@ -9,11 +9,11 @@ namespace Assets.Scripts.OrderSystem.Model.Minion
 {
     public class MinionGridItem
     {
-        public Dictionary<HexCoordinates, MinionCellItem> minionCells {
+        public Dictionary<HexCoordinates, CardEntry> minionCells {
             get;private set;
         }
         public void Create() {
-            minionCells = new Dictionary<HexCoordinates, MinionCellItem>();
+            minionCells = new Dictionary<HexCoordinates, CardEntry>();
 
         }
        

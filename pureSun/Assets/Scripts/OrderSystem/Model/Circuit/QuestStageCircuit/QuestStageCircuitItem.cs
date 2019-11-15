@@ -1,6 +1,7 @@
 ﻿
 
 using Assets.Scripts.OrderSystem.Common;
+using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
 using Assets.Scripts.OrderSystem.Model.Database.GameModelInfo;
@@ -24,7 +25,9 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
     {
         //回合数
         public int turnNum = 0;
-        public string nowPlayerCode { get;  set; }
+        public string turnHavePlayerCode { get;  set; }
+
+        public string stageHavePlayerCode { get; set; }
         public List<string> playerOrder { get; set; }
 
         public GM_OneStageSite oneTurnStage;

@@ -1,13 +1,14 @@
 ﻿
 
+using Assets.Scripts.OrderSystem.Model.Common;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 
 namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
 {
     public class PlayerTimeTrigger
     {
-        //玩家抽了一张牌
-        public delegate void TTPlayerDrawACard();
+        //玩家需要抽了一张牌
+        public delegate void TTPlayerNeedDrawACard();
         //玩家获得了一张牌
         public delegate void TTPlayerGetACard(CardEntry handCellItem);
 
@@ -19,10 +20,9 @@ namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
         public delegate void TTPlayerHandCanUseJudge();
 
 
-        //玩家费用上限发生了变化
-        public delegate void TTManaCostLimitChange(int changeNum);
+
         //玩家可用费用发生了变化
-        public delegate void TTManaCostUsableChange(int changeNum);
+        public delegate void TTManaCostChange(VariableAttribute manaVariableAttribute);
 
         //玩家增加了一点科技
         public delegate void TTAddTraitType(TraitType traitType);

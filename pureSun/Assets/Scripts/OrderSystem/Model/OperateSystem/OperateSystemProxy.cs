@@ -21,9 +21,9 @@ namespace Assets.Scripts.OrderSystem.Model.OperateSystem
             base.Data = operateSystemItem;
         }
         //进入模式，使用手牌模式
-        public void IntoModeHandUse (CardEntry handCellItem, PlayerItem playerItem) {
-            operateSystemItem.operateModeType = OperateSystemItem.OperateType.HandUse;
-            operateSystemItem.onChooseHandCellItem = handCellItem;
+        public void IntoModeByType (CardEntry cardEntry, PlayerItem playerItem, OperateSystemItem.OperateType operateType) {
+            operateSystemItem.operateModeType = operateType;
+            operateSystemItem.onChooseHandCellItem = cardEntry;
             operateSystemItem.playerItem = playerItem;
         }
         //关闭模式？

@@ -62,7 +62,8 @@ namespace Assets.Scripts.OrderSystem.Common.UnityExpand
                 Debug.Log(msg);
             }
             else {
-                if (logType == LogUtType.Special || logType == LogUtType.Special || logType == LogUtType.Effect)
+               // Debug.Log(string.Format(GetColor(color), msg.ToString()));
+                if (logType == LogUtType.Special || logType == LogUtType.Special || logType == LogUtType.Special)
                 {
                     //Debug.Log(string.Format(GetColor(color), msg.ToString() + "|||||||||" + System.Guid.NewGuid().ToString("N")));
                     Debug.Log(string.Format(GetColor(color), msg.ToString()));

@@ -1,5 +1,6 @@
 ﻿
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Model.Common;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using System;
 using TMPro;
@@ -13,24 +14,21 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.ComponentView.ManaInf
 
         public string playerCode;
 
-        public void UIManaInfoSysInit(ManaItem manaItem, string playerCodeNotification)
+        public void UIManaInfoSysInit(VariableAttribute manaVariableAttribute, string playerCodeNotification)
         {
-            manaUpperLimit.text = manaItem.manaUpperLimit.ToString();
-            manaUsable.text = manaItem.manaUsable.ToString();
+            manaUpperLimit.text = (manaVariableAttribute.valueMap[VATtrtype.OriginalValue]).ToString();
+            manaUsable.text = (manaVariableAttribute.valueMap[VATtrtype.OriginalValue] + manaVariableAttribute.valueMap[VATtrtype.ChangeValue] + manaVariableAttribute.valueMap[VATtrtype.DamageValue]).ToString();
             playerCode = playerCodeNotification;
          
 
         }
 
-        public void ChangeManaUsable(int changeNum)
+        public void ChangeManaUsable(VariableAttribute manaVariableAttribute)
         {
-            manaUsable.text = (Convert.ToInt32(manaUsable.text) + changeNum).ToString();
+            manaUpperLimit.text = (manaVariableAttribute.valueMap[VATtrtype.OriginalValue]).ToString();
+            manaUsable.text = (manaVariableAttribute.valueMap[VATtrtype.OriginalValue] + manaVariableAttribute.valueMap[VATtrtype.ChangeValue] + manaVariableAttribute.valueMap[VATtrtype.DamageValue]).ToString();
         }
 
-        public void ChangeManaUpperLimit(int changeNum)
-        {
-            manaUpperLimit.text = (Convert.ToInt32(manaUpperLimit.text) + changeNum).ToString();
-
-        }
+       
     }
 }

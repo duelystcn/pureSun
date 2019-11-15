@@ -8,10 +8,16 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 监听器相关，监听到了变化
         /// </summary>
         public const string TIME_TRIGGER_SYS = "TimeTriggerSys";
+
+        /// <summary>
+        /// 监听器相关，玩家需要抽一张牌
+        /// </summary>
+        public const string TIME_TRIGGER_SYS_DRAW_A_CARD = "TimeTriggerSysDrawACard";
+
         /// <summary>
         /// 监听器相关，监听到了手牌变化
         /// </summary>
-        public const string TIME_TRIGGER_SYS_DRAW_A_CARD = "TimeTriggerSysDrawACard";
+        public const string TIME_TRIGGER_SYS_NEED_DRAW_A_CARD = "TimeTriggerSysNeedDrawACard";
       
         /// <summary>
         /// 监听器相关，分数变化
@@ -21,6 +27,10 @@ namespace Assets.Scripts.OrderSystem.Event
         /// 监听器相关，手牌使用
         /// </summary>
         public const string TIME_TRIGGER_SYS_USE_HAND_CARD = "TimeTriggerSysUseHandCard";
+        /// <summary>
+        /// 监听器相关，卡牌移动到了新位置
+        /// </summary>
+        public const string TIME_TRIGGER_SYS_CARD_CHANGE_GAME_CONTAINER_TYPE = "TimeTriggerSysCardChangeGameConTainerType";
 
 
 

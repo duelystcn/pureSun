@@ -43,7 +43,7 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
             else if (parameterMap["OtherType"] == "MinionCellView")
             {
                 MinionCellView minionCellView = body as MinionCellView;
-                this.cardEntryShow = minionCellView.minionCellItem.cardEntry;
+                this.cardEntryShow = minionCellView.minionCellItem;
                 LoadingAllInfoByMinionCellView(minionCellView);
             }
            
@@ -65,9 +65,9 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
             this.transform.position = pos;
             this.LoadingAllInfoByMinionCellItem(minionCellView.minionCellItem);
         }
-        public void LoadingAllInfoByMinionCellItem(MinionCellItem minionCellItem)
+        public void LoadingAllInfoByMinionCellItem(CardEntry minionCellItem)
         {
-            this.LoadCardInfo(minionCellItem.cardEntry);
+            this.LoadCardInfo(minionCellItem);
             this.LoadEffectBuffInfoList(minionCellItem.effectBuffInfoList);
         }
 

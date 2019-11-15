@@ -32,7 +32,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS
         //执行对象
         //目前可能存在的目标？卡（墓地，牌组，手牌）,生物，玩家，效果（选择性发动的效果）
         public List<CardEntry> targetCardEntries = new List<CardEntry>();
-        public List<MinionCellItem> targetMinionCellItems = new List<MinionCellItem>();
+        public List<CardEntry> targetMinionCellItems = new List<CardEntry>();
         public List<PlayerItem> targetPlayerItems = new List<PlayerItem>();
         public List<EffectInfo> targetEffectInfos = new List<EffectInfo>();
 
@@ -45,13 +45,24 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS
         }
 
         //检查一个效果是否可以作用与目标生物
-        public bool checkEffectToTargetMinionCellItem(MinionCellItem minionCellItem)
+        public bool checkEffectToTargetMinionCellItem(CardEntry minionCellItem)
         {
             foreach (TargetClaim targetClaim in targetClaims)
             {
-                if ( !targetClaim.result.Contains(minionCellItem.controllerPlayerItem.playerCode))
-                {
-                    return false;
+                if (targetClaim.claim == "Owner") {
+                    if (targetClaim.content == "Myself") {
+                        if (!targetClaim.result.Contains(minionCellItem.controllerPlayerItem.playerCode))
+                        {
+                            return false;
+                        }
+                    }
+                    else if (targetClaim.content == "Enemy")
+                    {
+                        if (targetClaim.result.Contains(minionCellItem.controllerPlayerItem.playerCode))
+                        {
+                            return false;
+                        }
+                    }
                 }
             }
             return true;

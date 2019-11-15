@@ -3,6 +3,7 @@
 using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Common;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Player.PlayerComponent;
 using PureMVC.Patterns.Proxy;
@@ -48,16 +49,15 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         public void AddTimeTrigger(PlayerItem playerItem)
         {
             //抽一张牌
-            playerItem.ttPlayerDrawACard = () =>
+            playerItem.ttPlayerNeedDrawACard = () =>
             {
-
-                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, null, StringUtil.GetNTByNotificationTypeAndPlayerCode(TimeTriggerEvent.TIME_TRIGGER_SYS_DRAW_A_CARD, playerItem.playerCode));
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, playerItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(TimeTriggerEvent.TIME_TRIGGER_SYS_NEED_DRAW_A_CARD, playerItem.playerCode));
                 playerItem.ttPlayerGetACard(null);
             };
             //获得一张牌
             playerItem.ttPlayerGetACard = (CardEntry handCellItem) =>
             {
-                SendNotification(UIViewSystemEvent.UI_VIEW_ZF_HAND_CHANGE, handCellItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_DRAW_ONE_CARD, playerItem.playerCode));
+                //SendNotification(UIViewSystemEvent.UI_VIEW_ZF_HAND_CHANGE, handCellItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_DRAW_ONE_CARD, playerItem.playerCode));
                 SendNotification(OperateSystemEvent.OPERATE_SYS, playerItem.playerCode, OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE);
 
             };
@@ -69,26 +69,13 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             //使用一张牌
             playerItem.ttPlayerUseACard = (CardEntry handCellItem) =>
             {
+                SendNotification(OperateSystemEvent.OPERATE_SYS, playerItem.playerCode, OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE);
                 SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, handCellItem, TimeTriggerEvent.TIME_TRIGGER_SYS_USE_HAND_CARD);
             };
-            //移除一张牌
-            playerItem.ttPlayerRemoveACard = (CardEntry handCellItem) =>
-            {
-                SendNotification(HandSystemEvent.HAND_CHANGE, handCellItem, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_REMOVE_ONE_CARD, playerItem.playerCode));
-                SendNotification(OperateSystemEvent.OPERATE_SYS, playerItem.playerCode, OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE);
-            };
-
-            //费用上限变化
-            playerItem.ttManaCostLimitChange = (int changeNum ) =>
-            {
-                SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, changeNum, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_LIMIT_CHANGE, playerItem.playerCode));
-                SendNotification(OperateSystemEvent.OPERATE_SYS, playerItem.playerCode, OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE);
-
-            };
             //费用变化
-            playerItem.ttManaCostUsableChange = (int changeNum) =>
+            playerItem.ttManaCostChange = (VariableAttribute manaVariableAttribute) =>
             {
-                SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, changeNum, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_USABLE_CHANGE, playerItem.playerCode));
+                SendNotification(UIViewSystemEvent.UI_MANA_INFA_SYS, VariableAttributeMap.CopyOneVariableAttribute(manaVariableAttribute), StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_MANA_INFA_SYS_NUM_CHANGE, playerItem.playerCode));
                 SendNotification(OperateSystemEvent.OPERATE_SYS, playerItem.playerCode, OperateSystemEvent.OPERATE_SYS_HAND_CAN_USE_JUDGE);
 
             };
@@ -116,6 +103,19 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             }
             return returnItem;
         }
+        //获取一个玩家的对立玩家，暂时直接返回不是这个玩家的
+        public PlayerItem getEnemytPlayerByPlayerCode(string playerCode)
+        {
+            foreach (PlayerItem playerItem in playerGroup.playerItems.Values)
+            {
+                if (playerItem.playerCode != playerCode)
+                {
+                    return playerItem;
+                }
+            }
+            return null;
+        }
+
         //查看是否所有玩家都选择了船
         public bool checkAllPlayerHasShip() {
             bool allHas = true;

@@ -2,7 +2,7 @@
 
 namespace Assets.Scripts.OrderSystem.Model.Player.PlayerComponent
 {
-    public class ManaItem
+    public class ManaItem_Deprecated
     {
         //费用上限
         public int manaUpperLimit = 0;

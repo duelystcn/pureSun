@@ -53,7 +53,7 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
                  center + arrayCorners[i],
                  center + arrayCorners[i + 1]
                 );
-                AddTriangleColor(cell.minionCellItem.color);
+                AddTriangleColor(Color.green);
             }
         }
 

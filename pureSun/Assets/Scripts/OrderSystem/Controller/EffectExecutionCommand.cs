@@ -34,8 +34,6 @@ namespace Assets.Scripts.OrderSystem.Controller
                 Facade.RetrieveProxy(OperateSystemProxy.NAME) as OperateSystemProxy;
             QuestStageCircuitProxy questStageCircuitProxy =
                 Facade.RetrieveProxy(QuestStageCircuitProxy.NAME) as QuestStageCircuitProxy;
-            MinionGridProxy minionGridProxy =
-                Facade.RetrieveProxy(MinionGridProxy.NAME) as MinionGridProxy;
             GameContainerProxy gameContainerProxy =
               Facade.RetrieveProxy(GameContainerProxy.NAME) as GameContainerProxy;
 
@@ -47,6 +45,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                 //执行一张卡
                 case EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_CARD:
                     exeEffectCard = notification.Body as CardEntry;
+                    operateSystemProxy.IntoModeByType(exeEffectCard,exeEffectCard.controllerPlayerItem, OperateSystemItem.OperateType.CardIsReleasing);
                     //提取待执行的卡牌效果
                     List<EffectInfo> oneExeEffectCardEffects = new List<EffectInfo>();
                     //遍历卡牌的效果
@@ -61,17 +60,13 @@ namespace Assets.Scripts.OrderSystem.Controller
                         oneEffectInfo.cardEntry = exeEffectCard;
                         //是否有预先选定的目标对象
                         if (exeEffectCard.targetBasicGameDto != null) {
-                            //将预先选择的目标存入效果中
-                            //判断预存的游戏物体类型是什么
-                            UtilityLog.Log("exeEffectCard.targetBasicGameDto:" + exeEffectCard.targetBasicGameDto, LogUtType.Special);
-                            UtilityLog.Log("exeEffectCard.targetBasicGameDto.dtoType:" + exeEffectCard.targetBasicGameDto.dtoType, LogUtType.Special);
                             if (exeEffectCard.targetBasicGameDto.dtoType == "Minion")
                             {
                                 foreach (TargetSet targetSet in oneEffectInfo.operationalTarget.selectTargetList)
                                 {
                                     if (targetSet.target == "Minion")
                                     {
-                                        targetSet.targetMinionCellItems.Add(exeEffectCard.targetBasicGameDto as MinionCellItem);
+                                        targetSet.targetMinionCellItems.Add(exeEffectCard.targetBasicGameDto as CardEntry);
                                     }
                                 }
                             }
@@ -95,7 +90,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                         EffectInfo effect = effectInfoProxy.effectSysItem.effectInfos[n];
                         if (effect.effectType == "Independent")
                         {
-                            bool hasTarget =  ExecutionEffectFindTarget(effect, playerGroupProxy, questStageCircuitProxy, minionGridProxy, gameContainerProxy);
+                            bool hasTarget =  ExecutionEffectFindTarget(effect, effectInfoProxy, playerGroupProxy, questStageCircuitProxy, gameContainerProxy);
                             //没能正确的寻找到目标，防止循环继续执行下去导致效果执行两边，直接返回
                             if (!hasTarget) {
                                 return;
@@ -104,7 +99,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                         }
                         else if (effect.effectType == "BeforeAndAfter")
                         {
-                            bool allHasTarget = ExecutionEffectFindTargetForBeforeAndAfter(effect, playerGroupProxy, questStageCircuitProxy, minionGridProxy, effectInfoProxy, gameContainerProxy);
+                            bool allHasTarget = ExecutionEffectFindTargetForBeforeAndAfter(effect, playerGroupProxy, questStageCircuitProxy, effectInfoProxy, gameContainerProxy);
                             if (!allHasTarget)
                             {
                                 return;
@@ -136,7 +131,6 @@ namespace Assets.Scripts.OrderSystem.Controller
                             AskTheUserOperating(effect,
                                              playerGroupProxy,
                                              questStageCircuitProxy,
-                                             minionGridProxy,
                                              effectInfoProxy,
                                              gameContainerProxy
                                              );
@@ -178,15 +172,15 @@ namespace Assets.Scripts.OrderSystem.Controller
                     }
                     break;
                 case EffectExecutionEvent.EFFECT_EXECUTION_SYS_MINION_BUFF_NEED_REMOVE:
-                    MinionCellItem needRemoveBuffMinionCellItem = notification.Body as MinionCellItem;
-                    UtilityLog.Log("生物【" + needRemoveBuffMinionCellItem.cardEntry.name + "】的buff需要被清除", LogUtType.Effect);
+                    CardEntry needRemoveBuffMinionCellItem = notification.Body as CardEntry;
+                    UtilityLog.Log("生物【" + needRemoveBuffMinionCellItem.name + "】的buff需要被清除", LogUtType.Effect);
                     foreach (EffectInfo oneEffectInfoBuffCheck in needRemoveBuffMinionCellItem.effectBuffInfoList)
                     {
                         if (oneEffectInfoBuffCheck.effectiveTime.ContinuousRound == 0)
                         {
                             //提取待执行的卡牌效果
                             List<EffectInfo> oneBuffCleanEffectCardEffects = new List<EffectInfo>();
-                            UtilityLog.Log("生物【" + needRemoveBuffMinionCellItem.cardEntry.name + "】的buff【" + oneEffectInfoBuffCheck.code  + "】需要被清除", LogUtType.Special);
+                            UtilityLog.Log("生物【" + needRemoveBuffMinionCellItem.name + "】的buff【" + oneEffectInfoBuffCheck.code  + "】需要被清除", LogUtType.Special);
                             EffectInfo oneReverseEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(oneEffectInfoBuffCheck.code);
                             foreach (TargetSet targetSet in oneReverseEffectInfo.operationalTarget.selectTargetList)
                             {
@@ -218,6 +212,18 @@ namespace Assets.Scripts.OrderSystem.Controller
                     }
                     if (allEffectHasFinished)
                     {
+                        for (int n = 0; n < effectInfoProxy.effectSysItem.effectInfos.Count; n++)
+                        {
+                            if (effectInfoProxy.effectSysItem.effectInfos[n].impactTimeTriggertMonitorListWhenOver != null)
+                            {
+                                //把效果结算完毕的时点都发送出去
+                                foreach (string impactTimeTriggertMonitor in effectInfoProxy.effectSysItem.effectInfos[n].impactTimeTriggertMonitorListWhenOver)
+                                {
+                                   
+                                    SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, null, StringUtil.GetNTByNotificationTypeAndPlayerCode(impactTimeTriggertMonitor, effectInfoProxy.effectSysItem.effectInfos[n].player.playerCode));
+                                }
+                            }
+                        }
                         //判断这一组效果是不是都是一张卡的，逻辑上来说都是一张卡
                         CardEntry cardCheck = new CardEntry();
                         bool cardCheckOver = true;
@@ -245,12 +251,10 @@ namespace Assets.Scripts.OrderSystem.Controller
                             UtilityLog.LogError("同一个效果组来源多余一个实体");
                         }
                         else {
-                            if (operateSystemProxy.operateSystemItem.operateModeType == OperateSystemItem.OperateType.HandUse) {
-                                //判断来源,如果是正在使用的手牌
-                                if (operateSystemProxy.operateSystemItem.onChooseHandCellItem.uuid == cardCheck.uuid)
-                                {
-                                    SendNotification(OperateSystemEvent.OPERATE_SYS, null, OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE_EXE_OVER);
-                                }
+                            if (cardCheck.WhichCard == CardEntry.CardType.ResourceCard || cardCheck.WhichCard == CardEntry.CardType.TacticsCard)
+                            {
+
+                                SendNotification(OperateSystemEvent.OPERATE_SYS, null, OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE_EXE_OVER);
                             }
                         }
                         //执行下一组效果
@@ -265,16 +269,18 @@ namespace Assets.Scripts.OrderSystem.Controller
                     }
                     break;
                 case EffectExecutionEvent.EFFECT_EXECUTION_SYS_LAUNCH_AN_ATTACK:
-                    MinionCellItem attackMinionCellItem = notification.Body as MinionCellItem;
+                    CardEntry attackMinionCellItem = notification.Body as CardEntry;
                     PlayerItem playerItemAttack = attackMinionCellItem.controllerPlayerItem;
                     HexCoordinates vectorHexCoordinates = new HexCoordinates(playerItemAttack.playerSiteOne.attackDefaultDirection.x, playerItemAttack.playerSiteOne.attackDefaultDirection.z);
-                    HexCoordinates targetHexCoordinates = HexUtil.GetTargetHexCoordinatesByStartPointAndVector(attackMinionCellItem.index,vectorHexCoordinates);
+                    HexCoordinates targetHexCoordinates = HexUtil.GetTargetHexCoordinatesByStartPointAndVector(attackMinionCellItem.nowIndex,vectorHexCoordinates);
+
+                    CardEntry defensiveMinionCellItem = gameContainerProxy.CheckHasCardEntryByGameContainerTypeAndHexCoordinates("CardBattlefield", targetHexCoordinates);
+
                     //判断目标单元格上有没有生物
-                    if (minionGridProxy.minionGridItem.minionCells.ContainsKey(targetHexCoordinates)) {
+                    if (defensiveMinionCellItem != null) {
                         //如果有生物，需要再判断是自己的生物还是对手的生物
-                        MinionCellItem defensiveMinionCellItem = minionGridProxy.minionGridItem.minionCells[targetHexCoordinates];
                         if (defensiveMinionCellItem.controllerPlayerItem != attackMinionCellItem.controllerPlayerItem) {
-                            UtilityLog.Log("【" + attackMinionCellItem.cardEntry.name + "】进行攻击", LogUtType.Attack);
+                            UtilityLog.Log("【" + attackMinionCellItem.name + "】进行攻击", LogUtType.Attack);
                             //攻击
                             effectInfoProxy.effectSysItem.showEffectNum++;
                             attackMinionCellItem.AttackTargetMinion(defensiveMinionCellItem);
@@ -285,56 +291,60 @@ namespace Assets.Scripts.OrderSystem.Controller
                     }
                     break;
                 case EffectExecutionEvent.EFFECT_EXECUTION_SYS_LAUNCH_AN_MOVE:
-                    MinionCellItem moveMinionCellItem = notification.Body as MinionCellItem;
+                    CardEntry moveMinionCellItem = notification.Body as CardEntry;
                     PlayerItem playerItemMove = moveMinionCellItem.controllerPlayerItem;
                     HexCoordinates vectorHexCoordinatesMove = new HexCoordinates(playerItemMove.playerSiteOne.attackDefaultDirection.x, playerItemMove.playerSiteOne.attackDefaultDirection.z);
-                    HexCoordinates targetMoveHexCoordinates = HexUtil.GetTargetHexCoordinatesByStartPointAndVector(moveMinionCellItem.index, vectorHexCoordinatesMove);
+                    HexCoordinates targetMoveHexCoordinates = HexUtil.GetTargetHexCoordinatesByStartPointAndVector(moveMinionCellItem.nowIndex, vectorHexCoordinatesMove);
                     //判断目标单元格是否在可移动范围内
                     if (playerItemMove.CheckOneHexCanMove(targetMoveHexCoordinates)) {
+                        CardEntry moveHexCoordinatesCard = gameContainerProxy.CheckHasCardEntryByGameContainerTypeAndHexCoordinates("CardBattlefield", targetMoveHexCoordinates);
                         //判断目标单元格上有没有生物,没有生物才能移动
-                        if (!minionGridProxy.minionGridItem.minionCells.ContainsKey(targetMoveHexCoordinates))
+                        if (moveHexCoordinatesCard == null)
                         {
                             effectInfoProxy.effectSysItem.showEffectNum++;
-                            minionGridProxy.MoveToTargetHexCoordinates(moveMinionCellItem, targetMoveHexCoordinates);
+                            moveMinionCellItem.MoveToTargetHexCoordinates(targetMoveHexCoordinates);
                         }
                     }
                     break;
-                case EffectExecutionEvent.EFFECT_EXECUTION_SYS_MINION_ENTER_THE_BATTLEFIELD:
-                    MinionCellItem enterTBFMinionCellItem = notification.Body as MinionCellItem;
-                    exeEffectCard = enterTBFMinionCellItem.cardEntry;
-                    //提取待执行的卡牌效果
-                    List<EffectInfo> oneMinionEffectCardEffects = new List<EffectInfo>();
-                    //遍历卡牌的效果
-                    foreach (string effectCode in exeEffectCard.effectCodeList)
-                    {
-                        EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectCode);
-                        bool canExe = false;
-                        foreach (string impactTimeTrigger in oneEffectInfo.impactTimeTriggers) {
-                            if (impactTimeTrigger == "MyselfEnterTheBattlefield") {
-                                canExe = true;
-                                break;
-                            }
-                        }
-                        if (canExe) {
-                            //设置状态
-                            oneEffectInfo.effectInfoStage = EffectInfoStage.UnStart;
-                            //设置所有者,手牌操作模式，所有者是当前玩家
-                            oneEffectInfo.player = exeEffectCard.controllerPlayerItem;
-                            //设置所属卡牌
-                            oneEffectInfo.cardEntry = exeEffectCard;
+                //case EffectExecutionEvent.EFFECT_EXECUTION_SYS_MINION_ENTER_THE_BATTLEFIELD:
+                //    CardEntry enterTBFMinionCellItem = notification.Body as CardEntry;
+                //    exeEffectCard = enterTBFMinionCellItem;
+                //    提取待执行的卡牌效果
+                //    List<EffectInfo> oneMinionEffectCardEffects = new List<EffectInfo>();
+                //    遍历卡牌的效果
+                //    foreach (string effectCode in exeEffectCard.effectCodeList)
+                //    {
+                //        EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectCode);
+                //        bool canExe = false;
+                //        foreach (string impactTimeTrigger in oneEffectInfo.impactTimeTriggers) {
+                //            if (impactTimeTrigger == "MyselfEnterTheBattlefield") {
+                //                canExe = true;
+                //                break;
+                //            }
+                //        }
+                //        if (canExe) {
+                //            设置状态
+                //            oneEffectInfo.effectInfoStage = EffectInfoStage.UnStart;
+                //            设置所有者,手牌操作模式，所有者是当前玩家
+                //            oneEffectInfo.player = exeEffectCard.controllerPlayerItem;
+                //            设置所属卡牌
+                //            oneEffectInfo.cardEntry = exeEffectCard;
 
-                            oneMinionEffectCardEffects.Add(oneEffectInfo);
-                        }
+                //            oneMinionEffectCardEffects.Add(oneEffectInfo);
+                //        }
                         
-                    }
-                    //存入效果，进行结算
-                    effectInfoProxy.IntoModeCardSettle(exeEffectCard, oneMinionEffectCardEffects);
-                    break;
+                //    }
+                //    存入效果，进行结算
+                //    effectInfoProxy.IntoModeCardSettle(exeEffectCard, oneMinionEffectCardEffects);
+                //    break;
             }
         }
         //执行效果
         public void ExecutionEffectContentList(EffectInfoProxy effectInfoProxy, GameContainerProxy gameContainerProxy)
         {
+            //if (effectInfoProxy.effectSysItem.cardEntry.gameContainerType == "CardHand") {
+            //    effectInfoProxy.effectSysItem.cardEntry.ttCardNeedHideInView(effectInfoProxy.effectSysItem.cardEntry);
+            //}
             for (int n = 0; n < effectInfoProxy.effectSysItem.effectInfos.Count; n++)
             {
                 EffectInfo effectInfo = effectInfoProxy.effectSysItem.effectInfos[n];
@@ -393,10 +403,10 @@ namespace Assets.Scripts.OrderSystem.Controller
         }
 
         //为效果选择主语目标
-        public bool ExecutionEffectFindTarget(  EffectInfo effectInfo, 
+        public bool ExecutionEffectFindTarget(  EffectInfo effectInfo,
+                                            EffectInfoProxy effectInfoProxy,
                                             PlayerGroupProxy playerGroupProxy, 
                                             QuestStageCircuitProxy questStageCircuitProxy,
-                                            MinionGridProxy minionGridProxy,
                                             GameContainerProxy gameContainerProxy)
         {
             bool hasTargetOver = true;
@@ -405,7 +415,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                 effectInfo.effectInfoStage = EffectInfoStage.ConfirmingTarget;
                 foreach (TargetSet targetSet in effectInfo.operationalTarget.selectTargetList)
                 {
-                    bool findOver = FindTargetOrObejct(effectInfo, targetSet, playerGroupProxy, questStageCircuitProxy, minionGridProxy, gameContainerProxy);
+                    bool findOver = FindTargetOrObejct(effectInfo, targetSet, effectInfoProxy, playerGroupProxy, questStageCircuitProxy, gameContainerProxy);
                     if (!findOver)
                     {
                         return false;
@@ -434,7 +444,6 @@ namespace Assets.Scripts.OrderSystem.Controller
         public bool ExecutionEffectFindTargetForBeforeAndAfter(EffectInfo effectInfo,
                                             PlayerGroupProxy playerGroupProxy,
                                             QuestStageCircuitProxy questStageCircuitProxy,
-                                            MinionGridProxy minionGridProxy,
                                             EffectInfoProxy effectInfoProxy,
                                             GameContainerProxy gameContainerProxy
                                             )
@@ -443,7 +452,8 @@ namespace Assets.Scripts.OrderSystem.Controller
             //遍历每一个前置效果
             foreach (EffectInfo preEffect in effectInfo.preEffectEntryList) {
                 preEffect.player = effectInfo.player;
-                bool hasTarget = ExecutionEffectFindTarget(preEffect, playerGroupProxy, questStageCircuitProxy, minionGridProxy, gameContainerProxy);
+                preEffect.cardEntry = effectInfo.cardEntry;
+                bool hasTarget = ExecutionEffectFindTarget(preEffect, effectInfoProxy, playerGroupProxy, questStageCircuitProxy, gameContainerProxy);
                 if (!hasTarget) {
                     return hasTarget;
                 }
@@ -452,7 +462,8 @@ namespace Assets.Scripts.OrderSystem.Controller
             foreach (EffectInfo postEffect in effectInfo.postEffectEntryList)
             {
                 postEffect.player = effectInfo.player;
-                bool hasTarget = ExecutionEffectFindTarget(postEffect, playerGroupProxy, questStageCircuitProxy, minionGridProxy, gameContainerProxy);
+                postEffect.cardEntry = effectInfo.cardEntry;
+                bool hasTarget = ExecutionEffectFindTarget(postEffect, effectInfoProxy, playerGroupProxy, questStageCircuitProxy, gameContainerProxy);
                 if (!hasTarget)
                 {
                     return hasTarget;
@@ -464,7 +475,6 @@ namespace Assets.Scripts.OrderSystem.Controller
         public void AskTheUserOperating(EffectInfo effectInfo,
                                             PlayerGroupProxy playerGroupProxy,
                                             QuestStageCircuitProxy questStageCircuitProxy,
-                                            MinionGridProxy minionGridProxy,
                                             EffectInfoProxy effectInfoProxy,
                                             GameContainerProxy gameContainerProxy) {
             effectInfo.effectInfoStage = EffectInfoStage.AskTheUser;
@@ -497,7 +507,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                             CardEntry oneCardEntry = effectInfo.cardEntry;
                             oneCardEntry.needShowEffectInfo = effectInfo;
                             effectInfoProxy.effectSysItem.showEffectNum++;
-                            SendNotification(UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS, oneCardEntry, UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_ONE_EFFECT_NEED_CHOOSE);
+                            SendNotification(UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS, oneCardEntry, UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_ONE_EFFECT_NEED_CHOOSE_EXE);
                             return;
 
                         }
@@ -519,12 +529,13 @@ namespace Assets.Scripts.OrderSystem.Controller
         }
 
         public bool FindTargetOrObejct(EffectInfo effectInfo,TargetSet targetSet,
+                                           EffectInfoProxy effectInfoProxy,
                                            PlayerGroupProxy playerGroupProxy,
                                            QuestStageCircuitProxy questStageCircuitProxy,
-                                           MinionGridProxy minionGridProxy,
                                            GameContainerProxy gameContainerProxy)
         {
             bool designationTargetOver = false;
+            effectInfo.needPlayerToChooseTargetSet = targetSet;
             //先判断是否已经指定了目标
             switch (targetSet.target)
             {
@@ -565,16 +576,17 @@ namespace Assets.Scripts.OrderSystem.Controller
                         }
                     }
                     GameContainerItem gameContainerItem = gameContainerProxy.GetGameContainerItemByPlayerItemAndGameContainerType(gameContainerControllerPlayerItem, gameContainerType);
-                    foreach (CardEntry cardEntry in gameContainerItem.cardEntryList)
+                    for (int n = 0; n < targetClaims.Length; n++)
                     {
-                        for (int n = 0; n < targetClaims.Length; n++)
+                        //判断所有权
+                        if (targetClaims[n].claim == "locationIndex")
                         {
-                            //判断所有权
-                            if (targetClaims[n].claim == "locationIndex")
-                            {
-                                if (cardEntry.locationIndex == Convert.ToInt32(targetClaims[n].content)) {
-                                    cardEntries.Add(cardEntry);
-                                } 
+                            cardEntries.Add(gameContainerItem.cardEntryList[Convert.ToInt32(targetClaims[n].content)]);
+                        }
+                        else if (targetClaims[n].claim == "CardCode") {
+                            CardEntry cardEntryByCode = gameContainerItem.GetOneCardByCardCode(targetClaims[n].content);
+                            if (cardEntryByCode != null) {
+                                cardEntries.Add(cardEntryByCode);
                             }
                         }
                     }
@@ -588,26 +600,40 @@ namespace Assets.Scripts.OrderSystem.Controller
                     }
                     break;
                 case "Minion":
-                    List<MinionCellItem> minionCellItems = new List<MinionCellItem>();
-                    foreach (MinionCellItem minionCellItem in minionGridProxy.GetMinionCellItemListByPlayerCode(playerGroupProxy.getPlayerByPlayerCode(questStageCircuitProxy.GetNowPlayerCode())))
+                    List<CardEntry> minionCellItems = new List<CardEntry>();
+                    List<GameContainerItem> returnGameContainerItemList = gameContainerProxy.GetGameContainerItemGameContainerType("CardBattlefield");
+                    foreach (GameContainerItem gameContainerItemMinion in returnGameContainerItemList)
                     {
-                        for (int n = 0; n < targetClaims.Length; n++)
+                        foreach (CardEntry minionCellItem in gameContainerItemMinion.cardEntryList)
                         {
-                            //判断所有权
-                            if (targetClaims[n].claim == "Owner")
+                            for (int n = 0; n < targetClaims.Length; n++)
                             {
-                                //是自己选
-                                if (targetClaims[n].content == "Myself")
+                                //判断所有权
+                                if (targetClaims[n].claim == "Owner")
                                 {
-                                    if (minionCellItem.controllerPlayerItem.playerCode == effectInfo.player.playerCode)
+                                    //是自己的
+                                    if (targetClaims[n].content == "Myself")
                                     {
-                                        minionCellItems.Add(minionCellItem);
+                                        targetClaims[n].result.Add(effectInfo.player.playerCode);
+                                        if (minionCellItem.controllerPlayerItem.playerCode == effectInfo.player.playerCode)
+                                        {
+                                            minionCellItems.Add(minionCellItem);
+                                        }
+                                    }
+                                    //不是自己的
+                                    else if (targetClaims[n].content == "Enemy")
+                                    {
+                                        targetClaims[n].result.Add(effectInfo.player.playerCode);
+                                        if (minionCellItem.controllerPlayerItem.playerCode != effectInfo.player.playerCode)
+                                        {
+                                            minionCellItems.Add(minionCellItem);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                    if (minionCellItems.Count < targetSet.targetClaimsNums)
+                    if (minionCellItems.Count <= targetSet.targetClaimsNums)
                     {
                         //符合数量限制
                         targetSet.hasTarget = true;
@@ -616,9 +642,20 @@ namespace Assets.Scripts.OrderSystem.Controller
                     else
                     {
                         //超出目标上限，需要用户选择
-                        effectInfo.chooseByPlayer = targetPlayer;
-                        //发布用户需要选择信号
-                        SendNotification(LogicalSysEvent.LOGICAL_SYS, effectInfo, LogicalSysEvent.LOGICAL_SYS_CHOOSE_EFFECT);
+                        if (effectInfo.operationalTarget.whoOperate == "MyselfPlayer")
+                        {
+                            effectInfo.chooseByPlayer = effectInfo.player;
+                            //发送已经确认目标的效果到前台进行展示
+                            CardEntry oneCardEntry = effectInfo.cardEntry;
+                            oneCardEntry.needShowEffectInfo = effectInfo;
+                            effectInfoProxy.effectSysItem.showEffectNum++;
+                            SendNotification(UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS, oneCardEntry, UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_ONE_EFFECT_NEED_CHOOSE_TARGET);
+                            //发布用户需要选择信号
+                            SendNotification(LogicalSysEvent.LOGICAL_SYS, effectInfo, LogicalSysEvent.LOGICAL_SYS_NEED_PLAYER_CHOOSE);
+                        }
+                        else {
+                            UtilityLog.LogError("找不到需要选择的用户");
+                        }
                         return false;
                     }
 
@@ -649,7 +686,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                     {
                         effectInfo.chooseByPlayer = targetPlayer;
                         //发布用户需要选择信号
-                        SendNotification(LogicalSysEvent.LOGICAL_SYS, effectInfo, LogicalSysEvent.LOGICAL_SYS_CHOOSE_EFFECT);
+                        SendNotification(LogicalSysEvent.LOGICAL_SYS, effectInfo, LogicalSysEvent.LOGICAL_SYS_NEED_PLAYER_CHOOSE);
                         return false;
                         //
                     }
@@ -719,10 +756,11 @@ namespace Assets.Scripts.OrderSystem.Controller
                                 }
                                 for (int m = 0; m < exeEffect.operationalContent.impactTargets.Length; m++)
                                 {
-                                    ChangeMinion(exeEffect.operationalContent.impactTargets[m],
+                                    bool result = ChangeOrCheckMinion(exeEffect.operationalContent.impactTargets[m],
                                                  exeEffect.operationalContent.impactContents[m],
                                                  targetSetDto.targetMinionCellItems[n],
-                                                 exeEffect.isReverse);
+                                                 exeEffect.isReverse,
+                                                 effectExeType);
                                 }
                             }
                         }
@@ -773,18 +811,18 @@ namespace Assets.Scripts.OrderSystem.Controller
 
 
       
-        void ChangeMinion(string impactTarget, string impactContent, MinionCellItem minionCellItem, bool isReverse)
+        bool ChangeOrCheckMinion(string impactTarget, string impactContent, CardEntry minionCellItem, bool isReverse, EffectExeType effectExeType)
         {
+            bool canExecute = true;
             switch (impactTarget)
             {
                 case "ATK":
-                    UtilityLog.Log("isReverse" + isReverse, LogUtType.Special);
-                    minionCellItem.minionVariableAttributeMap.ChangeValueByCodeAndTypeAndIsReverse("Atk", Convert.ToInt32(impactContent), isReverse);
-                    minionCellItem.ttAtkChange(Convert.ToInt32(impactContent));
+                    minionCellItem.cardEntryVariableAttributeMap.ChangeValueByCodeAndTypeAndIsReverse("Atk", Convert.ToInt32(impactContent), isReverse);
+                    minionCellItem.ttAttributeChange();
                     break;
                 case "DEF":
-                    minionCellItem.minionVariableAttributeMap.ChangeValueByCodeAndTypeAndIsReverse("Def", Convert.ToInt32(impactContent), isReverse);
-                    minionCellItem.ttDefChange(Convert.ToInt32(impactContent));
+                    minionCellItem.cardEntryVariableAttributeMap.ChangeValueByCodeAndTypeAndIsReverse("Def", Convert.ToInt32(impactContent), isReverse);
+                    minionCellItem.ttAttributeChange();
                     break;
                 case "Attack":
                     minionCellItem.ttLaunchAnAttack();
@@ -792,7 +830,20 @@ namespace Assets.Scripts.OrderSystem.Controller
                 case "Move":
                     minionCellItem.ttLaunchAnMove();
                     break;
+                case "Life":
+                    if (impactContent == "Sacrifice") {
+                        if (effectExeType == EffectExeType.Check)
+                        {
+                            canExecute = true;
+                        }
+                        else if (effectExeType == EffectExeType.Execute)
+                        {
+                            minionCellItem.ttMinionToSacrifice();
+                        }
+                    }
+                    break;
             }
+            return canExecute;
         }
         bool ChangeOrCheckCard(string impactTarget, string impactContent, CardEntry cardEntry, GameContainerProxy gameContainerProxy,EffectExeType effectExeType)
         {

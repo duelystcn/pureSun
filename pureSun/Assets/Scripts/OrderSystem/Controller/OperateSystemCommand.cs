@@ -28,14 +28,12 @@ namespace Assets.Scripts.OrderSystem.Controller
         {
             OperateSystemProxy operateSystemProxy =
                 Facade.RetrieveProxy(OperateSystemProxy.NAME) as OperateSystemProxy;
-            QuestStageCircuitProxy circuitProxy =
+            QuestStageCircuitProxy questStageCircuitProxy =
                 Facade.RetrieveProxy(QuestStageCircuitProxy.NAME) as QuestStageCircuitProxy;
             PlayerGroupProxy playerGroupProxy =
                 Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
             CardDbProxy cardDbProxy =
                 Facade.RetrieveProxy(CardDbProxy.NAME) as CardDbProxy;
-            MinionGridProxy minionGridProxy = 
-                Facade.RetrieveProxy(MinionGridProxy.NAME) as MinionGridProxy;
             EffectInfoProxy effectInfoProxy =
                 Facade.RetrieveProxy(EffectInfoProxy.NAME) as EffectInfoProxy;
             GameModelProxy gameModelProxy = 
@@ -44,7 +42,10 @@ namespace Assets.Scripts.OrderSystem.Controller
                 Facade.RetrieveProxy(GameContainerProxy.NAME) as GameContainerProxy;
 
             //获取当前操作玩家
-            string playerCode = circuitProxy.GetNowPlayerCode();
+            string playerCode = questStageCircuitProxy.GetNowHaveStagePlayerCode();
+            if (playerCode == null) {
+                return;
+            }
             PlayerItem playerItem = playerGroupProxy.getPlayerByPlayerCode(playerCode);
             CardEntry chooseHand = operateSystemProxy.operateSystemItem.onChooseHandCellItem;
 
@@ -55,13 +56,13 @@ namespace Assets.Scripts.OrderSystem.Controller
                     string playerCodeHandCanUseJudge = notification.Body as string;
                     PlayerItem playerItemHandCanUseJudge = playerGroupProxy.playerGroup.playerItems[playerCodeHandCanUseJudge];
                     GameContainerItem gameContainerItem = gameContainerProxy.GetGameContainerItemByPlayerItemAndGameContainerType(playerItemHandCanUseJudge, "CardHand");
-                    gameContainerItem.ChangeHandCardCanUse();
+                    gameContainerItem.ChangeHandCardCanUse(questStageCircuitProxy.circuitItem);
                     SendNotification(HandSystemEvent.HAND_CHANGE, gameContainerItem.cardEntryList, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_CAN_USE_JUDGE, playerCode));
                     break;
                 //选中手牌
                 case OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE:
                     CardEntry handCellItem = notification.Body as CardEntry;
-                    operateSystemProxy.IntoModeHandUse(handCellItem, playerItem);
+                    operateSystemProxy.IntoModeByType(handCellItem, playerItem, OperateSystemItem.OperateType.HandUse);
                     switch (handCellItem.WhichCard)
                     {
                         case CardEntry.CardType.MinionCard:
@@ -115,7 +116,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                                     break;
                                 case CardEntry.CardType.MinionCard:
                                     //检查是否可用释放
-                                    bool canUse = playerItem.CheckOneCardCanUse(chooseHand);
+                                    bool canUse = playerItem.CheckOneCardCanUse(chooseHand, questStageCircuitProxy.circuitItem);
                                     bool canCall = playerItem.CheckOneCellCanCall(hexCellItem.coordinates);
                                     //检查所选格子是否可用召唤
                                     if (canUse && canCall)
@@ -123,7 +124,9 @@ namespace Assets.Scripts.OrderSystem.Controller
                                         //通知战场层去除渲染
                                         SendNotification(HexSystemEvent.HEX_VIEW_SYS, null, HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL_CANCEL);
                                         SendNotification(OperateSystemEvent.OPERATE_SYS, null, OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE_EXE_OVER);
-                                        minionGridProxy.AddOneMinionByHand(index, chooseHand);
+                                        //减少费用-预先减少
+                                        playerItem.ChangeManaUsableByUseHand(chooseHand);
+                                        gameContainerProxy.AddOneMinionByCard(index, chooseHand);
                                     }
                                     else {
                                         SendNotification(OperateSystemEvent.OPERATE_SYS, null, OperateSystemEvent.OPERATE_SYS_DRAW_END_NULL);
@@ -144,7 +147,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                                             {
                                                 targetType = "Minion";
                                                 //判断格子上是否有生物
-                                                MinionCellItem minionCellItem = minionGridProxy.GetMinionCellItemByIndex(index);
+                                                CardEntry minionCellItem = gameContainerProxy.CheckHasCardEntryByGameContainerTypeAndHexCoordinates("CardBattlefield", index);
                                                 if (minionCellItem != null)
                                                 {
                                                     //检查是否满足效果释放条件
@@ -164,17 +167,21 @@ namespace Assets.Scripts.OrderSystem.Controller
                                         if (hasTarget)
                                         {
                                             checkUseSuccess = true;
-                                            //执行卡牌
-                                            SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, chooseHand, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_CARD);
                                         }
                                       
                                     }
                                     //如果不需要选择目标或者需要选择多个目标则先执行
                                     else {
-                                        //执行卡牌
-                                        SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, chooseHand, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_CARD);
+                                        checkUseSuccess = true;
                                     }
                                     if (checkUseSuccess) {
+                                        //
+                                        chooseHand.nextGameContainerType = "CardIsReleasing";
+                                        chooseHand.ttNeedChangeGameContainerType(chooseHand);
+                                        //减少费用-预先减少
+                                        playerItem.ChangeManaUsableByUseHand(chooseHand);
+                                        //执行卡牌
+                                        SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, chooseHand, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_CARD);
                                         if (targetType == "Minion") {
                                             //取消渲染
                                             SendNotification(MinionSystemEvent.MINION_SYS, null, MinionSystemEvent.MINION_SYS_EFFECT_HIGHLIGHT_CLOSE);
@@ -188,12 +195,14 @@ namespace Assets.Scripts.OrderSystem.Controller
                 case OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE_EXE_OVER:
                     //如果是战术，资源牌，放入墓地
                     if (chooseHand.WhichCard == CardEntry.CardType.ResourceCard || chooseHand.WhichCard == CardEntry.CardType.TacticsCard) {
+                        UtilityLog.Log("手牌【" + chooseHand.name + "】使用要被清除：", LogUtType.Special);
                         //在墓地添加手牌
                         chooseHand.nextGameContainerType = "CardGraveyard";
                         chooseHand.ttNeedChangeGameContainerType(chooseHand);
+                    } else if (chooseHand.WhichCard == CardEntry.CardType.MinionCard) {
+                        chooseHand.nextGameContainerType = "CardBattlefield";
+                        chooseHand.ttNeedChangeGameContainerType(chooseHand);
                     }
-                    //减少费用
-                    playerItem.ChangeManaUsableByUseHand(chooseHand);
                     //移除手牌
                     playerItem.RemoveOneCardByUse(chooseHand);
                     UtilityLog.Log("手牌【" + chooseHand.name + "】使用完毕：", LogUtType.Operate);
@@ -233,6 +242,40 @@ namespace Assets.Scripts.OrderSystem.Controller
 
                     }
                     break;
+                //选择一个生物作为某次选择的结果
+                case OperateSystemEvent.OPERATE_SYS_CHOOSE_ONE_MINION:
+                    CardEntry oneChooseMinionCellItem = notification.Body as CardEntry;
+                    for (int n = 0; n < effectInfoProxy.effectSysItem.effectInfos.Count; n++)
+                    {
+                        EffectInfo effect = effectInfoProxy.effectSysItem.effectInfos[n];
+                        if (effect.effectInfoStage == EffectInfoStage.ConfirmingTarget)
+                        {
+                            //遍历每一个前置效果
+                            foreach (EffectInfo preEffect in effect.preEffectEntryList)
+                            {
+                                if (preEffect.effectInfoStage == EffectInfoStage.ConfirmingTarget)
+                                {
+                                    preEffect.effectInfoStage = EffectInfoStage.ConfirmedTarget;
+                                    preEffect.needPlayerToChooseTargetSet.targetMinionCellItems.Add(oneChooseMinionCellItem);
+                                    break;
+                                }
+                            }
+                            //遍历每一个后置效果
+                            foreach (EffectInfo postEffect in effect.postEffectEntryList)
+                            {
+                                if (postEffect.effectInfoStage == EffectInfoStage.ConfirmingTarget)
+                                {
+                                    postEffect.effectInfoStage = EffectInfoStage.ConfirmedTarget;
+                                    postEffect.needPlayerToChooseTargetSet.targetMinionCellItems.Add(oneChooseMinionCellItem);
+                                    break;
+                                }
+                            }
+                            effectInfoProxy.effectSysItem.showEffectNum--;
+                            //返回继续执行效果选择的信号
+                            SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_TARGET);
+                        }
+                    }
+                    break;
                 //选择一个效果的某一个选项
                 case OperateSystemEvent.OPERATE_SYS_CHOOSE_ONE_USER_SELECTION_ITEM:
                     OneUserSelectionItem oneUserSelectionItem = notification.Body as OneUserSelectionItem;
@@ -250,6 +293,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                                 }
                             }
                             effect.effectInfoStage = EffectInfoStage.AskTheUserOver;
+                            effectInfoProxy.effectSysItem.showEffectNum--;
                             //返回继续执行效果选择的信号
                             SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_ASK_THE_USER);
                         }
@@ -299,7 +343,7 @@ namespace Assets.Scripts.OrderSystem.Controller
 
                                     //返回继续执行效果选择的信号
                                     SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_FIND_TARGET);
-
+                                    return;
                                 }
                                 else
                                 {

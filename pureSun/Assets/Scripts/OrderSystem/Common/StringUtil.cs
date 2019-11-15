@@ -143,7 +143,10 @@ namespace Assets.Scripts.OrderSystem.Common
                 return notificationTypeMap[key];
             }
             else {
-                return notificationTypeJson;
+                if (key == "NotificationType") {
+                    return notificationTypeJson;
+                }
+                return null;
             }
         }
         //直接返回map

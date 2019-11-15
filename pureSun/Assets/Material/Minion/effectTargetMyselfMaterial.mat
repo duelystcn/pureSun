@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: effectTargetMaterial
+  m_Name: effectTargetMyselfMaterial
   m_Shader: {fileID: 4800000, guid: a17967d1596e0cc4aabf9930daaac779, type: 3}
   m_ShaderKeywords: _ShowInnerGlow _ShowOutline
   m_LightmapFlags: 4
@@ -71,12 +71,12 @@ Material:
     - _GlossyReflections: 1
     - _InnerGlowAccuracy: 13
     - _InnerGlowAlphaSumThreshold: 0.5
-    - _InnerGlowLerpRate: 0.557
+    - _InnerGlowLerpRate: 1
     - _InnerGlowWidth: 0.05
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
-    - _OriginAlphaThreshold: 0.485
+    - _OriginAlphaThreshold: 1
     - _OutLightPow: 5
     - _OutLightStrength: 15
     - _Parallax: 0.02
@@ -91,6 +91,6 @@ Material:
     m_Colors:
     - _AtmoColor: {r: 0, g: 0.4, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EdgeColor: {r: 0.16470587, g: 0.35337666, b: 1, a: 1}
+    - _EdgeColor: {r: 0.16470587, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _InnerGlowColor: {r: 0, g: 0.9700117, b: 1, a: 1}

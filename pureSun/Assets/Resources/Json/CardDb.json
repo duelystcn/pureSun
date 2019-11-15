@@ -94,7 +94,30 @@
     "description": "当星链军团步兵进入战场时，从你的牌库中抽取1张星链军团步兵",
     "quantity": "3"
   },
-
+  "GroceryStoreOwner": {
+    "code": "GroceryStoreOwner",
+    "name": "杂货铺老板",
+    "type": "Minion",
+    "atk": "1",
+    "def": "4",
+    "cost": "1",
+    "trait": [ "supremcy" ],
+    "traitdemand": [ "supremcy" ],
+    "effectCodeList": [ "LoseManaOneToMyselfThenDrawCardToMyself" ],
+    "description": "当此生物进入战场时,你可以支付①然后抽一张牌",
+    "quantity": "4"
+  },
+  "AbandonPiece": {
+    "code": "AbandonPiece",
+    "name": "弃子",
+    "type": "Tactics",
+    "cost": "1",
+    "effectCodeList": [ "SacrificeTargetMyselfMinionOrExtraPay3ManaToDestoryTargetEnemyMinion" ],
+    "description": "牺牲一个己方生物或者支付③，然后消灭目标敌方生物",
+    "trait": [ "supremcy" ],
+    "traitdemand": [ "supremcy" ],
+    "quantity": "3"
+  },
 
 
 
@@ -133,19 +156,7 @@
     "traitdemand": [ "innovation" ],
     "quantity": "4"
   },
-  "GroceryStoreOwner": {
-    "code": "GroceryStoreOwner",
-    "name": "杂货铺老板",
-    "type": "Minion",
-    "atk": "1",
-    "def": "4",
-    "cost": "1",
-    "description": "显现：支付①，然后抽一张牌",
-    "trait": [ "supremcy" ],
-    "traitdemand": [ "supremcy" ],
-    "effectCodeList": [ "LoseManaOneToMyselfThenDrawCardToMyself" ],
-    "quantity": "4"
-  },
+
   "ResonantCrystal": {
     "code": "ResonantCrystal",
     "name": "共振晶体",
@@ -191,17 +202,6 @@
     "quantity": "3"
   },
 
-  "AbandonPiece": {
-    "code": "AbandonPiece",
-    "name": "弃子",
-    "type": "Tactics",
-    "cost": "1",
-    "effectCodeList": [ "SacrificeTargetMyselfMinionToDestoryTargetEnemyMinion" ],
-    "description": "牺牲一个己方生物然后消灭目标敌方生物",
-    "trait": [ "supremcy" ],
-    "traitdemand": [ "supremcy" ],
-    "quantity": "3"
-  },
 
   "Climbingtechnology": {
     "code": "Climbingtechnology",

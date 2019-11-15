@@ -151,6 +151,12 @@ namespace Assets.Scripts.OrderSystem.View.HandView
                             callBackDelay = true;
                             handControlView.handGridViewMap[playerCodeNotification].PlayerRemoveOneCard(handCellItemRemove, callBack);
                             break;
+                        //隐藏一张牌
+                        case UIViewSystemEvent.UI_CARD_ENTRY_SYS_CARD_NEED_HIDE_IN_VIEW:
+                            CardEntry handCellItemNeedHide = notification.Body as CardEntry;
+                            callBackDelay = true;
+                            handControlView.handGridViewMap[playerCodeNotification].HideOneCard(handCellItemNeedHide, callBack);
+                            break;
                         //是否可用渲染
                         case HandSystemEvent.HAND_CHANGE_CAN_USE_JUDGE:
                             if (myself)

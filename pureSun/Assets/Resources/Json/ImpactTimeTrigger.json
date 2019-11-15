@@ -6,13 +6,6 @@
     "impactTimeTriggertClaims": [ "Owner" ],
     "impactTimeTriggertClaimsContents": [ "Myself" ]
   },
-  "OneMinionIsDead": {
-    "name": "OneMinionIsDead",
-    "description": "每当一个生物死亡时",
-    "impactTimeTriggertMonitor": "TimeTriggerOneMinionIsDead",
-    "impactTimeTriggertClaims": [],
-    "impactTimeTriggertClaimsContents": []
-  },
   "StartOfTrunExecution": {
     "name": "StartOfTrunExecution",
     "description": "在己方回合开始阶段执行时",
@@ -27,11 +20,28 @@
     "impactTimeTriggertClaims": [ "Owner" ],
     "impactTimeTriggertClaimsContents": [ "Myself" ]
   },
-  "MyselfEnterTheBattlefield": {
-    "name": "MyselfEnterTheBattlefield",
+  "ThisCardEnterTheBattlefield": {
+    "name": "ThisCardEnterTheBattlefield",
     "description": "在此永久物进入战场时",
-    "impactTimeTriggertMonitor": "MyselfEnterTheBattlefield",
+    "impactTimeTriggertMonitor": "CardEnterTheCardBattlefield",
+    "impactTimeTriggertClaims": [ "UUId" ],
+    "impactTimeTriggertClaimsContents": [ "ThisCard" ]
+  },
+  "PlayerNeedDrawACard": {
+    "name": "PlayerNeedDrawACard",
+    "description": "玩家需要抽一张牌",
+    "impactTimeTriggertMonitor": "TimeTriggerSysNeedDrawACard",
     "impactTimeTriggertClaims": [ "Owner" ],
     "impactTimeTriggertClaimsContents": [ "Myself" ]
+  },
+
+
+  "OneMinionIsDead": {
+    "name": "OneMinionIsDead",
+    "description": "每当一个生物死亡时",
+    "impactTimeTriggertMonitor": "TimeTriggerOneMinionIsDead",
+    "impactTimeTriggertClaims": [],
+    "impactTimeTriggertClaimsContents": []
   }
+
 }

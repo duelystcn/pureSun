@@ -26,11 +26,29 @@ namespace Assets.Scripts.OrderSystem.Model.Common
             variableAttribute.valueMap[VATtrtype.DamageValue] = 0;
             variableAttributeMap.Add(valueCode, variableAttribute);
         }
+        public  static VariableAttribute CopyOneVariableAttribute(VariableAttribute needCopyVariableAttribute)
+        {
+            VariableAttribute variableAttribute = new VariableAttribute();
+            variableAttribute.valueCode = needCopyVariableAttribute.valueCode;
+            variableAttribute.biggerThebetter = needCopyVariableAttribute.biggerThebetter;
+            variableAttribute.valueMap[VATtrtype.OriginalValue] = needCopyVariableAttribute.valueMap[VATtrtype.OriginalValue];
+            variableAttribute.valueMap[VATtrtype.ChangeValue] = needCopyVariableAttribute.valueMap[VATtrtype.ChangeValue];
+            variableAttribute.valueMap[VATtrtype.DamageValue] = needCopyVariableAttribute.valueMap[VATtrtype.DamageValue];
+            return variableAttribute;
+        }
+        
 
-        //改变当前值
+
+        //改变值
         public void ChangeValueByCodeAndType(string valueCode, VATtrtype vAType ,int changeValue) {
             variableAttributeMap[valueCode].valueMap[vAType] += changeValue;
         }
+        //重置值，把变动值和伤害表示置为空
+        public void ResetChangeValueAndDamageValue(string valueCode) {
+            variableAttributeMap[valueCode].valueMap[VATtrtype.ChangeValue] = 0;
+            variableAttributeMap[valueCode].valueMap[VATtrtype.DamageValue] = 0;
+        }
+
         //改变当前值按照逻辑
         public void ChangeValueByCodeAndTypeAndIsReverse(string valueCode, int changeValue, bool isReverse)
         {
@@ -38,13 +56,17 @@ namespace Assets.Scripts.OrderSystem.Model.Common
                 changeValue = -changeValue;
             }
             variableAttributeMap[valueCode].valueMap[VATtrtype.ChangeValue] += changeValue;
-            
-           
-          
         }
         //获取当前值
         public int GetValueByCodeAndType(string valueCode, VATtrtype vAType) {
-            return variableAttributeMap[valueCode].valueMap[VATtrtype.OriginalValue] + variableAttributeMap[valueCode].valueMap[VATtrtype.ChangeValue] + variableAttributeMap[valueCode].valueMap[VATtrtype.DamageValue];
+            if (vAType == VATtrtype.CalculatedValue)
+            {
+                return variableAttributeMap[valueCode].valueMap[VATtrtype.OriginalValue] + variableAttributeMap[valueCode].valueMap[VATtrtype.ChangeValue] + variableAttributeMap[valueCode].valueMap[VATtrtype.DamageValue];
+            }
+            else {
+                return variableAttributeMap[valueCode].valueMap[vAType];
+            }
+           
         }
 
         //判断一个属性值是该提示绿色还是提示红色

@@ -15,7 +15,7 @@
       "DelayedExecution",
       "StartOfBattle"
     ],
-    "gameContainerTypeList": [ "CardDeck", "CardGraveyard", "CardHand" ],
+    "gameContainerTypeList": [ "CardDeck", "CardGraveyard", "CardHand", "CardBattlefield", "CardIsReleasing" ],
     "playerSiteList": [
       {
         "attackDefaultDirection": {

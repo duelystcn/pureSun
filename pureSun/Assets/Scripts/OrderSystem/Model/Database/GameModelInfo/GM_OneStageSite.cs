@@ -20,5 +20,7 @@ namespace Assets.Scripts.OrderSystem.Model.Database.GameModelInfo
         public string[] effectNeedExeList { get; set; }
         //是否自动处理
         public string automatic { get; set; }
+        //这个阶段的控制权归谁
+        public string operatingPlayer { get; set; }
     }
 }

@@ -65,6 +65,18 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
             addTTcardEntry.ttNeedChangeGameContainerType = (CardEntry cardEntry) => {
                 SendNotification(GameContainerEvent.GAME_CONTAINER_SYS, cardEntry, GameContainerEvent.GAME_CONTAINER_SYS_CARD_NEED_MOVE);
             };
+            addTTcardEntry.ttCardChangeGameContainerType = (CardEntry cardEntry) => {
+                SendNotification(UIViewSystemEvent.UI_CARD_ENTRY_SYS, cardEntry, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_CARD_ENTRY_SYS_CHANGE_GAME_CONTAINER_TYPE, cardEntry.controllerPlayerItem.playerCode));
+                SendNotification(TimeTriggerEvent.TIME_TRIGGER_SYS, cardEntry, StringUtil.GetNTByNotificationTypeAndPlayerCode(TimeTriggerEvent.TIME_TRIGGER_SYS_CARD_CHANGE_GAME_CONTAINER_TYPE, cardEntry.controllerPlayerItem.playerCode));
+            };
+            addTTcardEntry.ttCardNeedHideInView = (CardEntry cardEntry) => {
+                SendNotification(UIViewSystemEvent.UI_CARD_ENTRY_SYS, cardEntry, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_CARD_ENTRY_SYS_CARD_NEED_HIDE_IN_VIEW, cardEntry.controllerPlayerItem.playerCode));
+            };
+            addTTcardEntry.ttCardNeedAddToTTS = (CardEntry cardEntry) =>
+            {
+                SendNotification(GameContainerEvent.GAME_CONTAINER_SYS, cardEntry, GameContainerEvent.GAME_CONTAINER_SYS_CARD_NEED_ADD_TO_TTS);
+            };
+
         }
         //根据Type获取信息
         public List<CardInfo> GetCardInfoByType(string cardType) {

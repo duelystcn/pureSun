@@ -2,13 +2,9 @@
 using Assets.Scripts.OrderSystem.Model.Database.Effect.EffectCompent;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS;
-using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.Model.Player;
 using System.Collections.Generic;
-using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetCardEntry;
 using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetChoose;
-using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetMinion;
-using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EATargetPlayer;
 using static Assets.Scripts.OrderSystem.Model.Database.Effect.EffectAction.EffectExecutionAction;
 
 namespace Assets.Scripts.OrderSystem.Model.Database.Effect
@@ -21,10 +17,6 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         ConfirmingTarget,
         //已选择目标
         ConfirmedTarget,
-        //选择宾语目标中
-       // ConfirmingObject,
-        //已选择宾语目标
-      //  ConfirmedObject,
         //询问用户操作
         AskTheUser,
         //询问完毕
@@ -59,6 +51,9 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 
         //是否需要用户确认发动
         public string mustBeLaunched { get; set; }
+
+        //效果执行完毕发布信号
+        public string[] impactTimeTriggertMonitorListWhenOver { get; set; }
 
         public bool playerDecisionLaunched;
 
@@ -105,15 +100,17 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
         public string[] impactTimeTriggers { get; set; }
         //实例化的触发器避免重复获取
         public List<ImpactTimeTrigger> impactTimeTriggerList = new List<ImpactTimeTrigger>();
-        
-        
 
 
-        //进行选择的效果
-        public EATargetChooseGrid TargetChooseGrid = null;
-     
 
-        public EffectExecution effectExecution = null;
+        //用户当前需要进行选择的targetSet
+        public TargetSet needPlayerToChooseTargetSet;
+
+
+
+
+
+        //public EffectExecution effectExecution = null;
 
 
         //游戏运行中所需要进行的判断？
@@ -132,8 +129,9 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 
 
         public void CleanEffectTargetSetList() {
-            operationalTarget.CleanEffectTargetSetList();
-
+            if (this.operationalTarget != null) {
+                operationalTarget.CleanEffectTargetSetList();
+            }
         }
    
 

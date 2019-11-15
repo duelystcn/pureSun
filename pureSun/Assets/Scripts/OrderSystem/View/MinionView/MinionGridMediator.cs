@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using OrderSystem;
@@ -14,6 +15,8 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
     public class MinionGridMediator : MediatorExpand
     {
         public new const string NAME = "MinionGridMediator";
+
+        public delegate void SendNotificationConfirmTargetMinion(CardEntry minionCellItem);
 
 
         private HexGridProxy hexGridProxy = null;
@@ -77,38 +80,44 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
             UnityAction callBackSP = () => { };
             bool callBackDelay = false;
 
-            List<MinionCellItem> mList = new List<MinionCellItem>();
+            List<CardEntry> mList = new List<CardEntry>();
             switch (notification.Name)
             {
                 case MinionSystemEvent.MINION_VIEW:
                     switch (notification.Type) {
                         //生物模型变更，重新加载
-                        case MinionSystemEvent.MINION_VIEW_CHANGE_OVER:
-                            MinionGridItem minionGridItem =  notification.Body as MinionGridItem;
-                            minionGridView.AchieveMinionGrid(minionGridItem, hexGridProxy.HexGrid, this);
-                            break;
+                        //case MinionSystemEvent.MINION_VIEW_CHANGE_OVER:
+                        //    MinionGridItem minionGridItem =  notification.Body as MinionGridItem;
+                        //    minionGridView.AchieveMinionGrid(minionGridItem, hexGridProxy.HexGrid, this);
+                        //    break;
                         case MinionSystemEvent.MINION_VIEW_MINIONS_CHANGE:
-                            mList = notification.Body as List<MinionCellItem>;
+                            mList = notification.Body as List<CardEntry>;
                             minionGridView.RenderSomeMinionByMinionCellItem(mList);
+                            break;
+                        case MinionSystemEvent.MINION_VIEW_MINIONS_CHANGE_TO_CHOOSE_TARGET:
+                            mList = notification.Body as List<CardEntry>;
+                            SendNotificationConfirmTargetMinion sendNotificationConfirmTargetMinion = (CardEntry minionCellItem) => {
+                                SendNotification(UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS, null, UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_TO_HIDE);
+                                //取消渲染
+                                SendNotification(MinionSystemEvent.MINION_SYS, null, MinionSystemEvent.MINION_SYS_EFFECT_HIGHLIGHT_CLOSE);
+                                SendNotification(OperateSystemEvent.OPERATE_SYS, minionCellItem, OperateSystemEvent.OPERATE_SYS_CHOOSE_ONE_MINION);
+                            };
+                            minionGridView.RenderSomeMinionByMinionCellItemToChooseTarget(mList, sendNotificationConfirmTargetMinion);
                             break;
                         case MinionSystemEvent.MINION_VIEW_ADD_ONE_MINION:
-                            MinionCellItem minionCellItemAdd = notification.Body as MinionCellItem;
+                            CardEntry minionCellItemAdd = notification.Body as CardEntry;
                             minionGridView.AchieveOneMinion(minionCellItemAdd, hexGridProxy.HexGrid, this);
                             break;
-                        case MinionSystemEvent.MINION_VIEW_MINION_CHANGE_ATK:
-                            MinionCellItem minionCellItemAtk = notification.Body as MinionCellItem;
-                            mList.Add(minionCellItemAtk);
+                        case MinionSystemEvent.MINION_VIEW_MINION_CHANGE_ATTRIBUTE:
+                            CardEntry minionCellItemChange = notification.Body as CardEntry;
+                            mList.Add(minionCellItemChange);
                             minionGridView.RenderSomeMinionByMinionCellItem(mList);
                             break;
-                        case MinionSystemEvent.MINION_VIEW_MINION_CHANGE_DEF:
-                            MinionCellItem minionCellItemDef = notification.Body as MinionCellItem;
-                            mList.Add(minionCellItemDef);
-                            minionGridView.RenderSomeMinionByMinionCellItem(mList);
-                            break;
+                       
                         case MinionSystemEvent.MINION_VIEW_ATTACK_TARGET_MINION:
                             callBackDelay = true;
-                            MinionCellItem minionCellItemAttack = notification.Body as MinionCellItem;
-                            UtilityLog.Log("玩家【" + minionCellItemAttack.controllerPlayerItem.playerCode + "】的生物【" + minionCellItemAttack.cardEntry.name + "】准备执行攻击动画", LogUtType.Attack);
+                            CardEntry minionCellItemAttack = notification.Body as CardEntry;
+                            UtilityLog.Log("玩家【" + minionCellItemAttack.controllerPlayerItem.playerCode + "】的生物【" + minionCellItemAttack.name + "】准备执行攻击动画", LogUtType.Attack);
                             callBack = () =>
                             {
                                 exceINotification = false;
@@ -118,7 +127,7 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
                             minionGridView.MinionAttackTargetIndex(minionCellItemAttack, hexModelInfo, callBack);
                             break;
                         case MinionSystemEvent.MINION_VIEW_MOVE_TARGET_HEX_CELL:
-                            MinionCellItem minionCellItemMove = notification.Body as MinionCellItem;
+                            CardEntry minionCellItemMove = notification.Body as CardEntry;
                             callBackSP = () =>
                             {
                                 SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EFFECT_SHOW_OVER);
@@ -126,7 +135,7 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
                             minionGridView.MinionMoveTargetHexCell(minionCellItemMove, hexModelInfo, callBackSP);
                             break;
                         case MinionSystemEvent.MINION_VIEW_ONE_MINION_IS_DEAD:
-                            MinionCellItem minionCellItemIsDead = notification.Body as MinionCellItem;
+                            CardEntry minionCellItemIsDead = notification.Body as CardEntry;
                             minionGridView.MinionIsDeadNeedRemove(minionCellItemIsDead);
                             break;
 

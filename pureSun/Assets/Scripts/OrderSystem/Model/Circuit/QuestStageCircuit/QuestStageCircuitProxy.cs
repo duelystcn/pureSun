@@ -42,7 +42,7 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
         //流程开始
         public void CircuitStart(Dictionary<string, PlayerItem> dictionary ) {
             CreatePlayerOrder(dictionary);
-            circuitItem.nowPlayerCode = circuitItem.playerOrder[0];
+            circuitItem.turnHavePlayerCode = circuitItem.playerOrder[0];
         }
 
         
@@ -55,19 +55,30 @@ namespace Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit
             }
 
         }
-        //获取当前玩家
-        public string GetNowPlayerCode() {
-            return circuitItem.nowPlayerCode;
+        //获取当前阶段的玩家
+        public string GetNowHaveStagePlayerCode() {
+            return circuitItem.stageHavePlayerCode;
+        }
+        //设置当前阶段玩家
+        public void SetNowHaveStagePlayerCode( string stageHavePlayerCode)
+        {
+            circuitItem.stageHavePlayerCode = stageHavePlayerCode;
+        }
+
+        //获取当前回合的玩家
+        public string GetNowHaveTurnPlayerCode()
+        {
+            return circuitItem.turnHavePlayerCode;
         }
         //进入下一个玩家的回合
         public void IntoNextTurn() {
-            int idx = circuitItem.playerOrder.IndexOf(circuitItem.nowPlayerCode);
+            int idx = circuitItem.playerOrder.IndexOf(circuitItem.turnHavePlayerCode);
             if (idx == circuitItem.playerOrder.Count - 1)
             {
-                circuitItem.nowPlayerCode = circuitItem.playerOrder[0];
+                circuitItem.turnHavePlayerCode = circuitItem.playerOrder[0];
             }
             else {
-                circuitItem.nowPlayerCode = circuitItem.playerOrder[idx+1];
+                circuitItem.turnHavePlayerCode = circuitItem.playerOrder[idx+1];
             }
         }
 

@@ -3,6 +3,7 @@ using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
 using Assets.Scripts.OrderSystem.Metrics;
 using Assets.Scripts.OrderSystem.Model.Common;
+using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.Minion;
 using Assets.Scripts.OrderSystem.View.UIView;
@@ -15,6 +16,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using static Assets.Scripts.OrderSystem.View.MinionView.MinionGridMediator;
 
 namespace Assets.Scripts.OrderSystem.View.MinionView
 {
@@ -28,8 +30,10 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
         //Canvas gridCanvas;
 
 
-        public Material effectTargetMaterial;
-        public Material originalMaterial;
+        public Material effectTargetMyselfMaterial;
+        public Material effectTargetEnemyMaterial;
+        public Material originalMyselfMaterial;
+        public Material originalEnemyMaterial;
 
         void Awake()
         {
@@ -42,20 +46,20 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
 
         //初始化
         public void AchieveMinionGrid(MinionGridItem minionGridItem, HexGridItem hexGridItem, MinionGridMediator minionGridMediator) {
-            Dictionary<HexCoordinates, MinionCellItem>.KeyCollection keyCol = minionGridItem.minionCells.Keys;
+            Dictionary<HexCoordinates, CardEntry>.KeyCollection keyCol = minionGridItem.minionCells.Keys;
             foreach (HexCoordinates key in keyCol)
             {
-                MinionCellItem minionCellItem = minionGridItem.minionCells[key];
+                CardEntry minionCellItem = minionGridItem.minionCells[key];
                 AchieveOneMinion(minionCellItem, hexGridItem, minionGridMediator);
             }
             //渲染需要放在格子生成完毕后
             //minionMesh.Triangulate(minionCellViews, hexGridItem.modelInfo.arrayMode);
         }
         //添加一个生物实例展示
-        public void AchieveOneMinion(MinionCellItem minionCellItem, HexGridItem hexGridItem, MinionGridMediator minionGridMediator)
+        public void AchieveOneMinion(CardEntry minionCellItem, HexGridItem hexGridItem, MinionGridMediator minionGridMediator)
         {
             Vector3 position = new Vector3();
-            HexCoordinates showHexCoordinates = HexCoordinates.ReverseFromOffsetCoordinates(minionCellItem.index.X, minionCellItem.index.Z, hexGridItem.modelInfo.arrayMode);
+            HexCoordinates showHexCoordinates = HexCoordinates.ReverseFromOffsetCoordinates(minionCellItem.nowIndex.X, minionCellItem.nowIndex.Z, hexGridItem.modelInfo.arrayMode);
             position = MinionMetrics.erectPosition(position, showHexCoordinates.X, showHexCoordinates.Z, hexGridItem.modelInfo.arrayMode);
             position.y = 1f;
             //创建一个生物实例
@@ -63,8 +67,9 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
             cell.transform.SetParent(transform, false);
             cell.transform.localPosition = position;
             cell.minionCellItem = minionCellItem;
+            cell.playerCode = minionGridMediator.playerCode;
             TextMeshProUGUI atkAndDef = UtilityHelper.FindChild<TextMeshProUGUI>(cell.transform, "MinionCellLabel");
-            atkAndDef.text = minionCellItem.cardEntry.atk.ToString() + "-" + minionCellItem.cardEntry.def.ToString();
+            atkAndDef.text = minionCellItem.atk.ToString() + "-" + minionCellItem.def.ToString();
             //添加绑定信息
             cell.OnPointerEnter = () =>
             {
@@ -90,14 +95,27 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
                                                 )
                                             ); 
             };
-            minionCellViews.Add(minionCellItem.index, cell);
-            UtilityLog.Log("生成一个生物：" + minionCellItem.cardEntry.cardInfo.name, LogUtType.Operate);
+            cell.OnPointerDown = (CardEntry downMinionCellItem) => 
+            {
+                minionGridMediator.SendNotification(
+                                         OperateSystemEvent.OPERATE_SYS,
+                                         downMinionCellItem,
+                                         OperateSystemEvent.OPERATE_SYS_POINTER_DOWN_ONE_MINION
+                                         );
+            };
+            cell.OnPointerUp = (CardEntry upMinionCellItem) =>
+            {
+                
+            };
+            minionCellViews.Add(minionCellItem.nowIndex, cell);
+            MinionCellMaterialChange(cell, minionCellItem);
+            UtilityLog.Log("生成一个生物：" + minionCellItem.cardInfo.name, LogUtType.Operate);
         }
         //指定生物死亡，从前端移除
-        public void MinionIsDeadNeedRemove(MinionCellItem minionCellItemDead) {
+        public void MinionIsDeadNeedRemove(CardEntry minionCellItemDead) {
             UnityAction callBack = () =>
             {
-                minionCellPool.Push(minionCellViews[minionCellItemDead.index]);
+                minionCellPool.Push(minionCellViews[minionCellItemDead.nowIndex]);
             };
             StartCoroutine(DelayToInvokeDo(callBack,1f));
         }
@@ -107,8 +125,8 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
             callBack();
         }
         //生物像指定方向进行移动
-        public void MinionMoveTargetHexCell(MinionCellItem minionCellItemNew, HexModelInfo hexModelInfo, UnityAction callBack) {
-            minionCellViews.Add(minionCellItemNew.index, minionCellViews[minionCellItemNew.lastIndex]);
+        public void MinionMoveTargetHexCell(CardEntry minionCellItemNew, HexModelInfo hexModelInfo, UnityAction callBack) {
+            minionCellViews.Add(minionCellItemNew.nowIndex, minionCellViews[minionCellItemNew.lastIndex]);
             minionCellViews.Remove(minionCellItemNew.lastIndex);
             foreach (MinionCellView minCellView in minionCellViews.Values)
             {
@@ -116,7 +134,7 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
                 {
                     Vector3 startPosition = minCellView.transform.position;
                     Vector3 endPosition = new Vector3();
-                    HexCoordinates showHexCoordinates = HexCoordinates.ReverseFromOffsetCoordinates(minionCellItemNew.index.X, minionCellItemNew.index.Z, hexModelInfo.arrayMode);
+                    HexCoordinates showHexCoordinates = HexCoordinates.ReverseFromOffsetCoordinates(minionCellItemNew.nowIndex.X, minionCellItemNew.nowIndex.Z, hexModelInfo.arrayMode);
                     endPosition = HexMetrics.erectPosition(
                        endPosition,
                        showHexCoordinates.X,
@@ -159,8 +177,8 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
         }
 
         //生物像指定方向发起一次攻击
-        public void MinionAttackTargetIndex(MinionCellItem minionCellItem, HexModelInfo hexModelInfo, UnityAction callBack) {
-            MinionCellView minCellView = minionCellViews[minionCellItem.index];
+        public void MinionAttackTargetIndex(CardEntry minionCellItem, HexModelInfo hexModelInfo, UnityAction callBack) {
+            MinionCellView minCellView = minionCellViews[minionCellItem.nowIndex];
             Vector3 startPosition = minCellView.transform.position;
             Vector3 endPosition = new Vector3();
             HexCoordinates showHexCoordinates = HexCoordinates.ReverseFromOffsetCoordinates(minionCellItem.attackTargetIndex.X, minionCellItem.attackTargetIndex.Z, hexModelInfo.arrayMode);
@@ -230,9 +248,9 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
 
 
         //重新渲染部分生物
-        public void RenderSomeMinionByMinionCellItem(List<MinionCellItem> mList) {
+        public void RenderSomeMinionByMinionCellItem(List<CardEntry> mList) {
             foreach (MinionCellView minCellView in minionCellViews.Values) {
-                foreach (MinionCellItem minCellItem in mList) {
+                foreach (CardEntry minCellItem in mList) {
                     if (minCellView.minionCellItem.uuid == minCellItem.uuid) {
                         RenderOneMinionCellByMinionCellItem(minCellView, minCellItem);
                         break;
@@ -240,49 +258,88 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
                 }
             }
         }
-        public void RenderOneMinionCellByMinionCellItem(MinionCellView minionCellView, MinionCellItem minionCellItem) {
+        //重新渲染部分生物用于玩家确认选择了某一个生物
+        public void RenderSomeMinionByMinionCellItemToChooseTarget(List<CardEntry> mList, SendNotificationConfirmTargetMinion sendNotificationConfirmTargetMinion)
+        {
+            foreach (MinionCellView minCellView in minionCellViews.Values)
+            {
+                foreach (CardEntry minCellItem in mList)
+                {
+                    if (minCellView.minionCellItem.uuid == minCellItem.uuid)
+                    {
+                        RenderOneMinionCellByMinionCellItemToChooseTarget(minCellView, minCellItem, sendNotificationConfirmTargetMinion);
+                        break;
+                    }
+                }
+            }
+        }
+        public void RenderOneMinionCellByMinionCellItemToChooseTarget(MinionCellView minionCellView, CardEntry minionCellItem, SendNotificationConfirmTargetMinion sendNotificationConfirmTargetMinion)
+        {
+            minionCellView.minionCellItem = minionCellItem;
+            minionCellView.OnPointerClick = sendNotificationConfirmTargetMinion;
+            MinionCellMaterialChange(minionCellView, minionCellItem);
+        }
+
+        public void RenderOneMinionCellByMinionCellItem(MinionCellView minionCellView, CardEntry minionCellItem) {
             minionCellView.minionCellItem = minionCellItem;
             TextMeshProUGUI atkAndDef = UtilityHelper.FindChild<TextMeshProUGUI>(minionCellView.transform, "MinionCellLabel");
 
-            string atkStr = minionCellItem.minionVariableAttributeMap.CheckCurrentValueIsBetterByCode("Atk");
+            string atkStr = minionCellItem.cardEntryVariableAttributeMap.CheckCurrentValueIsBetterByCode("Atk");
             if (atkStr == "Good")
             {
-                atkStr = "<color=\"green\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CalculatedValue);
+                atkStr = "<color=\"green\">" + minionCellItem.cardEntryVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CalculatedValue);
             }
             else if (atkStr == "Bad") {
-                atkStr = "<color=\"red\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CalculatedValue);
+                atkStr = "<color=\"red\">" + minionCellItem.cardEntryVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CalculatedValue);
             }
             else if (atkStr == "NoChange")
             {
-                atkStr = "<color=\"black\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CalculatedValue);
+                atkStr = "<color=\"black\">" + minionCellItem.cardEntryVariableAttributeMap.GetValueByCodeAndType("Atk", VATtrtype.CalculatedValue);
             }
-            string defStr = minionCellItem.minionVariableAttributeMap.CheckCurrentValueIsBetterByCode("Def");
+            string defStr = minionCellItem.cardEntryVariableAttributeMap.CheckCurrentValueIsBetterByCode("Def");
             if (defStr == "Good")
             {
-                defStr = "<color=\"green\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CalculatedValue);
+                defStr = "<color=\"green\">" + minionCellItem.cardEntryVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CalculatedValue);
             }
             else if (defStr == "Bad")
             {
-                defStr = "<color=\"red\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CalculatedValue);
+                defStr = "<color=\"red\">" + minionCellItem.cardEntryVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CalculatedValue);
             }
             else if (defStr == "NoChange")
             {
-                defStr = "<color=\"black\">" + minionCellItem.minionVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CalculatedValue);
+                defStr = "<color=\"black\">" + minionCellItem.cardEntryVariableAttributeMap.GetValueByCodeAndType("Def", VATtrtype.CalculatedValue);
             }
-
-           
-
             atkAndDef.text = atkStr + "<color=\"black\">-" + defStr;
-            Component minionCellBg = UtilityHelper.FindChild<Component>(minionCellView.transform, "MinionCellBg");
-            Image imageComponent = minionCellBg.GetComponent<Image>();
+            minionCellView.OnPointerClick = (CardEntry minionCellItemToClick) => { };
+            MinionCellMaterialChange(minionCellView, minionCellItem);
+        }
+        //改变材质
+        public void MinionCellMaterialChange(MinionCellView minionCellView, CardEntry minionCellItem) { 
+            Component minionCellFrameBg = UtilityHelper.FindChild<Component>(minionCellView.transform, "MinionCellFrameBg");
+            Image imageComponent = minionCellFrameBg.GetComponent<Image>();
             if (minionCellItem.IsEffectTarget == false)
             {
-                imageComponent.material = null;
+                if (minionCellView.playerCode == minionCellItem.controllerPlayerItem.playerCode)
+                {
+                    imageComponent.material = originalMyselfMaterial;
+                }
+                else
+                {
+                    imageComponent.material = originalEnemyMaterial;
+                }
             }
-            else {
-                imageComponent.material = effectTargetMaterial;
+            else
+            {
+                if (minionCellView.playerCode == minionCellItem.controllerPlayerItem.playerCode)
+                {
+                    imageComponent.material = effectTargetMyselfMaterial;
+                }
+                else {
+                    imageComponent.material = effectTargetEnemyMaterial;
+                }
+                    
             }
+           
         }
-
     }
 }

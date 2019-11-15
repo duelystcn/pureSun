@@ -67,20 +67,44 @@
     "impactTimeTriggers": [ "StartOfTrunExecution" ],
     "operationalTarget": {
       "whoOperate": "System",
-      "selectTarget": [ "MyselfPlayer" ]
+      "selectTarget": [ "OneCardFormCardDeckIsTop" ]
     },
     "operationalContent": {
       "operationalTarget": "All",
-      "impactTargets": [ "Hand" ],
-      "impactContents": [ "1" ]
+      "impactTargets": [ "GameContainerType" ],
+      "impactContents": [ "CardHand" ]
     },
     "impactType": "GameModelRule",
     "effectiveTime": {
       "ContinuousRound": 9999,
       "ContinuousStage": "Permanent"
     },
-    "whetherToshow": "N"
+    "whetherToshow": "N",
+    "impactTimeTriggertMonitorListWhenOver": [ "TimeTriggerSysDrawACard" ]
   },
+  "DrawCardToMyselfWhenPlayerNeedDrawACard": {
+    "code": "DrawCardToMyselfWhenPlayerNeedDrawACard",
+    "effectType": "Independent",
+    "description": "在己方玩家需要抽一张牌时，己方玩家抽一张牌",
+    "impactTimeTriggers": [ "PlayerNeedDrawACard" ],
+    "operationalTarget": {
+      "whoOperate": "System",
+      "selectTarget": [ "OneCardFormCardDeckIsTop" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "GameContainerType" ],
+      "impactContents": [ "CardHand" ]
+    },
+    "impactType": "GameModelRule",
+    "effectiveTime": {
+      "ContinuousRound": 9999,
+      "ContinuousStage": "Permanent"
+    },
+    "whetherToshow": "N",
+    "impactTimeTriggertMonitorListWhenOver": [ "TimeTriggerSysDrawACard" ]
+  },
+
   "RestoreToTheUpperLimitWhenStartOfTrunExecution": {
     "code": "RestoreToTheUpperLimitWhenStartOfTrunExecution",
     "effectType": "Independent",
@@ -183,7 +207,8 @@
       "ContinuousRound": 9999,
       "ContinuousStage": "Permanent"
     },
-    "whetherToshow": "Y"
+    "whetherToshow": "Y",
+    "impactTimeTriggertMonitorListWhenOver": [ "TimeTriggerSysDrawACard" ]
   },
   "TargetMinionGetAtkF1_DefF1_Until_0_EndOfTurn": {
     "code": "TargetMinionGetAtkF1_DefF1_Until_0_EndOfTurn",
@@ -284,6 +309,7 @@
   "AddOneStarChainInfantryFromMyselfDeckWhenEnterTheBattlefield": {
     "code": "AddOneStarChainInfantryFromMyselfDeckWhenEnterTheBattlefield",
     "effectType": "Independent",
+    "impactTimeTriggers": [ "ThisCardEnterTheBattlefield" ],
     "description": "当星链军团步兵进入战场时，从你的牌库中抽取1张星链军团步兵",
     "operationalTarget": {
       "whoOperate": "System",
@@ -291,15 +317,157 @@
     },
     "operationalContent": {
       "operationalTarget": "All",
-      "impactTargets": [ "Location" ],
-      "impactContents": [ "Hand" ]
+      "impactTargets": [ "GameContainerType" ],
+      "impactContents": [ "CardHand" ]
+    },
+    "impactType": "Continue",
+    "effectiveTime": {
+      "ContinuousRound": 0,
+      "ContinuousStage": "Moment"
+    },
+    "whetherToshow": "Y"
+  },
+  "LoseManaOneToMyselfThenDrawCardToMyself": {
+    "code": "LoseManaOneToMyselfThenDrawCardToMyself",
+    "effectType": "BeforeAndAfter",
+    "impactTimeTriggers": [ "ThisCardEnterTheBattlefield" ],
+    "description": "当此生物进入战场时,你可以支付①然后抽一张牌",
+    "impactType": "Continue",
+    "effectiveTime": {
+      "ContinuousRound": 0,
+      "ContinuousStage": "Moment"
+    },
+    "preEffectList": [ "PayManaOneToMyself" ],
+    "postEffectList": [ "DrawCardToMyself" ],
+    "whetherToshow": "Y"
+  },
+  "PayManaOneToMyself": {
+    "code": "PayManaOneToMyself",
+    "effectType": "Independent",
+    "description": "支付①",
+    "mustBeLaunched": "N",
+    "operationalTarget": {
+      "whoOperate": "System",
+      "selectTarget": [ "MyselfPlayer" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "ManaUsable" ],
+      "impactContents": [ "-1" ]
     },
     "impactType": "Moment",
     "effectiveTime": {
       "ContinuousRound": 9999,
       "ContinuousStage": "Permanent"
     },
+    "whetherToshow": "N"
+  },
+  "SacrificeTargetMyselfMinionToDestoryTargetEnemyMinion": {
+    "code": "SacrificeTargetMyselfMinionToDestoryTargetEnemyMinion",
+    "effectType": "BeforeAndAfter",
+    "impactTimeTriggers": [ "ThisCardEnterTheBattlefield" ],
+    "description": "牺牲一个己方生物然后消灭目标敌方生物",
+    "impactType": "Continue",
+    "effectiveTime": {
+      "ContinuousRound": 0,
+      "ContinuousStage": "Moment"
+    },
+    "preEffectList": [ "SacrificeTargetMyselfMinion" ],
+    "postEffectList": [ "DestroyTargetEnemyMinion" ],
     "whetherToshow": "Y"
+  },
+  "SacrificeTargetMyselfMinion": {
+    "code": "SacrificeTargetMyselfMinion",
+    "effectType": "Independent",
+    "description": "牺牲一个己方生物",
+    "mustBeLaunched": "N",
+    "operationalTarget": {
+      "whoOperate": "MyselfPlayer",
+      "selectTarget": [ "OneMyselfMinion" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "Life" ],
+      "impactContents": [ "Sacrifice" ]
+    },
+    "impactType": "Moment",
+    "effectiveTime": {
+      "ContinuousRound": 0,
+      "ContinuousStage": "Moment"
+    },
+    "whetherToshow": "N"
+  },
+  "DestroyTargetEnemyMinion": {
+    "code": "DestroyTargetEnemyMinion",
+    "effectType": "Independent",
+    "description": "杀死一个敌方生物",
+    "mustBeLaunched": "N",
+    "operationalTarget": {
+      "whoOperate": "MyselfPlayer",
+      "selectTarget": [ "OneEnemyMinion" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "Life" ],
+      "impactContents": [ "Sacrifice" ]
+    },
+    "impactType": "Moment",
+    "effectiveTime": {
+      "ContinuousRound": 0,
+      "ContinuousStage": "Moment"
+    },
+    "whetherToshow": "N"
+  },
+  "SacrificeTargetMyselfMinionOrExtraPay3ManaToDestoryTargetEnemyMinion": {
+    "code": "SacrificeTargetMyselfMinionOrExtraPay3ManaToDestoryTargetEnemyMinion",
+    "effectType": "Independent",
+    "description": "牺牲一个己方生物或者支付③，然后消灭目标敌方生物",
+    "operationalTarget": {
+      "whoOperate": "MyselfPlayer",
+      "selectTarget": [ "MyselfChooseEffect" ]
+    },
+    "chooseEffectList": [ "SacrificeTargetMyselfMinionToDestoryTargetEnemyMinion", "ExtraPay3ManaToDestoryTargetEnemyMinion" ],
+    "impactType": "Moment",
+    "effectiveTime": {
+      "ContinuousRound": 0,
+      "ContinuousStage": "Moment"
+    },
+    "whetherToshow": "N"
+  },
+  "ExtraPay3ManaToDestoryTargetEnemyMinion": {
+    "code": "ExtraPay3ManaToDestoryTargetEnemyMinion",
+    "effectType": "BeforeAndAfter",
+    "impactTimeTriggers": [ "ThisCardEnterTheBattlefield" ],
+    "description": "支付③然后消灭目标敌方生物",
+    "impactType": "Continue",
+    "effectiveTime": {
+      "ContinuousRound": 0,
+      "ContinuousStage": "Moment"
+    },
+    "preEffectList": [ "PayMana3ToMyself" ],
+    "postEffectList": [ "DestroyTargetEnemyMinion" ],
+    "whetherToshow": "Y"
+  },
+  "PayMana3ToMyself": {
+    "code": "PayMana3ToMyself",
+    "effectType": "Independent",
+    "description": "支付③",
+    "mustBeLaunched": "N",
+    "operationalTarget": {
+      "whoOperate": "System",
+      "selectTarget": [ "MyselfPlayer" ]
+    },
+    "operationalContent": {
+      "operationalTarget": "All",
+      "impactTargets": [ "ManaUsable" ],
+      "impactContents": [ "-3" ]
+    },
+    "impactType": "Moment",
+    "effectiveTime": {
+      "ContinuousRound": 9999,
+      "ContinuousStage": "Permanent"
+    },
+    "whetherToshow": "N"
   },
 
 
@@ -347,69 +515,6 @@
     "impactContents": [],
     "whetherToshow": "N"
   },
-  "LoseManaOneToMyselfThenDrawCardToMyself": {
-    "code": "LoseManaOneToMyselfThenDrawCardToMyself",
-    "effectType": "BeforeAndAfter",
-    "description": "支付①然后抽一张牌",
-    "impactType": "Moment",
-    "effectiveTime": {
-      "ContinuousRound": 0,
-      "ContinuousStage": "Moment"
-    },
-    "targetSet": [ "MyselfPlayer" ],
-    "preEffectList": [ "PayManaOneToMyself" ],
-    "postEffectList": [ "DrawCardToMyself" ],
-    "objectSet": [],
-    "impactTimeTriggers": [ "MyselfEnterTheBattlefield" ],
-    "whetherToshow": "Y"
-  },
-  "SacrificeTargetMyselfMinionToDestoryTargetEnemyMinion": {
-    "code": "SacrificeTargetMyselfMinionToDestoryTargetEnemyMinion",
-    "effectType": "BeforeAndAfter",
-    "description": "牺牲一个己方生物然后消灭目标敌方生物",
-    "impactType": "Moment",
-    "effectiveTime": {
-      "ContinuousRound": 0,
-      "ContinuousStage": "Moment"
-    },
-    "targetSet": [ "MyselfPlayer" ],
-    "preEffectList": [ "SacrificeTargetMyselfMinion" ],
-    "postEffectList": [ "DrawCardToMyself" ],
-    "objectSet": [],
-    "impactTimeTriggers": [ "MyselfEnterTheBattlefield" ],
-    "whetherToshow": "Y"
-  },
-  "PayManaOneToMyself": {
-    "code": "PayManaOneToMyself",
-    "effectType": "Independent",
-    "description": "支付①",
-    "mustBeLaunched": "N",
-    "targetSet": [ "MyselfPlayer" ],
-    "objectSet": [],
-    "impactType": "Moment",
-    "effectiveTime": {
-      "ContinuousRound": 9999,
-      "ContinuousStage": "Permanent"
-    },
-    "impactTargets": [ "ManaUsable" ],
-    "impactContents": [ "-1" ],
-    "whetherToshow": "N"
-  },
-  "SacrificeTargetMyselfMinion": {
-    "code": "SacrificeTargetMyselfMinion",
-    "effectType": "Independent",
-    "description": "牺牲一个己方生物",
-    "mustBeLaunched": "N",
-    "targetSet": [ "OneMyselfMinion" ],
-    "objectSet": [],
-    "impactType": "Moment",
-    "effectiveTime": {
-      "ContinuousRound": 0,
-      "ContinuousStage": "Moment"
-    },
-    "impactTargets": [ "Life" ],
-    "impactContents": [ "Sacrifice" ],
-    "whetherToshow": "N"
-  },
+
 
 }

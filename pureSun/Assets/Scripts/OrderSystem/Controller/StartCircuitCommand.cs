@@ -46,8 +46,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                 Facade.RegisterMediator(hexGridMediator);
 
                 //生物层代理
-                MinionGridProxy minionGridProxy = new MinionGridProxy();
-                Facade.RegisterProxy(minionGridProxy);
+
                 MinionGridMediator minionGridMediator = new MinionGridMediator(mainUI.minionGridView);
                 Facade.RegisterMediator(minionGridMediator);
 

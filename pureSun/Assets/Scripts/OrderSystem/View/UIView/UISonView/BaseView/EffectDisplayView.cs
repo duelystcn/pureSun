@@ -59,8 +59,8 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
             }
             
         }
-
-        public void ShowCradEffectByCardEntry(CardEntry cardEntry, UnityAction callBack) {
+        //自动展示效果，会自动消失
+        public void ShowCradEffectByCardEntryAuto(CardEntry cardEntry, UnityAction callBack) {
             //添加需要展示的卡牌
             ShowCradEffect(cardEntry);
             //显示引导线
@@ -68,13 +68,19 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
             //0.5秒后隐藏擦除
             StartCoroutine(ShowOverAction(callBack));
         }
-
+        //展示效果和选项
         public void ShowCradEffectAndUserSelectionListByCardEntry(CardEntry cardEntry, SendNotificationAddCardEntry sendNotificationAddCard) {
             //添加需要展示的卡牌
             ShowCradEffect(cardEntry);
             ShowUserSelectListByCardEntry(cardEntry, sendNotificationAddCard);
 
 
+        }
+        //展示效果，不会自动消失
+        public void ShowCradEffectByCardEntry(CardEntry cardEntry)
+        {
+            //添加需要展示的卡牌
+            ShowCradEffect(cardEntry);
         }
         public void ShowUserSelectListByCardEntry(CardEntry cardEntry, SendNotificationAddCardEntry sendNotificationAddCard) {
             //获取需要展示的效果
@@ -112,92 +118,92 @@ namespace Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView
         {
             List<Vector3> endVectors = new List<Vector3>();
             EffectInfo effectInfo = cardEntry.needShowEffectInfo;
-            foreach (TargetSet targetSet in effectInfo.operationalTarget.selectTargetList) {
-                switch (targetSet.target)
+            if (effectInfo.operationalTarget != null) {
+                foreach (TargetSet targetSet in effectInfo.operationalTarget.selectTargetList)
                 {
-                    case "Player":
-                        for (int n = 0; n < targetSet.targetPlayerItems.Count; n++)
-                        {
-                            for (int m = 0; m < effectInfo.operationalContent.impactTargets.Length; m++)
+                    switch (targetSet.target)
+                    {
+                        case "Player":
+                            for (int n = 0; n < targetSet.targetPlayerItems.Count; n++)
                             {
-                                OnePlayerManaInfo[] onePlayerManaInfos = null;
-                                switch (effectInfo.operationalContent.impactTargets[m])
+                                for (int m = 0; m < effectInfo.operationalContent.impactTargets.Length; m++)
                                 {
-                                    //资源上限
-                                    case "ManaUpperLimit":
-                                        onePlayerManaInfos = GameObject.FindObjectsOfType<OnePlayerManaInfo>();
-                                        foreach (PlayerItem playerItem in targetSet.targetPlayerItems)
-                                        {
-                                            foreach (OnePlayerManaInfo onePlayerManaInfo in onePlayerManaInfos)
+                                    OnePlayerManaInfo[] onePlayerManaInfos = null;
+                                    switch (effectInfo.operationalContent.impactTargets[m])
+                                    {
+                                        //资源上限
+                                        case "ManaUpperLimit":
+                                            onePlayerManaInfos = GameObject.FindObjectsOfType<OnePlayerManaInfo>();
+                                            foreach (PlayerItem playerItem in targetSet.targetPlayerItems)
                                             {
-                                                if (onePlayerManaInfo.playerCode == playerItem.playerCode)
+                                                foreach (OnePlayerManaInfo onePlayerManaInfo in onePlayerManaInfos)
                                                 {
-                                                    Vector3 endPosition = onePlayerManaInfo.transform.position;
+                                                    if (onePlayerManaInfo.playerCode == playerItem.playerCode)
+                                                    {
+                                                        Vector3 endPosition = onePlayerManaInfo.transform.position;
+                                                        endPosition.y = endPosition.y + 5;
+                                                        endVectors.Add(endPosition);
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        //可用费用
+                                        case "ManaUsable":
+                                            onePlayerManaInfos = GameObject.FindObjectsOfType<OnePlayerManaInfo>();
+                                            foreach (PlayerItem playerItem in targetSet.targetPlayerItems)
+                                            {
+                                                foreach (OnePlayerManaInfo onePlayerManaInfo in onePlayerManaInfos)
+                                                {
+                                                    if (onePlayerManaInfo.playerCode == playerItem.playerCode)
+                                                    {
+                                                        Vector3 endPosition = onePlayerManaInfo.transform.position;
+                                                        endPosition.y = endPosition.y + 5;
+                                                        endVectors.Add(endPosition);
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        //科技相关
+                                        case "TraitAddOne":
+                                            TraitSignRowList[] traitSignRowLists = GameObject.FindObjectsOfType<TraitSignRowList>();
+                                            foreach (PlayerItem playerItem in targetSet.targetPlayerItems)
+                                            {
+                                                foreach (TraitSignRowList traitSignRowList in traitSignRowLists)
+                                                {
+                                                    if (traitSignRowList.playerCode == playerItem.playerCode)
+                                                    {
+                                                        Vector3 endPosition = traitSignRowList.transform.position;
+                                                        endPosition.y = endPosition.y + 5;
+                                                        endVectors.Add(endPosition);
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        //分数相关
+                                        case "Score":
+                                            ShipComponentView[] shipComponentViews = GameObject.FindObjectsOfType<ShipComponentView>();
+                                            foreach (PlayerItem playerItem in targetSet.targetPlayerItems)
+                                            {
+                                                if (shipComponentViews[0].myselfPlayerCode == playerItem.playerCode)
+                                                {
+                                                    Vector3 endPosition = shipComponentViews[0].myselfScore.transform.position;
+                                                    endPosition.y = endPosition.y + 5;
+                                                    endVectors.Add(endPosition);
+                                                }
+                                                else
+                                                {
+                                                    Vector3 endPosition = shipComponentViews[0].enemyScore.transform.position;
                                                     endPosition.y = endPosition.y + 5;
                                                     endVectors.Add(endPosition);
                                                 }
                                             }
-                                        }
-                                        break;
-                                    //可用费用
-                                    case "ManaUsable":
-                                        onePlayerManaInfos = GameObject.FindObjectsOfType<OnePlayerManaInfo>();
-                                        foreach (PlayerItem playerItem in targetSet.targetPlayerItems)
-                                        {
-                                            foreach (OnePlayerManaInfo onePlayerManaInfo in onePlayerManaInfos)
-                                            {
-                                                if (onePlayerManaInfo.playerCode == playerItem.playerCode)
-                                                {
-                                                    Vector3 endPosition = onePlayerManaInfo.transform.position;
-                                                    endPosition.y = endPosition.y + 5;
-                                                    endVectors.Add(endPosition);
-                                                }
-                                            }
-                                        }
-                                        break;
-                                    //科技相关
-                                    case "TraitAddOne":
-                                        TraitSignRowList[] traitSignRowLists = GameObject.FindObjectsOfType<TraitSignRowList>();
-                                        foreach (PlayerItem playerItem in targetSet.targetPlayerItems)
-                                        {
-                                            foreach (TraitSignRowList traitSignRowList in traitSignRowLists)
-                                            {
-                                                if (traitSignRowList.playerCode == playerItem.playerCode)
-                                                {
-                                                    Vector3 endPosition = traitSignRowList.transform.position;
-                                                    endPosition.y = endPosition.y + 5;
-                                                    endVectors.Add(endPosition);
-                                                }
-                                            }
-                                        }
-                                        break;
-                                    //分数相关
-                                    case "Score":
-                                        ShipComponentView[] shipComponentViews = GameObject.FindObjectsOfType<ShipComponentView>();
-                                        foreach (PlayerItem playerItem in targetSet.targetPlayerItems)
-                                        {
-                                            if (shipComponentViews[0].myselfPlayerCode == playerItem.playerCode)
-                                            {
-                                                Vector3 endPosition = shipComponentViews[0].myselfScore.transform.position;
-                                                endPosition.y = endPosition.y + 5;
-                                                endVectors.Add(endPosition);
-                                            }
-                                            else
-                                            {
-                                                Vector3 endPosition = shipComponentViews[0].enemyScore.transform.position;
-                                                endPosition.y = endPosition.y + 5;
-                                                endVectors.Add(endPosition);
-                                            }
-                                        }
-                                        break;
+                                            break;
+                                    }
                                 }
                             }
-                        }
-                        break;
-
-
+                            break;
+                    }
                 }
-
             }
             //起始点固定
             Vector3 startPosition = cardIntactView.transform.position;

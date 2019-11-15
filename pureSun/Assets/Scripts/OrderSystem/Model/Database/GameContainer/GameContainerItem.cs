@@ -1,6 +1,7 @@
 ﻿
 
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
 using Assets.Scripts.OrderSystem.Model.Common.BasicGame;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using System.Collections.Generic;
@@ -69,11 +70,11 @@ namespace Assets.Scripts.OrderSystem.Model.Database.GameContainer
             }
         }
         //手牌可使用判断
-        public void ChangeHandCardCanUse()
+        public void ChangeHandCardCanUse(QuestStageCircuitItem questStageCircuitItem)
         {
             foreach (CardEntry handCellItem in this.cardEntryList)
             {
-                handCellItem.canUse = handCellItem.controllerPlayerItem.CheckOneCardCanUse(handCellItem);
+                handCellItem.canUse = handCellItem.controllerPlayerItem.CheckOneCardCanUse(handCellItem, questStageCircuitItem);
             }
         }
 
@@ -81,17 +82,28 @@ namespace Assets.Scripts.OrderSystem.Model.Database.GameContainer
         public CardEntry GetOneCardTypeCard(CardType cardType)
         {
             CardEntry getHand = null;
-            foreach (CardEntry handCellItem in this.cardEntryList)
+            foreach (CardEntry cardEntry in this.cardEntryList)
             {
-                if (handCellItem.WhichCard == cardType)
+                if (cardEntry.WhichCard == cardType)
                 {
-                    getHand = handCellItem;
-                    return handCellItem;
+                    return cardEntry;
                 }
             }
             return getHand;
         }
-
+        //获取一张卡牌类型的牌，暂时先返回第一张
+        public CardEntry GetOneCardByCardCode(string cardCode)
+        {
+            CardEntry getHand = null;
+            foreach (CardEntry cardEntry in this.cardEntryList)
+            {
+                if (cardEntry.cardInfo.code == cardCode)
+                {
+                    return cardEntry;
+                }
+            }
+            return getHand;
+        }
 
 
     }

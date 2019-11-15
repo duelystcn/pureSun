@@ -218,11 +218,8 @@ namespace Assets.Scripts.OrderSystem.Event
         /// <summary>
         /// 费用上限发生变化
         /// </summary>
-        public const string UI_MANA_INFA_SYS_LIMIT_CHANGE = "UIManaInfoSysLimitChange";
-        /// <summary>
-        /// 可使用费用发生变化
-        /// </summary>
-        public const string UI_MANA_INFA_SYS_USABLE_CHANGE = "UIManaInfoSysUsableChange";
+        public const string UI_MANA_INFA_SYS_NUM_CHANGE = "UIManaInfoSysNumChange";
+      
 
         /// <summary>
         /// 科技显示相关
@@ -268,9 +265,17 @@ namespace Assets.Scripts.OrderSystem.Event
         /// </summary>
         public const string UI_EFFECT_DISPLAY_SYS_PUT_ONE_EFFECT = "UIEffectDisplaySysPutOneEffect";
         /// <summary>
-        /// 一个效果需要用户选择
+        /// 一个效果需要用户选择是否执行
         /// </summary>
-        public const string UI_EFFECT_DISPLAY_SYS_ONE_EFFECT_NEED_CHOOSE= "UIEffectDisplaySysOneEffectNeedChoose";
+        public const string UI_EFFECT_DISPLAY_SYS_ONE_EFFECT_NEED_CHOOSE_EXE= "UIEffectDisplaySysOneEffectNeedChooseExe";
+        /// <summary>
+        /// 一个效果需要用户选择目标
+        /// </summary>
+        public const string UI_EFFECT_DISPLAY_SYS_ONE_EFFECT_NEED_CHOOSE_TARGET = "UIEffectDisplaySysOneEffectNeedChooseTarget";
+        /// <summary>
+        /// 隐藏效果展示列表
+        /// </summary>
+        public const string UI_EFFECT_DISPLAY_SYS_TO_HIDE = "UIEffectDisplaySysToHide";
 
 
         /// <summary>
@@ -315,8 +320,29 @@ namespace Assets.Scripts.OrderSystem.Event
         public const string UI_GRAVEYARD_LIST_VIEW_OPEN = "UIGraveyardListViewOpen";
 
 
+        /// <summary>
+        /// 卡牌发生变化
+        /// </summary>
+        public const string UI_CARD_ENTRY_SYS = "UICardEntrySys";
+        /// <summary>
+        /// 卡牌归属地发生变化
+        /// </summary>
+        public const string UI_CARD_ENTRY_SYS_CHANGE_GAME_CONTAINER_TYPE = "UICardEntrySysChangeGameContainerType";
+        /// <summary>
+        /// 卡牌正在被使用中
+        /// </summary>
+        public const string UI_CARD_ENTRY_SYS_CARD_NEED_HIDE_IN_VIEW = "UICardEntrySysCardNeedHideInView";
 
 
+        /// <summary>
+        /// 回合阶段相关页面
+        /// </summary>
+        public const string UI_TURN_STAGE_SYS = "UITurnStageSys";
+
+        /// <summary>
+        /// 回合阶段发生变化
+        /// </summary>
+        public const string UI_TURN_STAGE_SYS_STAGE_CHANGE = "UITurnStageSys";
 
 
 

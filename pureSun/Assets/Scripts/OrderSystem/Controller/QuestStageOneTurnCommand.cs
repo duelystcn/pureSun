@@ -29,16 +29,16 @@ namespace Assets.Scripts.OrderSystem.Controller
             //获取当前回合玩家
             PlayerGroupProxy playerGroupProxy = 
                 Facade.RetrieveProxy(PlayerGroupProxy.NAME) as PlayerGroupProxy;
-            MinionGridProxy minionGridProxy =
-             Facade.RetrieveProxy(MinionGridProxy.NAME) as MinionGridProxy;
 
-            PlayerItem playerItemNow = playerGroupProxy.getPlayerByPlayerCode(questStageCircuitProxy.GetNowPlayerCode());
+
+           
+            PlayerItem turnHavePlayerItem = playerGroupProxy.getPlayerByPlayerCode(questStageCircuitProxy.GetNowHaveTurnPlayerCode());
             switch (notification.Type)
             {
                 //开始一个回合
                 case UIViewSystemEvent.UI_QUEST_TURN_STAGE_START_OF_TRUN:
                     questStageCircuitProxy.circuitItem.turnNum++;
-                    UtilityLog.Log("玩家【" + playerItemNow.playerCode +"】第【" + questStageCircuitProxy.circuitItem.turnNum + "】回合开始" , LogUtType.Stage);
+                    UtilityLog.Log("玩家【" + turnHavePlayerItem.playerCode +"】第【" + questStageCircuitProxy.circuitItem.turnNum + "】回合开始" , LogUtType.Stage);
                     questStageCircuitProxy.circuitItem.oneTurnStage = questStageCircuitProxy.circuitItem.questOneTurnStageList[0];
                     //开始一个阶段
                     SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_START_OF_STAGE);
@@ -61,16 +61,25 @@ namespace Assets.Scripts.OrderSystem.Controller
                     break;
                 //结束一个回合
                 case UIViewSystemEvent.UI_QUEST_TURN_STAGE_END_OF_TRUN:
-                    UtilityLog.Log("玩家【" + playerItemNow.playerCode + "】第【" + questStageCircuitProxy.circuitItem.turnNum + "】回合结束" , LogUtType.Stage);
+                    UtilityLog.Log("玩家【" + turnHavePlayerItem.playerCode + "】第【" + questStageCircuitProxy.circuitItem.turnNum + "】回合结束" , LogUtType.Stage);
                     questStageCircuitProxy.IntoNextTurn();
                     SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_START_OF_TRUN);
                     break;
                 //开始一个阶段
                 case UIViewSystemEvent.UI_QUEST_TURN_STAGE_START_OF_STAGE:
                     questStageCircuitProxy.circuitItem.autoNextStage = true;
+                    if (questStageCircuitProxy.circuitItem.oneTurnStage.operatingPlayer == "Myself")
+                    {
+                        questStageCircuitProxy.SetNowHaveStagePlayerCode(questStageCircuitProxy.GetNowHaveTurnPlayerCode());
+                    }
+                    else if(questStageCircuitProxy.circuitItem.oneTurnStage.operatingPlayer == "Enemy") {
+                        questStageCircuitProxy.SetNowHaveStagePlayerCode(playerGroupProxy.getEnemytPlayerByPlayerCode(questStageCircuitProxy.GetNowHaveTurnPlayerCode()).playerCode);
+                    }
                     questStageCircuitProxy.circuitItem.questTurnStageState = QuestTurnStageState.StartOfState;
                     UtilityLog.Log("第【" + questStageCircuitProxy.circuitItem.turnNum + "】回合" + "开始一个阶段【" + questStageCircuitProxy.circuitItem.oneTurnStage.name + "】", LogUtType.Stage);
-                    questStageCircuitProxy.circuitItem.oneStageStartAction(playerItemNow);
+                    SendNotification(UIViewSystemEvent.UI_TURN_STAGE_SYS, questStageCircuitProxy.circuitItem, UIViewSystemEvent.UI_TURN_STAGE_SYS_STAGE_CHANGE);
+                    effectInfoProxy.effectSysItem.showEffectNum++;
+                    questStageCircuitProxy.circuitItem.oneStageStartAction(turnHavePlayerItem);
                     if (questStageCircuitProxy.circuitItem.autoNextStage) {
                         SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_NEED_CHECK_END_STAGE_STATE);
                        
@@ -78,25 +87,27 @@ namespace Assets.Scripts.OrderSystem.Controller
                     break;
                 //执行一个阶段
                 case UIViewSystemEvent.UI_QUEST_TURN_STAGE_EXECUTION_OF_STAGE:
+                    PlayerItem stageHavePlayerItemForExe = playerGroupProxy.getPlayerByPlayerCode(questStageCircuitProxy.GetNowHaveStagePlayerCode());
+                    stageHavePlayerItemForExe.ttPlayerHandCanUseJudge();
                     questStageCircuitProxy.circuitItem.autoNextStage = true;
                     questStageCircuitProxy.circuitItem.questTurnStageState = QuestTurnStageState.ExecutionOfState;
                     UtilityLog.Log("第【" + questStageCircuitProxy.circuitItem.turnNum + "】回合" + "执行一个阶段【" + questStageCircuitProxy.circuitItem.oneTurnStage.name + "】", LogUtType.Stage);
-                    questStageCircuitProxy.circuitItem.oneStageExecutionAction(playerItemNow);
+                    questStageCircuitProxy.circuitItem.oneStageExecutionAction(turnHavePlayerItem);
                     if (questStageCircuitProxy.circuitItem.oneTurnStage.automatic == "N")
                     {
                         questStageCircuitProxy.circuitItem.autoNextStage = false;
                         //判断当前玩家的种类
                         //AI玩家
-                        if (playerItemNow.playerType == PlayerType.AIPlayer)
+                        if (stageHavePlayerItemForExe.playerType == PlayerType.AIPlayer)
                         {
                             //切入到AI逻辑操作
                             SendNotification(LogicalSysEvent.LOGICAL_SYS, null, LogicalSysEvent.LOGICAL_SYS_ACTIVE_PHASE_ACTION);
                         }
                         //人类玩家
-                        else if (playerItemNow.playerType == PlayerType.HumanPlayer)
+                        else if (stageHavePlayerItemForExe.playerType == PlayerType.HumanPlayer)
                         {
-                            //显示下一回合按钮
-                            SendNotification(UIViewSystemEvent.UI_NEXT_TURN_SHOW_SYS, null, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_NEXT_TURN_SHOW_SYS_SHOW, playerItemNow.playerCode));
+                            //显示结束阶段按钮
+                            SendNotification(UIViewSystemEvent.UI_NEXT_TURN_SHOW_SYS, null, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_NEXT_TURN_SHOW_SYS_SHOW, stageHavePlayerItemForExe.playerCode));
                         }
                         //直接返回
                         return;
@@ -111,7 +122,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                 case UIViewSystemEvent.UI_QUEST_TURN_STAGE_END_OF_STAGE:
                     questStageCircuitProxy.circuitItem.questTurnStageState = QuestTurnStageState.EndOfState;
                     UtilityLog.Log("第【" + questStageCircuitProxy.circuitItem.turnNum + "】回合" + "结束一个阶段【" + questStageCircuitProxy.circuitItem.oneTurnStage.name + "】", LogUtType.Stage);
-                    questStageCircuitProxy.circuitItem.oneStageEndAction(playerItemNow);
+                    questStageCircuitProxy.circuitItem.oneStageEndAction(turnHavePlayerItem);
                     int nowStageIndex = questStageCircuitProxy.circuitItem.questOneTurnStageList.IndexOf(questStageCircuitProxy.circuitItem.oneTurnStage);
                     if (nowStageIndex < questStageCircuitProxy.circuitItem.questOneTurnStageList.Count - 1)
                     {
@@ -120,12 +131,13 @@ namespace Assets.Scripts.OrderSystem.Controller
                     }
                     else
                     {
-                        questStageCircuitProxy.circuitItem.oneTurnEndAction(playerItemNow);
+                        questStageCircuitProxy.circuitItem.oneTurnEndAction(turnHavePlayerItem);
                         SendNotification(UIViewSystemEvent.UI_QUEST_TURN_STAGE, null, UIViewSystemEvent.UI_QUEST_TURN_STAGE_END_OF_TRUN);
                     }
                     break;
                 //检查当前阶段是否可以结束
                 case UIViewSystemEvent.UI_QUEST_TURN_STAGE_NEED_CHECK_END_STAGE_STATE:
+                    PlayerItem stageHavePlayerItemForCheckEnd = playerGroupProxy.getPlayerByPlayerCode(questStageCircuitProxy.GetNowHaveStagePlayerCode());
                     UtilityLog.Log("第【" + questStageCircuitProxy.circuitItem.turnNum + "】回合" + "检查【" + questStageCircuitProxy.circuitItem.oneTurnStage.name + "】&&状态【" + questStageCircuitProxy.circuitItem.questTurnStageState.ToString() + "】是否可以进入下一个状态", LogUtType.Stage);
                     bool nextStageState = true;
                     if (questStageCircuitProxy.circuitItem.questTurnStageState == QuestTurnStageState.ExecutionOfState) {
@@ -134,13 +146,13 @@ namespace Assets.Scripts.OrderSystem.Controller
                             nextStageState = false;
                             //判断当前玩家的种类
                             //AI玩家
-                            if (playerItemNow.playerType == PlayerType.AIPlayer)
+                            if (stageHavePlayerItemForCheckEnd.playerType == PlayerType.AIPlayer)
                             {
                                 //切入到AI逻辑操作
                                 SendNotification(LogicalSysEvent.LOGICAL_SYS, null, LogicalSysEvent.LOGICAL_SYS_ACTIVE_PHASE_ACTION);
                             }
                             //人类玩家
-                            else if (playerItemNow.playerType == PlayerType.HumanPlayer)
+                            else if (stageHavePlayerItemForCheckEnd.playerType == PlayerType.HumanPlayer)
                             {
                                 //人类玩家自行操作
 

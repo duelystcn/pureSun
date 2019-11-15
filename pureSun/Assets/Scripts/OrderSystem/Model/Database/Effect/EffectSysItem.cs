@@ -1,17 +1,10 @@
 ﻿
 
 using Assets.Scripts.OrderSystem.Common;
-using Assets.Scripts.OrderSystem.Common.UnityExpand;
-using Assets.Scripts.OrderSystem.Model.Common;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
-using Assets.Scripts.OrderSystem.Model.Database.Effect.EffectCompent;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.ImpactTT;
 using Assets.Scripts.OrderSystem.Model.Database.Effect.TargetSetTS;
-using Assets.Scripts.OrderSystem.Model.Minion;
-using Assets.Scripts.OrderSystem.Model.Player;
-using Assets.Scripts.OrderSystem.Model.SpecialOperate.ChooseOperate;
 using PureMVC.Interfaces;
-using System;
 using System.Collections.Generic;
 
 namespace Assets.Scripts.OrderSystem.Model.Database.Effect
@@ -59,12 +52,14 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Effect
 
         public void EffectActionReady(EffectInfo effect)
         {
-            effect.operationalTarget.selectTargetList = new List<TargetSet>();
-            foreach (string targetSetCode in effect.operationalTarget.selectTarget)
-            {
-                TargetSet targetSetDto = TransExpV2<TargetSet, TargetSet>.Trans(targetSetMap[targetSetCode]);
-                targetSetDto.CleanEffectTargetSetList();
-                effect.operationalTarget.selectTargetList.Add(targetSetDto);
+            if (effect.operationalTarget != null) {
+                effect.operationalTarget.selectTargetList = new List<TargetSet>();
+                foreach (string targetSetCode in effect.operationalTarget.selectTarget)
+                {
+                    TargetSet targetSetDto = TransExpV2<TargetSet, TargetSet>.Trans(targetSetMap[targetSetCode]);
+                    targetSetDto.CleanEffectTargetSetList();
+                    effect.operationalTarget.selectTargetList.Add(targetSetDto);
+                }
             }
         }
     }

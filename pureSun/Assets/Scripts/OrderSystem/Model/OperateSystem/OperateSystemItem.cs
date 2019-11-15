@@ -8,7 +8,17 @@ namespace Assets.Scripts.OrderSystem.Model.OperateSystem
 {
     public class OperateSystemItem
     {
-        public enum OperateType { Close, HandUse, CardSettle };
+        public enum OperateType { 
+            //关闭
+            Close, 
+            //手牌使用中
+            HandUse,
+            //效果结算中
+            CardIsReleasing,
+            //操作生物中
+            MinionControling,
+
+            CardSettle };
 
         //当前模式
         public OperateType operateModeType = OperateType.Close;

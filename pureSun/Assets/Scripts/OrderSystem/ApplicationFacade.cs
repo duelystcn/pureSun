@@ -48,7 +48,6 @@ namespace OrderSystem
             RegisterCommand(OperateSystemEvent.OPERATE_SYS, () => new OperateSystemCommand());
             RegisterCommand(HexSystemEvent.HEX_VIEW_SYS, () => new HexViewCommand());
             RegisterCommand(MinionSystemEvent.MINION_SYS, () => new MinionSysCommand());
-            RegisterCommand(UIViewSystemEvent.UI_VIEW, () => new UIViewSysCommand());
             RegisterCommand(UIViewSystemEvent.UI_CHOOSE_STAGE, () => new ChooseStageCommand());
             RegisterCommand(UIViewSystemEvent.UI_CHOOSE_MAKE_STAGE, () => new ChooseMakeStageCommand());
             RegisterCommand(UIViewSystemEvent.UI_QUEST_STAGE, () => new QuestStageCommand());
@@ -56,6 +55,7 @@ namespace OrderSystem
             RegisterCommand(LogicalSysEvent.LOGICAL_SYS, () => new LogicalProcessorCommand());
             RegisterCommand(TimeTriggerEvent.TIME_TRIGGER_SYS, () => new TimeTriggerSysCommand());
             RegisterCommand(EffectExecutionEvent.EFFECT_EXECUTION_SYS, () => new EffectExecutionCommand());
+            RegisterCommand(GameContainerEvent.GAME_CONTAINER_SYS, () => new GameContainerCommand());
         }
 
         protected override void InitializeModel()

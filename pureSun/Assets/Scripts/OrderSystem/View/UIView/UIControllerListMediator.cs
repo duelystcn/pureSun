@@ -1,6 +1,8 @@
 ﻿using Assets.Scripts.OrderSystem.Common;
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
+using Assets.Scripts.OrderSystem.Model.Common;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.TestCase;
 using Assets.Scripts.OrderSystem.Model.Minion;
@@ -73,6 +75,8 @@ namespace Assets.Scripts.OrderSystem.View.UIView
             notificationList.Add(UIViewSystemEvent.UI_NEXT_TURN_SHOW_SYS);
             notificationList.Add(UIViewSystemEvent.UI_TEST_CASE_SYS);
 
+            notificationList.Add(UIViewSystemEvent.UI_CARD_ENTRY_SYS);
+            notificationList.Add(UIViewSystemEvent.UI_TURN_STAGE_SYS);
             //转发监听
             notificationList.Add(UIViewSystemEvent.UI_VIEW_ZF_HAND_CHANGE);
 
@@ -148,6 +152,29 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                     {
                         case UIViewSystemEvent.UI_ANIMATION_SYS_START:
                             DoExceHandleNotification();
+                            break;
+                    }
+                    break;
+                case UIViewSystemEvent.UI_CARD_ENTRY_SYS:
+                    switch (notification.Type) {
+                        //卡牌的归属地发生了变化
+                        case UIViewSystemEvent.UI_CARD_ENTRY_SYS_CHANGE_GAME_CONTAINER_TYPE:
+                            CardEntry cardEntryMove = notification.Body as CardEntry;
+                            if (cardEntryMove.gameContainerType == "CardHand") {
+                                SendNotification(HandSystemEvent.HAND_CHANGE, notification.Body, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_DRAW_ONE_CARD, cardEntryMove.controllerPlayerItem.playerCode));
+                                return;
+                            }
+                            if (cardEntryMove.lastGameContainerType == "CardHand") {
+                                SendNotification(HandSystemEvent.HAND_CHANGE, cardEntryMove, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_REMOVE_ONE_CARD, cardEntryMove.controllerPlayerItem.playerCode));
+                            }
+                            break;
+                        //卡牌在显示页面需要被隐藏
+                        case UIViewSystemEvent.UI_CARD_ENTRY_SYS_CARD_NEED_HIDE_IN_VIEW:
+                            CardEntry cardEntryNeedHide = notification.Body as CardEntry;
+                            if (cardEntryNeedHide.gameContainerType == "CardHand")
+                            {
+                                SendNotification(HandSystemEvent.HAND_CHANGE, notification.Body, StringUtil.GetNTByNotificationTypeAndPlayerCode(UIViewSystemEvent.UI_CARD_ENTRY_SYS_CARD_NEED_HIDE_IN_VIEW, cardEntryNeedHide.controllerPlayerItem.playerCode));
+                            }
                             break;
                     }
                     break;
@@ -335,20 +362,16 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                     switch (notification.Type)
                     {
                         case UIViewSystemEvent.UI_MANA_INFA_SYS_INIT:
-                            ManaItem manaItem = notification.Body as ManaItem;
+                            VariableAttribute manaInitVariableAttribute  = notification.Body as VariableAttribute;
                             manaInfoView = UIControllerLIst.GetViewByName<ManaInfoView>(UIViewName.ManaInfoView);
-                            manaInfoView.UIManaInfoSysInit(manaItem, myself, playerCodeNotification);
+                            manaInfoView.UIManaInfoSysInit(manaInitVariableAttribute, myself, playerCodeNotification);
                             break;
-                        case UIViewSystemEvent.UI_MANA_INFA_SYS_USABLE_CHANGE:
-                            changeNum = Convert.ToInt32(notification.Body);
+                        case UIViewSystemEvent.UI_MANA_INFA_SYS_NUM_CHANGE:
+                            VariableAttribute manaChangeVariableAttribute = notification.Body as VariableAttribute;
                             manaInfoView = UIControllerLIst.GetViewByName<ManaInfoView>(UIViewName.ManaInfoView);
-                            manaInfoView.ChangeManaUsable(changeNum, myself);
+                            manaInfoView.ChangeManaUsable(manaChangeVariableAttribute, myself);
                             break;
-                        case UIViewSystemEvent.UI_MANA_INFA_SYS_LIMIT_CHANGE:
-                            changeNum = Convert.ToInt32(notification.Body);
-                            manaInfoView = UIControllerLIst.GetViewByName<ManaInfoView>(UIViewName.ManaInfoView);
-                            manaInfoView.ChangeManaUpperLimit(changeNum, myself);
-                            break;
+                       
                     }
                     break;
                 //科技组件显示
@@ -384,16 +407,25 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                                 SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EFFECT_SHOW_OVER);
                                 SendNotification(UIViewSystemEvent.UI_ANIMATION_SYS, null, UIViewSystemEvent.UI_ANIMATION_SYS_START);
                             };
-                            effectDisplayView.ShowCradEffectByCardEntry(effectCardNeedShow, callBack);
+                            effectDisplayView.ShowCradEffectByCardEntryAuto(effectCardNeedShow, callBack);
                             break;
-                        case UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_ONE_EFFECT_NEED_CHOOSE:
+                        case UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_ONE_EFFECT_NEED_CHOOSE_EXE:
                             effectDisplayView = UIControllerLIst.GetViewByName<EffectDisplayView>(UIViewName.EffectDisplayView);
-                            CardEntry effectCardNeedChoose = notification.Body as CardEntry;
+                            CardEntry effectCardNeedChooseExe = notification.Body as CardEntry;
                             SendNotificationAddCardEntry sendNotificationAddCard = (OneUserSelectionItem oneUserSelectionItem) =>
                             {
                                 SendNotification(OperateSystemEvent.OPERATE_SYS, oneUserSelectionItem, OperateSystemEvent.OPERATE_SYS_CHOOSE_ONE_USER_SELECTION_ITEM);
                             };
-                            effectDisplayView.ShowCradEffectAndUserSelectionListByCardEntry(effectCardNeedChoose, sendNotificationAddCard);
+                            effectDisplayView.ShowCradEffectAndUserSelectionListByCardEntry(effectCardNeedChooseExe, sendNotificationAddCard);
+                            break;
+                        case UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_ONE_EFFECT_NEED_CHOOSE_TARGET:
+                            effectDisplayView = UIControllerLIst.GetViewByName<EffectDisplayView>(UIViewName.EffectDisplayView);
+                            CardEntry effectCardNeedChooseTarget = notification.Body as CardEntry;
+                            effectDisplayView.ShowCradEffectByCardEntry(effectCardNeedChooseTarget);
+                            break;
+                        case UIViewSystemEvent.UI_EFFECT_DISPLAY_SYS_TO_HIDE:
+                            effectDisplayView = UIControllerLIst.GetViewByName<EffectDisplayView>(UIViewName.EffectDisplayView);
+                            effectDisplayView.cardIntactView.gameObject.SetActive(false);
                             break;
                     }
                     break;
@@ -425,10 +457,10 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                     switch (notification.Type)
                     {
                         case UIViewSystemEvent.UI_ONE_CARD_ALL_INFO_BUFF_CHANGE:
-                            MinionCellItem minionCellItem = notification.Body as MinionCellItem;
+                            CardEntry minionCellItem = notification.Body as CardEntry;
                             OneCardAllInfo oneCardAllInfo = UIControllerLIst.GetViewByName<OneCardAllInfo>(UIViewName.OneCardAllInfo);
                             if (oneCardAllInfo != null) {
-                                if (oneCardAllInfo.cardEntryShow.uuid == minionCellItem.cardEntry.uuid)
+                                if (oneCardAllInfo.cardEntryShow.uuid == minionCellItem.uuid)
                                 {
                                     oneCardAllInfo.LoadingAllInfoByMinionCellItem(minionCellItem);
                                 }
@@ -436,8 +468,22 @@ namespace Assets.Scripts.OrderSystem.View.UIView
                             break;
                     }
                     break;
-
-
+                case UIViewSystemEvent.UI_TURN_STAGE_SYS:
+                    switch (notification.Type)
+                    {
+                        case UIViewSystemEvent.UI_TURN_STAGE_SYS_STAGE_CHANGE:
+                            //回调函数
+                            UnityAction turnStageCallBack = () =>
+                            {
+                                SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, null, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EFFECT_SHOW_OVER);
+                                SendNotification(UIViewSystemEvent.UI_ANIMATION_SYS, null, UIViewSystemEvent.UI_ANIMATION_SYS_START);
+                            };
+                            TurnSysProgressBarView turnSysProgressBarView = UIControllerLIst.GetViewByName<TurnSysProgressBarView>(UIViewName.TurnSysProgressBarView);
+                            QuestStageCircuitItem questStageCircuitItem = notification.Body as QuestStageCircuitItem;
+                            turnSysProgressBarView.LoadingAllStageInfoToChange(questStageCircuitItem, playerCode, turnStageCallBack);
+                            break;
+                    }
+                    break;
             }
             if (callBackDelay == false)
             {

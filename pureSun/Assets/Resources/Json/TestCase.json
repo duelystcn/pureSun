@@ -7,8 +7,8 @@
     "myselfPlayer": {
       "playerCode": "TEST1",
       "traitList": [ "supremcy" ],
-      "manaUpperLimit": 2,
-      "manaUsable": 2,
+      "manaUpperLimit": 1,
+      "manaUsable": 1,
       "shipCardCode": "FindWay",
       "gameContainerList": [
         {
@@ -17,14 +17,19 @@
         },
         {
           "gameContainerType": "CardHand",
-          "gameContainerContent": [ "Dazzling", "FortifiedAgent", "Adrenaline" ]
+          "gameContainerContent": [ "Dazzling", "AbandonPiece", "Adrenaline" ]
         }
       ],
       "minionList": [
         {
-          "code": "ImperialRecruit",
+          "code": "ImperialSoldier",
           "x": 1,
           "z": 1
+        },
+        {
+          "code": "ImperialRecruit",
+          "x": 4,
+          "z": -1
         }
       ]
     },
@@ -45,7 +50,16 @@
         }
       ],
       "minionList": [
-
+        {
+          "code": "ImperialRecruit",
+          "x": 1,
+          "z": 3
+        },
+        {
+          "code": "ImperialSoldier",
+          "x": 4,
+          "z": 1
+        }
       ]
     }
   },
@@ -63,11 +77,11 @@
       "gameContainerList": [
         {
           "gameContainerType": "CardDeck",
-          "gameContainerContent": [ "StarChainInfantry", "StarChainInfantry", "FortifiedAgent", "FortifiedAgent" ]
+          "gameContainerContent": [ "GroceryStoreOwner", "StarChainInfantry", "FortifiedAgent", "FortifiedAgent" ]
         },
         {
           "gameContainerType": "CardHand",
-          "gameContainerContent": [ "StarChainInfantry", "Dazzling", "GroceryStoreOwner" ]
+          "gameContainerContent": [ "GroceryStoreOwner", "Dazzling", "StarChainInfantry" ]
         }
       ],
       "minionList": [
@@ -87,7 +101,7 @@
       "gameContainerList": [
         {
           "gameContainerType": "CardDeck",
-          "gameContainerContent": [ "FortifiedAgent", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ]
+          "gameContainerContent": [ "GroceryStoreOwner", "FortifiedAgent", "FortifiedAgent", "FortifiedAgent" ]
         },
         {
           "gameContainerType": "CardHand",
@@ -116,8 +130,8 @@
     "myselfPlayer": {
       "playerCode": "TEST1",
       "traitList": [ "supremcy" ],
-      "manaUpperLimit": 2,
-      "manaUsable": 2,
+      "manaUpperLimit": 4,
+      "manaUsable": 4,
       "shipCardCode": "FindWay",
       "gameContainerList": [
         {

@@ -136,11 +136,33 @@ namespace Assets.Scripts.OrderSystem.View.HandView
         public void PlayerRemoveOneCard(CardEntry handCellItem, UnityAction callBack)
         {
             //清除
+            int needRemoveNum = -1;
+            for (int num = 0; num < handCellViews.Count; num++) {
+                HandCellView handCellView = handCellViews[num];
+                if (handCellView.handCellItem.uuid == handCellItem.uuid)
+                {
+                    needRemoveNum = num;
+                    handCellPool.Push(handCellView);
+                    break;
+                }
+
+            }
+            if (needRemoveNum > -1) {
+                UtilityLog.Log("【" + handCellItem.cardInfo.code + "】" + "从手牌栏移除", LogUtType.Special);
+                handCellViews.RemoveAt(needRemoveNum);
+            }
+            callBack();
+        }
+        //隐藏一张牌
+        public void HideOneCard(CardEntry handCellItem, UnityAction callBack)
+        {
+            //清除
             foreach (HandCellView handCellView in handCellViews)
             {
                 if (handCellView.handCellItem.uuid == handCellItem.uuid)
                 {
-                    handCellPool.Push(handCellView);
+                    UtilityLog.Log("【" + handCellItem.cardInfo.code + "】" + "从手牌栏隐藏", LogUtType.Special);
+                    handCellView.gameObject.SetActive(false);
                     break;
                 }
             }

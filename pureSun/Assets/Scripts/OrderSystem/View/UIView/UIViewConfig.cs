@@ -69,7 +69,10 @@ namespace Assets.Scripts.OrderSystem.View.UIView
         GraveyardListView,
 
         //遮罩层
-        UIMaskLayeView
+        UIMaskLayeView,
+
+        //回合进度框
+        TurnSysProgressBarView
 
     }
     //UIView名字的比较器

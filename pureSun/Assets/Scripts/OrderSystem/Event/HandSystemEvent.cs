@@ -32,6 +32,8 @@
         public const string HAND_CHANGE_CAN_USE_JUDGE = "handChangeCanUseJudge";
         //手牌恢复到初始状态，当使用手牌没有成功的
         public const string HAND_CHANGE_UNCHECK_STATUS = "handChangeUncheckStatus";
+        //隐藏一张牌
+
 
 
         //手牌操作

@@ -1,5 +1,7 @@
 ﻿
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Model.Circuit.QuestStageCircuit;
+using Assets.Scripts.OrderSystem.Model.Common;
 using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.GameModelInfo;
 using Assets.Scripts.OrderSystem.Model.Hex;
@@ -38,8 +40,8 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //起始点，虚拟坐标，用于确认召唤范围？
         public HexCoordinates hexCoordinates;
 
-        //费用相关
-        public ManaItem manaItem;
+        //费用等可变属性保存
+        public VariableAttributeMap playerVariableAttributeMap = new VariableAttributeMap();
 
         //科技相关TraitCombination
         public TraitCombination traitCombination;
@@ -65,27 +67,25 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         public PlayerItem(string playCode)
         {
             this.playerCode = playCode;
-            manaItem = new ManaItem();
+            playerVariableAttributeMap.CreateVariableAttributeByOriginalValueAndCodeAndBetterAndAutoRestore("Mana", 0, true);
             traitCombination = new TraitCombination();
         }
 
         //时点触发器
         //抽一张牌
-        public TTPlayerDrawACard ttPlayerDrawACard;
+        public TTPlayerNeedDrawACard ttPlayerNeedDrawACard;
         //获得了一张牌
         public TTPlayerGetACard ttPlayerGetACard;
 
         //移除一张牌
-        public TTPlayerRemoveACard ttPlayerRemoveACard;
+       // public TTPlayerRemoveACard ttPlayerRemoveACard;
         //使用一张牌
         public TTPlayerUseACard ttPlayerUseACard;
         //判断手牌是否可用
         public TTPlayerHandCanUseJudge ttPlayerHandCanUseJudge;
 
-        //费用上限发生了变化
-        public TTManaCostLimitChange ttManaCostLimitChange;
-        //可用费用发生了变化
-        public TTManaCostUsableChange ttManaCostUsableChange;
+        //费用发生了变化
+        public TTManaCostChange ttManaCostChange;
 
 
 
@@ -190,16 +190,32 @@ namespace Assets.Scripts.OrderSystem.Model.Player
 
 
         //判断玩家是否能使用一张牌
-        public bool CheckOneCardCanUse(CardEntry cardEntry) {
+        public bool CheckOneCardCanUse(CardEntry cardEntry, QuestStageCircuitItem questStageCircuitItem) {
+            if (questStageCircuitItem.oneTurnStage.automatic == "Y") {
+                return false;
+            }
+
             bool canUse = true;
             //判断是否还可以再使用资源卡
-            if (cardEntry.WhichCard == CardEntry.CardType.ResourceCard) {
+            if (cardEntry.WhichCard == CardEntry.CardType.ResourceCard)
+            {
+                if (questStageCircuitItem.stageHavePlayerCode != questStageCircuitItem.turnHavePlayerCode)
+                {
+                    return false;
+                }
                 canUse = CheckResourceCardCanUse();
                 return canUse;
             }
+            //检查是不是生物或者资源
+            if (cardEntry.WhichCard == CardEntry.CardType.MinionCard) {
+                if (questStageCircuitItem.stageHavePlayerCode != questStageCircuitItem.turnHavePlayerCode)
+                {
+                    return false;
+                }
+            }
 
             //当前可用费用
-            int manaUsable = this.manaItem.manaUsable;
+            int manaUsable = this.playerVariableAttributeMap.GetValueByCodeAndType("Mana", VATtrtype.CalculatedValue);
             //当前科技
             List<TraitType> traitTypes = this.traitCombination.traitTypes;
               
@@ -254,7 +270,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //方法抽一张牌
         public void DrawCard(int num) {
             for (int n = 0; n < num; n++) {
-                ttPlayerDrawACard();
+                ttPlayerNeedDrawACard();
             }
         }
         //将一张牌放入墓地
@@ -270,7 +286,7 @@ namespace Assets.Scripts.OrderSystem.Model.Player
             //RemoveOneCard(handCellItem);
         }
         //移除一张手牌
-        //public void removeonecard(cardentry handcellitem) {
+        //public void RemoveOneCard(cardentry handcellitem) {
         //    //找到目标要移除的牌
         //    cardentry targethand = null;
         //    foreach (cardentry handcell in handgriditem.handcells) {
@@ -291,19 +307,20 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //改变费用上限
         public void ChangeManaUpperLimit(int num)
         {
-            manaItem.changeManaUpperLimit(num);
-            ttManaCostLimitChange(num);
+            playerVariableAttributeMap.ChangeValueByCodeAndType("Mana", VATtrtype.OriginalValue, num);
+            playerVariableAttributeMap.ChangeValueByCodeAndType("Mana", VATtrtype.DamageValue, -num);
+            ttManaCostChange(playerVariableAttributeMap.variableAttributeMap["Mana"]);
         }
         //改变可用费用
         public void ChangeManaUsable(int num)
         {
-            manaItem.changeManaUsable(num);
-            ttManaCostUsableChange(num);
+            playerVariableAttributeMap.ChangeValueByCodeAndType("Mana", VATtrtype.DamageValue, num);
+            ttManaCostChange(playerVariableAttributeMap.variableAttributeMap["Mana"]);
         }
         //判断是否可以改变费用
         public bool CheckCanChangeManaUsable(int num)
         {
-            if (manaItem.manaUsable + num < 0)
+            if (playerVariableAttributeMap.GetValueByCodeAndType("Mana", VATtrtype.CalculatedValue) + num < 0)
             {
                 return false;
             }
@@ -314,11 +331,16 @@ namespace Assets.Scripts.OrderSystem.Model.Player
         //费用恢复至上限
         public void RestoreToTheUpperLimit()
         {
-          
-            int changeNum = manaItem.manaUpperLimit - manaItem.manaUsable;
-            manaItem.RestoreToTheUpperLimit();
-            ttManaCostUsableChange(changeNum);
+            int changeNum = playerVariableAttributeMap.GetValueByCodeAndType("Mana", VATtrtype.OriginalValue) - playerVariableAttributeMap.GetValueByCodeAndType("Mana", VATtrtype.CalculatedValue);
+            playerVariableAttributeMap.ResetChangeValueAndDamageValue("Mana");
+            ttManaCostChange(playerVariableAttributeMap.variableAttributeMap["Mana"]);
         }
+        //载入指定的费用上限和可用费用
+        public void LoadingManaInfo(int originalValue, int canUseValue) {
+            playerVariableAttributeMap.ChangeValueByCodeAndType("Mana", VATtrtype.OriginalValue, originalValue);
+            playerVariableAttributeMap.ChangeValueByCodeAndType("Mana", VATtrtype.DamageValue, canUseValue - originalValue);
+        }
+
         //改变分数
         public void ChangeSocre(int changeNum)
         {

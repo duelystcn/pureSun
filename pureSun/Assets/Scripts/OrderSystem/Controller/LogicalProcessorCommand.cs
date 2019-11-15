@@ -72,33 +72,42 @@ namespace Assets.Scripts.OrderSystem.Controller
                     {
                     }
                     break;
-                case LogicalSysEvent.LOGICAL_SYS_CHOOSE_EFFECT:
+                case LogicalSysEvent.LOGICAL_SYS_NEED_PLAYER_CHOOSE:
                     EffectInfo effectInfo = notification.Body as EffectInfo;
                     playerItem = effectInfo.chooseByPlayer;
                     //如果是玩家
                     if (playerItem.playerType == PlayerType.HumanPlayer)
                     {
-                        //整理好效果内容，弹出选择框让玩家选择
-                        //把这些效果实例化成卡片
-                        List<CardEntry> cardEntries = new List<CardEntry>();
-                        foreach (string effectName in effectInfo.chooseEffectList) {
-                            EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectName);
-                            CardEntry oneCardEntry = cardDbProxy.GetCardEntryBCardInfo(effectInfo.cardEntry.cardInfo);
-                            oneCardEntry.InitializeByEffectInfo(oneEffectInfo);
-                            cardEntries.Add(oneCardEntry);
+                        if (effectInfo.needPlayerToChooseTargetSet.target == "ChooseEffect") {
+                            //整理好效果内容，弹出选择框让玩家选择
+                            //把这些效果实例化成卡片
+                            List<CardEntry> cardEntries = new List<CardEntry>();
+                            foreach (string effectName in effectInfo.chooseEffectList)
+                            {
+                                EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectName);
+                                CardEntry oneCardEntry = cardDbProxy.GetCardEntryBCardInfo(effectInfo.cardEntry.cardInfo);
+                                oneCardEntry.InitializeByEffectInfo(oneEffectInfo);
+                                cardEntries.Add(oneCardEntry);
+                            }
+
+                            //将需要进行选择的内容发送给玩家
+                            SendNotification(
+                                    UIViewSystemEvent.UI_VIEW_CURRENT,
+                                    cardEntries,
+                                    StringUtil.GetNTByNotificationTypeAndUIViewNameAndMaskLayerAndPlayerCode(
+                                        UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW,
+                                        UIViewConfig.getNameStrByUIViewName(UIViewName.ChooseStage),
+                                        playerItem.playerCode,
+                                        "Y"
+                                        )
+                                    );
+
                         }
-                     
-                        //获取墓地的牌，并发送给前台
-                        SendNotification(
-                                UIViewSystemEvent.UI_VIEW_CURRENT,
-                                cardEntries,
-                                StringUtil.GetNTByNotificationTypeAndUIViewNameAndMaskLayerAndPlayerCode(
-                                    UIViewSystemEvent.UI_VIEW_CURRENT_OPEN_ONE_VIEW,
-                                    UIViewConfig.getNameStrByUIViewName(UIViewName.ChooseStage),
-                                    playerItem.playerCode,
-                                    "Y"
-                                    )
-                                );
+                        else if (effectInfo.needPlayerToChooseTargetSet.target == "Minion") {
+                            //传入效果，根据效果目标进行筛选渲染
+                            SendNotification(MinionSystemEvent.MINION_SYS, effectInfo.needPlayerToChooseTargetSet, MinionSystemEvent.MINION_SYS_EFFECT_HIGHLIGHT_BECOME_TARGET);
+                        }
+                       
 
 
                     }
@@ -119,7 +128,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                     break;
                 case LogicalSysEvent.LOGICAL_SYS_ACTIVE_PHASE_ACTION:
                     //获取当前进行游戏的玩家进行接管
-                    string playerCodeNow = circuitProxy.GetNowPlayerCode();
+                    string playerCodeNow = circuitProxy.GetNowHaveStagePlayerCode();
                     PlayerItem playerItemNow = playerGroupProxy.getPlayerByPlayerCode(playerCodeNow);
                     UtilityLog.Log("AI玩家" + playerCodeNow + "开始操作：", LogUtType.Operate);
                     //无法操作了结束回合
@@ -135,7 +144,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                         if (getHand != null)
                         {
                             //使用这张手牌
-                            operateSystemProxy.IntoModeHandUse(getHand,playerItemNow);
+                            operateSystemProxy.IntoModeByType(getHand, playerItemNow, OperateSystemItem.OperateType.HandUse);
                             HexCellItem hexCellItem = new HexCellItem(1,1);
                             SendNotification(OperateSystemEvent.OPERATE_SYS, hexCellItem, OperateSystemEvent.OPERATE_SYS_DRAW_END_HEX);
                             
