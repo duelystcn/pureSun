@@ -52,26 +52,29 @@ namespace Assets.Scripts.OrderSystem.Controller
                     foreach (string effectCode in exeEffectCard.effectCodeList)
                     {
                         EffectInfo oneEffectInfo = effectInfoProxy.GetDepthCloneEffectByName(effectCode);
-                        //设置状态
-                        oneEffectInfo.effectInfoStage = EffectInfoStage.UnStart;
-                        //设置所有者,手牌操作模式，所有者是当前玩家
-                        oneEffectInfo.player = exeEffectCard.controllerPlayerItem;
-                        //设置所属卡牌
-                        oneEffectInfo.cardEntry = exeEffectCard;
-                        //是否有预先选定的目标对象
-                        if (exeEffectCard.targetBasicGameDto != null) {
-                            if (exeEffectCard.targetBasicGameDto.dtoType == "Minion")
+                        if (oneEffectInfo.impactTimeTriggers == null) {
+                            //设置状态
+                            oneEffectInfo.effectInfoStage = EffectInfoStage.UnStart;
+                            //设置所有者,手牌操作模式，所有者是当前玩家
+                            oneEffectInfo.player = exeEffectCard.controllerPlayerItem;
+                            //设置所属卡牌
+                            oneEffectInfo.cardEntry = exeEffectCard;
+                            //是否有预先选定的目标对象
+                            if (exeEffectCard.targetBasicGameDto != null)
                             {
-                                foreach (TargetSet targetSet in oneEffectInfo.operationalTarget.selectTargetList)
+                                if (exeEffectCard.targetBasicGameDto.dtoType == "Minion")
                                 {
-                                    if (targetSet.target == "Minion")
+                                    foreach (TargetSet targetSet in oneEffectInfo.operationalTarget.selectTargetList)
                                     {
-                                        targetSet.targetMinionCellItems.Add(exeEffectCard.targetBasicGameDto as CardEntry);
+                                        if (targetSet.target == "Minion")
+                                        {
+                                            targetSet.targetMinionCellItems.Add(exeEffectCard.targetBasicGameDto as CardEntry);
+                                        }
                                     }
                                 }
                             }
+                            oneExeEffectCardEffects.Add(oneEffectInfo);
                         }
-                        oneExeEffectCardEffects.Add(oneEffectInfo);
                     }
                     //存入效果，进行结算
                     effectInfoProxy.IntoModeCardSettle(exeEffectCard, oneExeEffectCardEffects);
@@ -246,14 +249,15 @@ namespace Assets.Scripts.OrderSystem.Controller
                                 }
                             }
                         }
+                        if (effectInfoProxy.effectSysItem.effectInfos.Count == 0) {
+                            cardCheck = effectInfoProxy.effectSysItem.cardEntry;
+                        }
                         if (!cardCheckOver)
                         {
                             UtilityLog.LogError("同一个效果组来源多余一个实体");
                         }
                         else {
-                            if (cardCheck.WhichCard == CardEntry.CardType.ResourceCard || cardCheck.WhichCard == CardEntry.CardType.TacticsCard)
-                            {
-
+                            if (cardCheck.lastGameContainerType == "CardHand") {
                                 SendNotification(OperateSystemEvent.OPERATE_SYS, null, OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE_EXE_OVER);
                             }
                         }

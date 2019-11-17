@@ -64,7 +64,7 @@ namespace Assets.Scripts.OrderSystem.View.OperateSystem
                                 {
                                     return;
                                 }
-
+                                
                                 //判断选择了什么，放在视图层做
                                 HexCellView hexCellView = hexGridMediator.GetHexCellViewByPosition(operateSystemView.trailDrawLine.overVec);
                                 if (hexCellView != null)

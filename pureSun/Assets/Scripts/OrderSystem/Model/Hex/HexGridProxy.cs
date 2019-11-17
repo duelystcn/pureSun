@@ -1,9 +1,13 @@
 ﻿
 
 
+using Assets.Scripts.OrderSystem.Common.UnityExpand;
+using Assets.Scripts.OrderSystem.Model.Database.Card;
 using Assets.Scripts.OrderSystem.Model.Database.GameModelInfo;
+using Assets.Scripts.OrderSystem.Util;
 using OrderSystem;
 using PureMVC.Patterns.Proxy;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.OrderSystem.Model.Hex
 {
@@ -26,17 +30,47 @@ namespace Assets.Scripts.OrderSystem.Model.Hex
             hexGrid.CreateGrid();
             base.Data = hexGrid;
         }
+        //根据坐标获取一个地图格子
+
+ 
+
+
         public void UpdateCellItem(HexCellItem cellItem)
         {
-            for (int i = 0; i < HexGrid.cells.Length; i++)
-            {
-                if (HexGrid.cells[i].X.Equals(cellItem.X)&& HexGrid.cells[i].Z.Equals(cellItem.Z))
+            
+            SendNotification(OrderSystemEvent.CHANGE_OVER, HexGrid, "CHANGEOVER");
+        }
+
+        //传入一个生物，判断出这个生物的可移动距离
+        public Dictionary<HexCoordinates, HexCellItem> GetCanMoveCellByMinionCard(CardEntry minionCard, HexModelInfo modelInfo) {
+            Dictionary<HexCoordinates, HexCellItem> alreadyPassedCellMap = new Dictionary<HexCoordinates, HexCellItem>();
+            alreadyPassedCellMap.Add(minionCard.nowIndex, HexGrid.cellMap[minionCard.nowIndex]);
+            for (int n = 0; n < minionCard.cardInfo.movingDistance; n++) {
+                Dictionary<HexCoordinates, HexCellItem> oneCheckAddMap = new Dictionary<HexCoordinates, HexCellItem>();
+                foreach (KeyValuePair<HexCoordinates, HexCellItem> keyValuePair in alreadyPassedCellMap)
                 {
-                   
-                    break;
+                    HexCoordinates startCoordinates = keyValuePair.Key;
+                    foreach (HexCoordinates hexCoordinates in modelInfo.expansionVector)
+                    {
+                        HexCoordinates targetHexCoordinates = HexUtil.GetTargetHexCoordinatesByStartPointAndVector(startCoordinates, hexCoordinates);
+                        if (HexGrid.cellMap.ContainsKey(targetHexCoordinates))
+                        {
+                            if (HexGrid.cellMap[targetHexCoordinates].inThisCellCardList.Count == 0)
+                            {
+                                if (!alreadyPassedCellMap.ContainsKey(targetHexCoordinates)&& !oneCheckAddMap.ContainsKey(targetHexCoordinates)) {
+                                    HexGrid.cellMap[targetHexCoordinates].pathfindingLastCell = keyValuePair.Value;
+                                    oneCheckAddMap.Add(targetHexCoordinates, HexGrid.cellMap[targetHexCoordinates]);
+                                }
+                            }
+                        }
+                    }
+
+                }
+                foreach (KeyValuePair<HexCoordinates, HexCellItem> keyValuePair in oneCheckAddMap) {
+                    alreadyPassedCellMap.Add(keyValuePair.Key, keyValuePair.Value);
                 }
             }
-            SendNotification(OrderSystemEvent.CHANGE_OVER, HexGrid, "CHANGEOVER");
+            return alreadyPassedCellMap;
         }
 
     }

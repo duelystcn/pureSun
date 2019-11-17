@@ -17,6 +17,12 @@
         public int atk { get; set; }
         public int def { get; set; }
 
+        //移动距离
+        public int movingDistance { get; set; }
+
+        //攻击距离
+        public int attackDistance { get; set; }
+
         //卡面属性
         public string[] trait { get; set; }
 

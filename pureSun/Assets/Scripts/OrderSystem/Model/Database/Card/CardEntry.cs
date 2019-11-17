@@ -2,6 +2,7 @@
 using Assets.Scripts.OrderSystem.Model.Common;
 using Assets.Scripts.OrderSystem.Model.Common.BasicGame;
 using Assets.Scripts.OrderSystem.Model.Database.Effect;
+using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.Player;
 using Assets.Scripts.OrderSystem.View.UIView.UISonView.BaseView.ChooseMakeStage;
 using System.Collections.Generic;
@@ -37,6 +38,9 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
         public string[] effectCodeList { get; set; }
         //描述
         public string description { get; set; }
+
+
+      
 
         //上一个归属地
         public string lastGameContainerType;
@@ -123,12 +127,17 @@ namespace Assets.Scripts.OrderSystem.Model.Database.Card
         public HexCoordinates nowIndex;
         //原始所在位置，演算移动动画时需要用到
         public HexCoordinates lastIndex;
+        //移动路径
+        public List<HexCellItem> cellRoute = new List<HexCellItem>();
 
         //是否可作为效果对象
         public bool IsEffectTarget;
 
         //持续buff，放在一个list里
         public List<EffectInfo> effectBuffInfoList = new List<EffectInfo>();
+
+        //先保存起来，避免操作的时候渲染需要计算，判断还需要计算
+        public Dictionary<HexCoordinates, HexCellItem> canBeMovedCellMap = new Dictionary<HexCoordinates, HexCellItem>();
 
         //根据效果实例化一张卡（用作展示）
         public void InitializeByEffectInfo(EffectInfo oneEffectInfo)

@@ -23,13 +23,13 @@ namespace Assets.Scripts.OrderSystem.Model.OperateSystem
         //进入模式，使用手牌模式
         public void IntoModeByType (CardEntry cardEntry, PlayerItem playerItem, OperateSystemItem.OperateType operateType) {
             operateSystemItem.operateModeType = operateType;
-            operateSystemItem.onChooseHandCellItem = cardEntry;
+            operateSystemItem.onChooseCardEntry = cardEntry;
             operateSystemItem.playerItem = playerItem;
         }
         //关闭模式？
         public void IntoModeClose() {
             operateSystemItem.operateModeType = OperateSystemItem.OperateType.Close;
-            operateSystemItem.onChooseHandCellItem = null;
+            operateSystemItem.onChooseCardEntry = null;
             operateSystemItem.playerItem = null;
         }
        

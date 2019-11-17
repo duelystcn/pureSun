@@ -1,5 +1,7 @@
 ﻿
 
+using Assets.Scripts.OrderSystem.Model.Database.Card;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.OrderSystem.Model.Hex
@@ -24,5 +26,12 @@ namespace Assets.Scripts.OrderSystem.Model.Hex
             X = x;
             Z = z;
         }
+        //棋盘上这个格子所放置的卡
+        public List<CardEntry> inThisCellCardList = new List<CardEntry>();
+
+        //用于寻路追朔
+        public HexCellItem pathfindingLastCell ;
+
+
     }
 }

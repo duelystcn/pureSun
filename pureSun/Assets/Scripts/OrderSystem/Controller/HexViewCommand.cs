@@ -1,5 +1,7 @@
 ﻿using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Event;
+using Assets.Scripts.OrderSystem.Model.Database.Card;
+using Assets.Scripts.OrderSystem.Model.Database.GameModelInfo;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Model.OperateSystem;
 using OrderSystem;
@@ -20,35 +22,66 @@ namespace Assets.Scripts.OrderSystem.Controller
         {
             HexGridProxy hexGridProxy =
                       Facade.RetrieveProxy(HexGridProxy.NAME) as HexGridProxy;
+            GameModelProxy gameModelProxy =
+               Facade.RetrieveProxy(GameModelProxy.NAME) as GameModelProxy;
             switch (notification.Type)
             {
                 case HexSystemEvent.HEX_VIEW_SYS_SHOW_START:
                     SendNotification(HexSystemEvent.HEX_VIEW_SYS, hexGridProxy.HexGrid, HexSystemEvent.HEX_VIEW_SYS_SHOW);
-
                     break;
 
+                case HexSystemEvent.HEX_VIEW_SYS_CARD_CHANGE_GAME_CONTAINER_TYPE:
+                    CardEntry cardEntryChangeGCType = notification.Body as CardEntry;
+                    if (cardEntryChangeGCType.gameContainerType == "CardBattlefield")
+                    {
+                        hexGridProxy.HexGrid.cellMap[cardEntryChangeGCType.nowIndex].inThisCellCardList.Add(cardEntryChangeGCType);
+                        return;
+                    }
+                    if (cardEntryChangeGCType.lastGameContainerType == "CardBattlefield")
+                    {
+                        hexGridProxy.HexGrid.cellMap[cardEntryChangeGCType.nowIndex].inThisCellCardList.Remove(cardEntryChangeGCType);
+                    }
+
+                    break;
                 //这一段代码写的比较糟糕，只用作效果展示
-                //需要区分模式
+                //需要区分模式,渲染出可召唤区域
                 case HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL:
                     //传递的参数中有生物信息
-                    OperateSystemItem operateSystemItem = notification.Body as OperateSystemItem;
+                    OperateSystemItem operateSystemItemCanCall = notification.Body as OperateSystemItem;
                     //获取当前玩家固定可召唤区域
-                    List<HexCoordinates> fixedCanCellHexList = operateSystemItem.playerItem.fixedCanCallHexList;
-                    
+                    List<HexCoordinates> fixedCanCellHexList = operateSystemItemCanCall.playerItem.fixedCanCallHexList;
+
                     //遍历渲染
-                    foreach (HexCellItem hexCellItem in hexGridProxy.HexGrid.cells) {
-                        if (operateSystemItem.playerItem.CheckOneCellCanCall(hexCellItem.coordinates)) {
-                            hexCellItem.borderState = BorderState.CanCall;
+                    foreach (KeyValuePair<HexCoordinates, HexCellItem> keyValuePair in hexGridProxy.HexGrid.cellMap) {
+                        if (operateSystemItemCanCall.playerItem.CheckOneCellCanCall(keyValuePair.Key))
+                        {
+                            keyValuePair.Value.borderState = BorderState.CanCall;
                         }
                     }
+                     
+                    SendNotification(HexSystemEvent.HEX_VIEW_SYS, hexGridProxy.HexGrid, HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL_OVER);
+                    break;
+                case HexSystemEvent.HEX_VIEW_RENDER_CAN_MOVE_AND_ATK:
+                    //传递的参数中有生物信息
+                    OperateSystemItem operateSystemItemCanMoveAndAttack = notification.Body as OperateSystemItem;
+                    Dictionary<HexCoordinates, HexCellItem> alreadyPassedCellMap = hexGridProxy.GetCanMoveCellByMinionCard(operateSystemItemCanMoveAndAttack.onChooseCardEntry, gameModelProxy.hexModelInfoNow);
+                    //遍历渲染
+                    foreach (KeyValuePair<HexCoordinates, HexCellItem> keyValuePair in alreadyPassedCellMap)
+                    {
+                      
+                        keyValuePair.Value.borderState = BorderState.CanCall;
+                    }
+                    operateSystemItemCanMoveAndAttack.onChooseCardEntry.canBeMovedCellMap = alreadyPassedCellMap;
                     SendNotification(HexSystemEvent.HEX_VIEW_SYS, hexGridProxy.HexGrid, HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL_OVER);
                     break;
                 case HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL_CANCEL:
-                    foreach (HexCellItem hexCellItem in hexGridProxy.HexGrid.cells)
+                    //遍历渲染
+                    foreach (KeyValuePair<HexCoordinates, HexCellItem> keyValuePair in hexGridProxy.HexGrid.cellMap)
                     {
-                        if (hexCellItem.borderState == BorderState.CanCall) {
-                            hexCellItem.borderState = BorderState.Normal;
-                        }  
+                        if (keyValuePair.Value.borderState == BorderState.CanCall)
+                        {
+                            keyValuePair.Value.borderState = BorderState.Normal;
+                        }
                     }
                     SendNotification(HexSystemEvent.HEX_VIEW_SYS, hexGridProxy.HexGrid, HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL_CANCEL_OVER);
                     break;

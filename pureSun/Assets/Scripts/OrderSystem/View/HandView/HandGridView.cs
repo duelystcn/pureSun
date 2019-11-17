@@ -148,7 +148,6 @@ namespace Assets.Scripts.OrderSystem.View.HandView
 
             }
             if (needRemoveNum > -1) {
-                UtilityLog.Log("【" + handCellItem.cardInfo.code + "】" + "从手牌栏移除", LogUtType.Special);
                 handCellViews.RemoveAt(needRemoveNum);
             }
             callBack();
@@ -161,7 +160,6 @@ namespace Assets.Scripts.OrderSystem.View.HandView
             {
                 if (handCellView.handCellItem.uuid == handCellItem.uuid)
                 {
-                    UtilityLog.Log("【" + handCellItem.cardInfo.code + "】" + "从手牌栏隐藏", LogUtType.Special);
                     handCellView.gameObject.SetActive(false);
                     break;
                 }

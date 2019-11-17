@@ -49,11 +49,11 @@ namespace Assets.Scripts.OrderSystem.View.HexView
                             //初始化地图区域
                             hexGridView.AchieveHexGrid(hexGrid);
                             //给每一个单元格绑定上单击事件
-                            foreach (HexCellView hexCellView in hexGridView.cellViews)
+                            foreach (KeyValuePair<HexCoordinates, HexCellView> keyValuePair in hexGridView.cellViewMap)
                             {
-                                hexCellView.OnClick += () =>
+                                keyValuePair.Value.OnClick += () =>
                                 {
-                                    SendNotification(OrderSystemEvent.ONCLICK, hexCellView.hexCellItem, "CLICK");
+                                    SendNotification(OrderSystemEvent.ONCLICK, keyValuePair.Value.hexCellItem, "CLICK");
 
                                 };
                             }

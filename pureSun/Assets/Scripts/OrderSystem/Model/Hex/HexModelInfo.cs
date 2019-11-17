@@ -1,5 +1,7 @@
 ﻿
 
+using System.Collections.Generic;
+
 namespace Assets.Scripts.OrderSystem.Model.Hex
 {
     public enum HexModelType
@@ -22,7 +24,6 @@ namespace Assets.Scripts.OrderSystem.Model.Hex
             this.height = h;
             this.arrayMode = mode;
         }
-        
-
+        public List<HexCoordinates> expansionVector = new List<HexCoordinates>();
     }
 }

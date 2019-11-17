@@ -2,6 +2,7 @@
 using Assets.Scripts.OrderSystem.Common.UnityExpand;
 using Assets.Scripts.OrderSystem.Model.Hex;
 using Assets.Scripts.OrderSystem.Util;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,7 +11,8 @@ namespace Assets.Scripts.OrderSystem.View.HexView
 {
     public class HexGridView : MonoBehaviour
     {
-        public HexCellView[] cellViews;
+       // public HexCellView[] cellViews;
+        public Dictionary<HexCoordinates, HexCellView> cellViewMap = new Dictionary<HexCoordinates, HexCellView>();
 
         public HexCellView cellPrefab;
         public Text cellLabelPrefab;
@@ -33,22 +35,23 @@ namespace Assets.Scripts.OrderSystem.View.HexView
         public void AchieveHexGrid(HexGridItem HexGrid)
         {
             this.modelInfo = HexGrid.modelInfo;
-            cellViews = new HexCellView[HexGrid.cells.Length];
-            for (int i = 0; i < HexGrid.cells.Length; i++)
+            foreach (KeyValuePair<HexCoordinates, HexCellItem> keyValuePair in HexGrid.cellMap)
             {
-                HexCellItem hexCellItem = HexGrid.cells[i];
+                HexCellItem hexCellItem = keyValuePair.Value;
                 int x = hexCellItem.X;
                 int z = hexCellItem.Z;
                 Vector3 position = new Vector3();
                 //格子中心坐标
                 position = HexMetrics.erectPosition(position, x, z, this.modelInfo.arrayMode);
                 //创建一个格子实例
-                HexCellView cell = cellViews[i] = Instantiate<HexCellView>(cellPrefab);
+                HexCellView cell = Instantiate<HexCellView>(cellPrefab);
                 cell.transform.SetParent(transform, false);
                 cell.transform.localPosition = position;
                 cell.hexCellItem = hexCellItem;
                 TextMeshProUGUI HexCellLabel = UtilityHelper.FindChild<TextMeshProUGUI>(cell.transform, "HexCellLabel");
                 HexCellLabel.text = hexCellItem.coordinates.ToStringOnSeparateLines();
+                cellViewMap.Add(keyValuePair.Key, cell);
+
                 //Text label = Instantiate<Text>(cellLabelPrefab);
                 //label.rectTransform.SetParent(gridCanvas.transform, false);
                 //label.rectTransform.anchoredPosition =
@@ -56,19 +59,17 @@ namespace Assets.Scripts.OrderSystem.View.HexView
                 //label.text = hexCellItem.coordinates.ToStringOnSeparateLines();
             }
             //渲染需要放在格子生成完毕后
-            hexMesh.Triangulate(cellViews, this.modelInfo.arrayMode);
+            hexMesh.Triangulate(cellViewMap, this.modelInfo.arrayMode);
         }
 
 
         //更新地图内容
         public void UpdateHexGrid(HexGridItem HexGrid)
         {
-            for (int i = 0; i < HexGrid.cells.Length; i++)
-            {
-                cellViews[i].LoadHexCellItem(HexGrid.cells[i],this);
+            foreach (KeyValuePair<HexCoordinates, HexCellItem> keyValuePair in HexGrid.cellMap) {
+                cellViewMap[keyValuePair.Key].LoadHexCellItem(keyValuePair.Value, this);
             }
-
-            hexMesh.Triangulate(cellViews, this.modelInfo.arrayMode);
+            hexMesh.Triangulate(cellViewMap, this.modelInfo.arrayMode);
         }
         void Update()
         {
@@ -103,21 +104,7 @@ namespace Assets.Scripts.OrderSystem.View.HexView
             if (HexUtil.CheckOnHexGrid(position, this.modelInfo))
             {
                 HexCoordinates coordinates = HexUtil.FromPosition(position, this.modelInfo);
-                int index = 0;
-                if (this.modelInfo.arrayMode == HexMetrics.MODE_ERECT)
-                {
-                    index = coordinates.X + coordinates.Z * this.modelInfo.width + coordinates.Z / 2;
-                }
-                else
-                {
-                    //偏差值，X增长时，Z轴会向上偏移
-                    int deviation = coordinates.X / 2;
-                    index = coordinates.X + (coordinates.Z + deviation) * this.modelInfo.width;
-                }
-                if (index > -1)
-                {
-                    cell = cellViews[index];
-                }
+                cell = cellViewMap[coordinates];
             }
             return cell;
         }

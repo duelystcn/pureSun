@@ -40,6 +40,8 @@ namespace Assets.Scripts.OrderSystem.Controller
                 Facade.RetrieveProxy(GameModelProxy.NAME) as GameModelProxy;
             GameContainerProxy gameContainerProxy =
                 Facade.RetrieveProxy(GameContainerProxy.NAME) as GameContainerProxy;
+            HexGridProxy hexGridProxy =
+                  Facade.RetrieveProxy(HexGridProxy.NAME) as HexGridProxy;
 
             //获取当前操作玩家
             string playerCode = questStageCircuitProxy.GetNowHaveStagePlayerCode();
@@ -47,7 +49,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                 return;
             }
             PlayerItem playerItem = playerGroupProxy.getPlayerByPlayerCode(playerCode);
-            CardEntry chooseHand = operateSystemProxy.operateSystemItem.onChooseHandCellItem;
+            CardEntry chooseHand = operateSystemProxy.operateSystemItem.onChooseCardEntry;
 
             switch (notification.Type) {
 
@@ -58,6 +60,16 @@ namespace Assets.Scripts.OrderSystem.Controller
                     GameContainerItem gameContainerItem = gameContainerProxy.GetGameContainerItemByPlayerItemAndGameContainerType(playerItemHandCanUseJudge, "CardHand");
                     gameContainerItem.ChangeHandCardCanUse(questStageCircuitProxy.circuitItem);
                     SendNotification(HandSystemEvent.HAND_CHANGE, gameContainerItem.cardEntryList, StringUtil.GetNTByNotificationTypeAndPlayerCode(HandSystemEvent.HAND_CHANGE_CAN_USE_JUDGE, playerCode));
+                    break;
+                //选中战场上一个生物
+                case OperateSystemEvent.OPERATE_SYS_POINTER_DOWN_ONE_MINION:
+                    CardEntry downMinionCard = notification.Body as CardEntry;
+                    operateSystemProxy.IntoModeByType(downMinionCard, playerItem, OperateSystemItem.OperateType.MinionControling);
+                    //渲染可移动区域
+                    SendNotification(HexSystemEvent.HEX_VIEW_SYS, operateSystemProxy.operateSystemItem, HexSystemEvent.HEX_VIEW_RENDER_CAN_MOVE_AND_ATK);
+                    //消息通知-划线组件激活
+                    SendNotification(OperateSystemEvent.OPERATE_TRAIL_DRAW, null, OperateSystemEvent.OPERATE_TRAIL_DRAW_START);
+
                     break;
                 //选中手牌
                 case OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE:
@@ -103,103 +115,129 @@ namespace Assets.Scripts.OrderSystem.Controller
                 case OperateSystemEvent.OPERATE_SYS_DRAW_END_HEX:
                     HexCellItem hexCellItem = notification.Body as HexCellItem;
                     HexCoordinates index = hexCellItem.coordinates;
-                    UtilityLog.Log("玩家【" + playerCode + "】尝试操作手牌，手牌种类为【" + chooseHand.WhichCard + "】", LogUtType.Operate);
+                    //通知战场层去除渲染
+                    SendNotification(HexSystemEvent.HEX_VIEW_SYS, null, HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL_CANCEL);
                     //判断状态
-                    switch (operateSystemProxy.operateSystemItem.operateModeType) {
-                        //手牌使用状态
-                        case OperateSystemItem.OperateType.HandUse:
-                            switch (chooseHand.WhichCard) {
-                                case CardEntry.CardType.ResourceCard:
-                                    UtilityLog.Log("玩家【" + playerCode + "】进行操作手牌，手牌种类为【" + chooseHand.WhichCard + "】", LogUtType.Operate);
-                                    //执行卡牌
-                                    SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, chooseHand, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_CARD);
-                                    break;
-                                case CardEntry.CardType.MinionCard:
-                                    //检查是否可用释放
-                                    bool canUse = playerItem.CheckOneCardCanUse(chooseHand, questStageCircuitProxy.circuitItem);
-                                    bool canCall = playerItem.CheckOneCellCanCall(hexCellItem.coordinates);
-                                    //检查所选格子是否可用召唤
-                                    if (canUse && canCall)
+                    if (operateSystemProxy.operateSystemItem.operateModeType == OperateSystemItem.OperateType.HandUse) {
+                        UtilityLog.Log("玩家【" + playerCode + "】尝试操作手牌，手牌种类为【" + chooseHand.WhichCard + "】", LogUtType.Operate);
+                        //如果成功释放了，还需要去除掉目标渲染
+                        bool checkUseSuccess = false;
+                        string targetType = "Null";
+                        switch (chooseHand.WhichCard)
+                        {
+                            case CardEntry.CardType.ResourceCard:
+                                UtilityLog.Log("玩家【" + playerCode + "】进行操作手牌，手牌种类为【" + chooseHand.WhichCard + "】", LogUtType.Operate);
+                                checkUseSuccess = true;
+                                //执行卡牌
+                                //SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, chooseHand, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_CARD);
+                                break;
+                            case CardEntry.CardType.MinionCard:
+                                //检查是否可用释放
+                                bool canUse = playerItem.CheckOneCardCanUse(chooseHand, questStageCircuitProxy.circuitItem);
+                                bool canCall = playerItem.CheckOneCellCanCall(hexCellItem.coordinates);
+                                //检查所选格子是否可用召唤
+                                if (canUse && canCall)
+                                {
+                                    checkUseSuccess = true;
+                                    chooseHand.nowIndex = index;
+                                }
+                                else
+                                {
+                                    SendNotification(OperateSystemEvent.OPERATE_SYS, null, OperateSystemEvent.OPERATE_SYS_DRAW_END_NULL);
+                                }
+                                break;
+                            case CardEntry.CardType.TacticsCard:
+                                //如果存在目标，则需要先选择目标再释放
+                                if (chooseHand.cardInfo.targetSetToChooseList != null)
+                                {
+                                    bool hasTarget = false;
+                                    foreach (string targetSetToChooseCode in chooseHand.cardInfo.targetSetToChooseList)
                                     {
-                                        //通知战场层去除渲染
-                                        SendNotification(HexSystemEvent.HEX_VIEW_SYS, null, HexSystemEvent.HEX_VIEW_RENDER_CAN_CALL_CANCEL);
-                                        SendNotification(OperateSystemEvent.OPERATE_SYS, null, OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE_EXE_OVER);
-                                        //减少费用-预先减少
-                                        playerItem.ChangeManaUsableByUseHand(chooseHand);
-                                        gameContainerProxy.AddOneMinionByCard(index, chooseHand);
-                                    }
-                                    else {
-                                        SendNotification(OperateSystemEvent.OPERATE_SYS, null, OperateSystemEvent.OPERATE_SYS_DRAW_END_NULL);
-                                    }
-                                    break;
-                                case CardEntry.CardType.TacticsCard:
-                                    //如果成功释放了，还需要去除掉目标渲染
-                                    bool checkUseSuccess = false;
-                                    string targetType = "Null";
-                                    //如果存在目标，则需要先选择目标再释放
-                                    if (chooseHand.cardInfo.targetSetToChooseList != null)
-                                    {
-                                        bool hasTarget = false;
-                                        foreach (string targetSetToChooseCode in chooseHand.cardInfo.targetSetToChooseList)
+                                        TargetSet targetSetToChoose = effectInfoProxy.GetDepthCloneTargetSetByName(targetSetToChooseCode);
+                                        if (targetSetToChoose.target == "Minion")
                                         {
-                                            TargetSet targetSetToChoose = effectInfoProxy.GetDepthCloneTargetSetByName(targetSetToChooseCode);
-                                            if (targetSetToChoose.target == "Minion")
+                                            targetType = "Minion";
+                                            //判断格子上是否有生物
+                                            CardEntry minionCellItem = gameContainerProxy.CheckHasCardEntryByGameContainerTypeAndHexCoordinates("CardBattlefield", index);
+                                            if (minionCellItem != null)
                                             {
-                                                targetType = "Minion";
-                                                //判断格子上是否有生物
-                                                CardEntry minionCellItem = gameContainerProxy.CheckHasCardEntryByGameContainerTypeAndHexCoordinates("CardBattlefield", index);
-                                                if (minionCellItem != null)
+                                                //检查是否满足效果释放条件
+                                                if (targetSetToChoose.checkEffectToTargetMinionCellItem(minionCellItem))
                                                 {
-                                                    //检查是否满足效果释放条件
-                                                    if (targetSetToChoose.checkEffectToTargetMinionCellItem(minionCellItem))
-                                                    {
-                                                        //确认目标
-                                                        chooseHand.targetBasicGameDto = minionCellItem;
-                                                        hasTarget = true;
-                                                    }
-
+                                                    //确认目标
+                                                    chooseHand.targetBasicGameDto = minionCellItem;
+                                                    hasTarget = true;
                                                 }
+
                                             }
-
-
                                         }
-                                           
-                                        if (hasTarget)
-                                        {
-                                            checkUseSuccess = true;
-                                        }
-                                      
                                     }
-                                    //如果不需要选择目标或者需要选择多个目标则先执行
-                                    else {
+                                    if (hasTarget)
+                                    {
                                         checkUseSuccess = true;
                                     }
-                                    if (checkUseSuccess) {
-                                        //
-                                        chooseHand.nextGameContainerType = "CardIsReleasing";
-                                        chooseHand.ttNeedChangeGameContainerType(chooseHand);
-                                        //减少费用-预先减少
-                                        playerItem.ChangeManaUsableByUseHand(chooseHand);
-                                        //执行卡牌
-                                        SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, chooseHand, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_CARD);
-                                        if (targetType == "Minion") {
-                                            //取消渲染
-                                            SendNotification(MinionSystemEvent.MINION_SYS, null, MinionSystemEvent.MINION_SYS_EFFECT_HIGHLIGHT_CLOSE);
-                                        }
-                                    }
-                                    break;
+                                }
+                                //如果不需要选择目标或者需要选择多个目标则先执行
+                                else
+                                {
+                                    checkUseSuccess = true;
+                                }
+                                break;
+                        }
+                        if (checkUseSuccess)
+                        {
+                            //减少费用-预先减少
+                            playerItem.ChangeManaUsableByUseHand(chooseHand);
+                            chooseHand.nextGameContainerType = "CardIsReleasing";
+                            chooseHand.ttNeedChangeGameContainerType(chooseHand);
+                            //减少费用-预先减少
+                            playerItem.ChangeManaUsableByUseHand(chooseHand);
+                            if (targetType == "Minion")
+                            {
+                                //取消渲染
+                                SendNotification(MinionSystemEvent.MINION_SYS, null, MinionSystemEvent.MINION_SYS_EFFECT_HIGHLIGHT_CLOSE);
                             }
-                            break;
+                            //执行卡牌
+                            SendNotification(EffectExecutionEvent.EFFECT_EXECUTION_SYS, chooseHand, EffectExecutionEvent.EFFECT_EXECUTION_SYS_EXE_CARD);
+                        }
+                    } 
+                    else if (operateSystemProxy.operateSystemItem.operateModeType == OperateSystemItem.OperateType.MinionControling) {
+                        UtilityLog.Log("玩家【" + playerCode + "】尝试操作生物", LogUtType.Special);
+                        if (operateSystemProxy.operateSystemItem.onChooseCardEntry.canBeMovedCellMap.ContainsKey(index)) {
+                            HexCellItem endHexCellItem = operateSystemProxy.operateSystemItem.onChooseCardEntry.canBeMovedCellMap[index];
+                            List<HexCellItem> cellRoute = new List<HexCellItem>();
+                            cellRoute.Add(endHexCellItem);
+                            bool isOver = false;
+                            while (!isOver) {
+                                if (endHexCellItem.pathfindingLastCell.coordinates.X == operateSystemProxy.operateSystemItem.onChooseCardEntry.nowIndex.X
+                                    && endHexCellItem.pathfindingLastCell.coordinates.Z == operateSystemProxy.operateSystemItem.onChooseCardEntry.nowIndex.Z) {
+                                    isOver = true;
+                                }
+                                else {
+                                    cellRoute.Add(endHexCellItem.pathfindingLastCell);
+                                    endHexCellItem = endHexCellItem.pathfindingLastCell;
+                                }
+                            }
+                            //路径是倒的，需要换成正序的
+                            List<HexCellItem> positiveCellRoute = new List<HexCellItem>();
+                            for (int n = cellRoute.Count - 1; n > -1; n--) {
+                                positiveCellRoute.Add(cellRoute[n]);
+                            }
+                            operateSystemProxy.operateSystemItem.onChooseCardEntry.cellRoute = positiveCellRoute;
+                            effectInfoProxy.effectSysItem.showEffectNum++;
+                            operateSystemProxy.operateSystemItem.onChooseCardEntry.MoveToTargetHexCoordinates(index);
+                        }
                     }
+                   
                     break;
                 case OperateSystemEvent.OPERATE_SYS_HAND_CHOOSE_EXE_OVER:
                     //如果是战术，资源牌，放入墓地
                     if (chooseHand.WhichCard == CardEntry.CardType.ResourceCard || chooseHand.WhichCard == CardEntry.CardType.TacticsCard) {
-                        UtilityLog.Log("手牌【" + chooseHand.name + "】使用要被清除：", LogUtType.Special);
                         //在墓地添加手牌
                         chooseHand.nextGameContainerType = "CardGraveyard";
                         chooseHand.ttNeedChangeGameContainerType(chooseHand);
                     } else if (chooseHand.WhichCard == CardEntry.CardType.MinionCard) {
+                        gameContainerProxy.AddOneMinionByCard(chooseHand.nowIndex, chooseHand);
                         chooseHand.nextGameContainerType = "CardBattlefield";
                         chooseHand.ttNeedChangeGameContainerType(chooseHand);
                     }

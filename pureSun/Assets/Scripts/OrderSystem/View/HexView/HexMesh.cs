@@ -24,15 +24,14 @@ namespace Assets.Scripts.OrderSystem.View.HexView
             colors = new List<Color>();
             triangles = new List<int>();
         }
-        public void Triangulate(HexCellView[] cells, string arrayMode)
+        public void Triangulate(Dictionary<HexCoordinates, HexCellView> cellViewMap, string arrayMode)
         {
             hexMesh.Clear();
             vertices.Clear();
             triangles.Clear();
             colors.Clear();
-            for (int i = 0; i < cells.Length; i++)
-            {
-                Triangulate(cells[i], arrayMode);
+            foreach (KeyValuePair<HexCoordinates, HexCellView> keyValuePair in cellViewMap) {
+                Triangulate(keyValuePair.Value, arrayMode);
             }
             hexMesh.vertices = vertices.ToArray();
             hexMesh.triangles = triangles.ToArray();

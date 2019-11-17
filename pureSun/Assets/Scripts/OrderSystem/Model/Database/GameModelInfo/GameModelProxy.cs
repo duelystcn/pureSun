@@ -64,6 +64,12 @@ namespace Assets.Scripts.OrderSystem.Model.Database.GameModelInfo
             int width = gameModelNow.width;
 
             hexModelInfoNow = new HexModelInfo(width, height, arrayMode, HexModelType.Source);
+            hexModelInfoNow.expansionVector.Add(new HexCoordinates(0, 1));
+            hexModelInfoNow.expansionVector.Add(new HexCoordinates(1, 0));
+            hexModelInfoNow.expansionVector.Add(new HexCoordinates(1, -1));
+            hexModelInfoNow.expansionVector.Add(new HexCoordinates(0, -1));
+            hexModelInfoNow.expansionVector.Add(new HexCoordinates(-1, 0));
+            hexModelInfoNow.expansionVector.Add(new HexCoordinates(-1, 1));
             SendNotification(OrderSystemEvent.CLINET_SYS, hexModelInfoNow, OrderSystemEvent.CLINET_SYS_GMAE_MODEL_SET);
         }
 

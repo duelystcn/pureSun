@@ -132,46 +132,48 @@ namespace Assets.Scripts.OrderSystem.View.MinionView
             {
                 if (minCellView.minionCellItem.uuid == minionCellItemNew.uuid)
                 {
-                    Vector3 startPosition = minCellView.transform.position;
-                    Vector3 endPosition = new Vector3();
-                    HexCoordinates showHexCoordinates = HexCoordinates.ReverseFromOffsetCoordinates(minionCellItemNew.nowIndex.X, minionCellItemNew.nowIndex.Z, hexModelInfo.arrayMode);
-                    endPosition = HexMetrics.erectPosition(
-                       endPosition,
-                       showHexCoordinates.X,
-                       showHexCoordinates.Z, hexModelInfo.arrayMode);
-                    StartCoroutine(MoveMinionCellShowMove(minCellView, callBack, startPosition, endPosition));
+                    StartCoroutine(MoveMinionCellShowMove(minionCellItemNew, minCellView, callBack, hexModelInfo));
 
                 }
             } 
         }
         //移动动画
-        public IEnumerator MoveMinionCellShowMove(MinionCellView minCellView, UnityAction callBack, Vector3 startPosition, Vector3 endPosition)
+        public IEnumerator MoveMinionCellShowMove(CardEntry minionCellItemNew, MinionCellView minCellView, UnityAction callBack, HexModelInfo hexModelInfo)
         {
+            for (int n = 0; n < minionCellItemNew.cellRoute.Count; n++) {
+                Vector3 startPosition = minCellView.transform.position;
+                HexCoordinates hexCoordinates = minionCellItemNew.cellRoute[n].coordinates;
+                Vector3 endPosition = new Vector3();
+                HexCoordinates showHexCoordinates = HexCoordinates.ReverseFromOffsetCoordinates(hexCoordinates.X, hexCoordinates.Z, hexModelInfo.arrayMode);
+                endPosition = HexMetrics.erectPosition(
+                   endPosition,
+                   showHexCoordinates.X,
+                   showHexCoordinates.Z, hexModelInfo.arrayMode);
 
-            bool isNear = false;
-            Vector3 position = new Vector3();
-            position.y = 0;
-            int xdirection = endPosition.x - startPosition.x == 0 ? 0 : endPosition.x - startPosition.x > 0 ? 1 : -1;
-            int zdirection = endPosition.z - startPosition.z == 0 ? 0 : endPosition.z - startPosition.z > 0 ? 1 : -1;
-
-            position.x = 8 * xdirection;
-            position.y = 8 * zdirection;
-            //到达目的点
-            while (!isNear)
-            {
-                minCellView.transform.Translate(position * Time.deltaTime);
-                if (Math.Abs(minCellView.transform.position.x - endPosition.x) < 0.5)
+                bool isNear = false;
+                Vector3 position = new Vector3();
+                position.y = 0;
+                int xdirection = endPosition.x - startPosition.x == 0 ? 0 : endPosition.x - startPosition.x > 0 ? 1 : -1;
+                int zdirection = endPosition.z - startPosition.z == 0 ? 0 : endPosition.z - startPosition.z > 0 ? 1 : -1;
+                position.x = Math.Abs(endPosition.x - startPosition.x) * xdirection;
+                position.y = Math.Abs(endPosition.z - startPosition.z) * zdirection;
+                //到达目的点
+                while (!isNear)
                 {
-                    if (Math.Abs(minCellView.transform.position.z - endPosition.z) < 0.5)
+                    minCellView.transform.Translate(position * Time.deltaTime);
+                    if (Math.Abs(minCellView.transform.position.x - endPosition.x) < 0.5)
                     {
-                        isNear = true;
+                        if (Math.Abs(minCellView.transform.position.z - endPosition.z) < 0.5)
+                        {
+                            isNear = true;
+                        }
                     }
+                    yield return null;
                 }
-                yield return null;
+                //直接设置为目标点，避免有偏差
+                Vector3 OverPosition = new Vector3(endPosition.x, minCellView.transform.position.y, endPosition.z);
+                minCellView.transform.position = OverPosition;
             }
-            //直接设置为目标点，避免有偏差
-            Vector3 OverPosition = new Vector3(endPosition.x, minCellView.transform.position.y, endPosition.z);
-            minCellView.transform.position = OverPosition;
             callBack();
 
         }

@@ -94,6 +94,7 @@ namespace Assets.Scripts.OrderSystem.Controller
                             cardEntry.controllerPlayerItem = playerItem;
                             gameContainerProxy.AddOneMinionByCard(index, cardEntry);
                             gameContainerProxy.AddCardByPlayerItemAndGameContainerType(playerItem, "CardBattlefield", cardEntry);
+                            hexGridProxy.HexGrid.cellMap[index].inThisCellCardList.Add(cardEntry);
                         }
                       
                     }
